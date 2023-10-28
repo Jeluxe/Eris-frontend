@@ -1,0 +1,41 @@
+.status-box,
+.status-box-info,
+.sb-user,
+.sb-user-info,
+.sb-user-actions,
+.sb-user-action,
+.sb-call :last-child {
+	display: flex;
+}
+
+.status-box {
+	width: calc(100% - 30px);
+	margin-top: 20px;
+	padding: 10px 15px;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.status-box-info {
+	align-items: center;
+}
+
+.sb-user,
+.status-box-info {
+	justify-content: space-between;
+}
+
+.sb-user-info,
+.sb-user-actions {
+	column-gap: 6px;
+}
+
+.sb-call {
+	font-size: 15px;
+	font-weight: 700;
+
+	& > div > span {
+		font-size: 15px;
+		font-weight: 500;
+	}
+}

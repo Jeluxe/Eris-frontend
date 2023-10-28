@@ -1,0 +1,102 @@
+.app {
+	display: flex;
+	flex-direction: row;
+	padding: 20px;
+}
+
+.left-side {
+	display: block;
+}
+
+.right-side {
+	width: 100%;
+	margin-left: 20px;
+	border-radius: 15px;
+	box-shadow: 0 0 10px 1px black;
+}
+
+.sidebar,
+.navbar,
+.status-box,
+.layout {
+	background-color: rgba(240, 248, 255, 0.748);
+	color: black;
+	border-radius: 15px;
+}
+
+.sidebar,
+.status-box {
+	box-shadow: 0 0 10px 1px;
+}
+
+.user-status {
+	width: 12px;
+	height: 12px;
+	border-radius: 9999px;
+	border: 1px solid rgb(197, 197, 197);
+}
+
+.is-absolute {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+.link {
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	color: black;
+}
+
+.friends-link,
+.user-links,
+.navbar-friends {
+	column-gap: 10px;
+}
+
+.left-side-sm {
+	display: none;
+	width: 100%;
+}
+
+@media only screen and (max-width: 1024px) {
+	.app {
+		padding: 0;
+	}
+
+	.left-side {
+		display: none;
+	}
+
+	.left-side-sm {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.right-side {
+		margin-left: 0;
+		height: 100vh;
+		box-shadow: none;
+	}
+
+	.sidebar-top {
+		display: flex;
+	}
+
+	.layout {
+		height: 100%;
+	}
+
+	.sidebar,
+	.navbar,
+	.status-box,
+	.layout {
+		border-radius: 0;
+	}
+
+	.navbar-friends {
+		padding: 24px !important;
+	}
+
+}

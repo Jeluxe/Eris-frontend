@@ -1,0 +1,125 @@
+.navbar {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  max-height: 405px;
+  border-bottom: 1px solid black;
+  display: flex;
+}
+
+.navbar-user,
+.navbar-friends,
+.navbar-user-info,
+.navbar-actions {
+  display: flex;
+}
+
+.navbar-friends {
+  padding: 22px;
+}
+
+.navbar-user {
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.navbar-user-info,
+.navbar-actions {
+  padding: 20px;
+  display: flex;
+
+  column-gap: 10px;
+}
+
+.call-btn,
+.video-call-btn {
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 0 5px 1px;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-friends,
+.navbar-user-info,
+.navbar-actions,
+.call-btn,
+.video-call-btn {
+  align-items: center;
+}
+
+.in-call-nav {
+  height: 405px;
+  min-height: 250px;
+  background: #00000089;
+}
+
+.nav-hide-chat {
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  height: 100%;
+  max-height: 100%;
+}
+
+.hide-chat {
+  height: calc(100vh - 44px);
+}
+
+.navbar-categories {
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.navbar-category {
+  display: none;
+}
+
+.navbar-category-label {
+  display: flex;
+  justify-content: center;
+  width: 80px;
+  padding: 5px 0;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(100, 59, 157, 0.2);
+  }
+}
+
+.navbar-category-label:hover {
+  transform: scale(1.01);
+}
+
+.navbar-category-label:active {
+  transform: scale(0.99);
+}
+
+.navbar-category:checked + .navbar-category-label {
+  height: 22px;
+  background: rgba(58, 5, 203, 0.784);
+  color: wheat;
+  box-shadow:
+    0 8px 8px -6px black;
+  /* box-shadow:
+    0 0 7px 0px rgba(0, 0, 0, 0.4),
+    0 0 7px 0px rgba(0, 0, 0, 0.4),
+    0 0 7px 0px rgba(0, 0, 0, 0.4),
+    0 0 7px 0px rgba(0, 0, 0, 0.4); */
+}
+
+.add-friend-button {
+  background-color: rgb(84, 190, 118);
+  padding: 5px 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px -4px, 0 6px 12px -6px;
+
+  &:hover {
+    transform: scale(1.01)
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+}

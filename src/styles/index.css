@@ -1,0 +1,99 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: rgba(255, 255, 255, 0.87);
+  background: linear-gradient(90deg,
+      rgba(66, 0, 104, 1) 0%,
+      rgb(0, 92, 158) 100%);
+}
+
+/* 
+themes: linear-gradient(
+		90deg,
+		rgb(109, 241, 109) 0%,
+		rgb(234, 234, 234) 50%,
+		rgb(76, 216, 76) 100%
+	);
+
+linear-gradient(
+		90deg,
+		rgba(66, 0, 104, 1) 0%,
+		rgba(255, 255, 255, 0.9) 50%,
+		rgba(0, 132, 158, 1) 100%
+	); */
+
+body,
+p {
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button {
+  padding: 10px 5px;
+}
+
+img {
+  pointer-events: none;
+}
+
+img,
+.call-btn,
+.video-call-btn {
+  border-radius: 9999px;
+}
+
+svg {
+  width: 1.3em;
+  height: 2em;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.v-divider {
+  border: 1px solid rgba(82, 82, 82, 0.818);
+  margin: 0 10px;
+  height: 100%;
+}
+
+.h_divider {
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  margin: 10px 0;
+  width: 100%;
+}
+
+/* Track */
+/* ::-webkit-scrollbar-track {
+	background: #f1f1f100;
+} */
+
+/* Handle */
+/* ::-webkit-scrollbar-thumb {
+	background: #88888800;
+} */
+
+/* Handle on hover */
+/* ::-webkit-scrollbar-thumb:hover {
+	background: #555;
+} */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}
