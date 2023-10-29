@@ -17,6 +17,8 @@ import { FaUserFriends as FriendsIcon } from "react-icons/fa";
 import { RxHamburgerMenu as BurgerMenu } from "react-icons/rx";
 import { BiSolidUpArrow as ArrowUp, BiSolidDownArrow as ArrowDown } from "react-icons/bi";
 import { GrClose as CloseIcon } from "react-icons/gr";
+import { AiOutlineEyeInvisible as HidePasswordIcon, AiOutlineEye as ShowPasswordIcon } from "react-icons/ai";
+
 
 export {
 	MicIcon,
@@ -32,5 +34,7 @@ export {
 	BurgerMenu,
 	CloseIcon,
 	ArrowUp,
-	ArrowDown
+	ArrowDown,
+	HidePasswordIcon,
+	ShowPasswordIcon
 };

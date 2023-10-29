@@ -9,12 +9,15 @@ import StatusBox from "./StatusBox";
 import UserStatus from "./UserStatus";
 import VDivider from "./V_Divider";
 import Video from "./Video";
+import Input from "./Input";
+
 
 export {
   Avatar,
   CallNavbar,
   Checkbox,
   HDivider,
+  Input,
   Layout,
   Navbar,
   Sidebar,

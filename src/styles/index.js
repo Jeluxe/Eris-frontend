@@ -5,3 +5,5 @@ import "./StatusBox.css";
 import "./Layout.css";
 import "./Navbar.css";
 import "./CallNavbar.css";
+import "./Input.css";
+import "./AuthLayout.css";

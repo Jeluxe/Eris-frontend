@@ -1,0 +1,35 @@
+.auth-container {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 20px;
+  background: rgba(213, 255, 255, 0.561);
+  padding: 40px;
+  border-radius: 15px;
+  color: black;
+  box-shadow:
+    -4px -4px 15px rgba(255, 255, 255, 0.721),
+    4px 4px 15px rgba(0, 0, 0, 0.784);
+}
+
+.auth-inputs-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 35px;
+}
+
+.inputs {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-evenly;
+}
