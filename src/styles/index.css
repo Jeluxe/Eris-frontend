@@ -65,17 +65,26 @@ svg {
   width: 100%;
 }
 
-*::-webkit-scrollbar {
-  width: 0.5em;
+.sidebar-list,
+.messages-container {
+  &::-webkit-scrollbar {
+    width: 0.5em;
+  }
 }
 
-*::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.56);
-  border-radius: 9999px;
+.sidebar-list,
+.messages-container {
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.56);
+    border-radius: 9999px;
+  }
 }
 
-*::-webkit-scrollbar-track {
-  background: transparent;
+.sidebar-list,
+.messages-container {
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 }
 
 @media (prefers-color-scheme: light) {
