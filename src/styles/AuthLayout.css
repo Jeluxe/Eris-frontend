@@ -24,12 +24,35 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  row-gap: 35px;
+  row-gap: 25px;
+  padding-bottom: 20px;
 }
 
 .inputs {
   display: flex;
   align-items: center;
   width: 100%;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  text-transform: capitalize;
+}
+
+.input-wrapper > input {
+  border: none;
+}
+
+.auth-button > button {
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  background-color: rgb(255, 255, 255);
+  box-shadow: -2px -2px 3px rgba(255, 255, 255, 0.5),
+    2px 2px 3px rgba(0, 0, 0, 0.5);
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
 }

@@ -57,7 +57,7 @@
 .nav-hide-chat {
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
-  height: 100%;
+  height: calc(100% - 1px);
   max-height: 100%;
 }
 

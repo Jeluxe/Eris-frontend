@@ -8,6 +8,11 @@
   padding: 10px 24px 10px 10px;
   outline: none;
   border-radius: 5px;
+  width: 250px;
+
+  &::placeholder {
+    text-transform: capitalize;
+  }
 }
 
 .input-wrapper.password button {

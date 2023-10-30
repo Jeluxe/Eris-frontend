@@ -99,4 +99,15 @@
 		padding: 24px !important;
 	}
 
+	.nav-hide-chat {
+		border-bottom-left-radius: 0 !important;
+		border-bottom-right-radius: 0 !important;
+	}
+
+}
+
+@media only screen and (max-width: 490px) {
+	.call-navbar-actions > div {
+		padding: 1px 10px !important;
+	}
 }

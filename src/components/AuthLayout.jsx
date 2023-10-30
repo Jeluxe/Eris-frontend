@@ -3,33 +3,31 @@ import Input from './Input'
 import { Link } from 'react-router-dom'
 
 const AuthLayout = ({ fields, button, link }) => {
-  console.log()
   return (
     <div className='auth-container' >
       <div className='auth-wrapper' >
-        <div>{button.content} Page</div>
+        <h2>{button.content} Page</h2>
         <div className='auth-inputs-container'>
           {Object.entries(fields).map((field, idx) => {
             return (
               <div key={idx} className="inputs">
-                <span>
-                  {field[1].type === 'password' ?
-                    sperateWordsByUpperCaseChars(field[0]) :
-                    field[0]}:
-                </span>
-                <Input {...field[1]} />
+                <Input {...field[1]} placeHolder={
+                  field[1].type === 'password' ?
+                    sperateWordsByUpperCase(field[0]) :
+                    field[0]
+                } />
               </div>
             )
           })}
         </div>
-        <div><button onClick={button.action}>{button.content}</button></div>
+        <div className='auth-button'><button onClick={button.action}>{button.content}</button></div>
         <Link to={link.href}>{link.content.toLowerCase()}</Link>
       </div>
     </div>
   )
 }
 
-const sperateWordsByUpperCaseChars = (string) => {
+const sperateWordsByUpperCase = (string) => {
   const foundChar = Array.from(string).find(char => char === char.toUpperCase())
 
   return string.replace(foundChar, ` ${foundChar?.toLowerCase()}`)

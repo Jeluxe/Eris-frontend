@@ -1,7 +1,231 @@
-import React from "react";
+import React, { useState } from "react";
+import { Avatar, Footer } from "../components";
+import { createElementForMessage, getTime, messagePositioning, getDate } from "../functions";
 
 const Room = () => {
-	return <div>Room</div>;
+	let loading = false;
+	const [messages, setMessages] = useState([{
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	}, {
+		message: "hello",
+		sender: { id: "Ddddd", username: "asksa", color: "#fff" },
+		type: 1,
+		timestamp: "10-10-2023",
+		edited_timestamp: null
+	},]);
+
+	if (loading) {
+		return <div>Loading...</div>;
+	} else {
+		return (
+			<div className="chat-container">
+				<div className="messages-container">
+					<div className="messages-wrapper">
+						{messages?.map((message, idx) => {
+							return (
+								<div key={idx} className="message">
+									{messagePositioning(messages[idx - 1], message) ? (
+										<>
+											<Avatar size={35} bgColor={message.sender.color} />
+											<div>
+												<div>
+													<span className="message-sender">{message.sender.username}</span>
+													<span className="message-date">
+														{getDate(message.timestamp)}
+													</span>
+												</div>
+												{createElementForMessage(message)}
+											</div>
+										</>
+									) : (
+										<>
+											<span className="message-time">
+												{getTime(message.timestamp)}
+											</span>
+											{createElementForMessage(message)}
+										</>
+									)}
+								</div>
+							);
+						})}
+					</div>
+				</div>
+				<Footer setMessages={setMessages} />
+			</div>
+		);
+	};
 };
 
 export default Room;

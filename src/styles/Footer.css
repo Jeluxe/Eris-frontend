@@ -1,0 +1,8 @@
+.chat-input-container {
+  padding: 10px;
+}
+
+.chat-input-container input {
+  width: 100%;
+  background: rgba(134, 91, 209, 0.2);
+}

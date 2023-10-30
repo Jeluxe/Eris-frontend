@@ -8,6 +8,10 @@
 	margin-bottom: 10px;
 	padding: 5px 0;
 	column-gap: 15px;
+
+	& div {
+		display: flex;
+	}
 }
 
 .sidebar-list {
@@ -49,17 +53,4 @@
 .user-links:active {
 	background-color: rgba(83, 31, 181, 0.793);
 	color: wheat
-}
-
-.sidebar-list::-webkit-scrollbar {
-	width: 0.5em;
-}
-
-.sidebar-list::-webkit-scrollbar-thumb {
-	background: rgba(0, 0, 0, 0.56);
-	border-radius: 9999px;
-}
-
-.sidebar-list::-webkit-scrollbar-track {
-	background: transparent;
 }
