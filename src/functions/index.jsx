@@ -1,0 +1,155 @@
+import CustomAudioBar from "../components/CustomAudioBar";
+
+export const getRandomColor = () => {
+	// Define the characters that can be used in a hexadecimal color
+	var chars = "0123456789ABCDEF";
+	// Start with a hash sign
+	var color = "#";
+	// Loop six times, adding a random character to the color
+	for (var i = 0; i < 6; i++) {
+		// Pick a random index from the chars string
+		var index = Math.floor(Math.random() * 16);
+		// Append the character at that index to the color
+		color += chars[index];
+	}
+	// Return the random color
+	return color;
+};
+
+export const getRandomName = () => {
+	// Define the characters that can be used in a name
+	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	// Start with an empty name
+	var name = "";
+	// Loop six times, adding a random character to the name
+	for (var i = 0; i < 6; i++) {
+		// Pick a random index from the chars string
+		var index = Math.floor(Math.random() * 52);
+		// Append the character at that index to the name
+		name += chars[index];
+	}
+	// Return the random name
+	return name;
+};
+
+export const getUsers = (length = 20) => {
+	let arr = [];
+	let num = 0;
+	while (num < length) {
+		arr.push({ id: getRandomName(), name: getRandomName(), color: getRandomColor() });
+		num++;
+	}
+	return arr.length === 1 ? arr[0] : arr;
+};
+
+export const messagePositioning = (prevMsg, nextMsg) => {
+	if (
+		!prevMsg ||
+		prevMsg.sender?.id !== nextMsg.sender?.id ||
+		Date.parse(nextMsg.timestamp) - Date.parse(prevMsg.timestamp) >=
+		1000 * 60 * 5 ||
+		(isNewDay(prevMsg.timestamp, nextMsg.timestamp) &&
+			prevMsg)
+	) {
+		return true;
+	}
+	return false;
+};
+
+const isNewDay = (prevDate, nextDate) => {
+	return getDay(prevDate) !== getDay(nextDate)
+}
+
+const getDay = (date) => new Date(date).getDate()
+
+export const getDate = (recievedDate) => {
+	recievedDate = new Date(recievedDate).toISOString();
+	let date = new Date().toISOString();
+
+	let filteredDate = recievedDate.split("T");
+	filteredDate[0] = filteredDate[0].split("-");
+
+	date = date.split("T");
+	date[0] = date[0].split("-");
+
+	if (date[0][0] - filteredDate[0][0] === 0) {
+		//same year
+		if (date[0][1] - filteredDate[0][1] === 0) {
+			//same month
+			if (date[0][2] - filteredDate[0][2] === 0) {
+				//today
+				return fixDate(recievedDate, "T");
+			} else if (date[0][2] - filteredDate[0][2] === 1) {
+				//yesterday
+				return fixDate(recievedDate, "Y");
+			}
+		}
+	}
+	//any other date
+	return fixDate(recievedDate);
+};
+
+const fixDate = (date, type) => {
+	date = new Date(date);
+	const day = date.getDate();
+	const month = date.getMonth();
+	const year = date.getFullYear();
+
+	if (type === "T") {
+		return `Today at ${getTime(date)}`;
+	} else if (type === "Y") {
+		return `Yesterday at ${getTime(date)}`;
+	} else {
+		return `${day}/${month + 1}/${year} ${getTime(date)}`;
+	}
+};
+
+export const getTime = (date) => {
+	date = new Date(date);
+	let hours = date.getHours();
+	let minutes = date.getMinutes();
+
+	if (hours < 10) {
+		hours = `0${hours}`;
+	}
+
+	if (minutes < 10) {
+		minutes = `0${minutes}`;
+	}
+
+	return `${hours}:${minutes}`;
+};
+
+export const calculateTime = (secs) => {
+	const minutes = Math.floor(secs / 60);
+	const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+	const seconds = Math.floor(secs % 60);
+	const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+	return `${returnedMinutes}:${returnedSeconds}`;
+};
+
+export const createElementForMessage = (message) => {
+	if (message.type === 1) {
+		return <div className="message-content">{message.message}</div>;
+	} else if (message.type === 2) {
+		message.message = message.message?.data
+			? Buffer.from(message.message.data)
+			: message.message;
+		return <CustomAudioBar src={bufferToBlob(message.message)} />;
+	}
+};
+
+export const blobToBuffer = (audioBlob) => {
+	return new Promise((resolve) => {
+		const reader = new FileReader();
+		reader.onloadend = () => {
+			resolve(reader.result);
+		};
+		reader.readAsArrayBuffer(audioBlob);
+	});
+};
+
+export const bufferToBlob = (buffer) => {
+	const audioBlob = new Blob([buffer], { type: "audio/webm" });
+	return URL.createObjectURL(audioBlob);
+};

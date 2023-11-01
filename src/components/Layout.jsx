@@ -77,9 +77,9 @@ const Layout = () => {
             setBurgerMenu={setBurgerMenu}
           />
           <main
-            className="layout"
+            className="outlet"
             style={{
-              display: call ? showChat ? "block" : "none" : "",
+              display: call ? showChat || match ? "block" : "none" : "",
               minHeight: call && !match ? "240px" : "",
               height: `calc(100vh - ${!smallDevice
                 ? call && !match

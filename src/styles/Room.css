@@ -8,6 +8,10 @@
   overflow-y: auto;
 }
 
+.messages-container:has(+ .footer .preview) {
+  height: calc(100% - 116px)
+}
+
 .message {
   display: flex;
   align-items: center;

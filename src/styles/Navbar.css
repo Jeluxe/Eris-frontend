@@ -54,14 +54,14 @@
   background: #00000089;
 }
 
-.nav-hide-chat {
+.nav-hide-outlet {
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
   height: calc(100% - 1px);
   max-height: 100%;
 }
 
-.hide-chat {
+.hide-outlet {
   height: calc(100vh - 44px);
 }
 

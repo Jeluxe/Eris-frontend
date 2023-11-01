@@ -12,7 +12,6 @@ dist
 dist-ssr
 *.local
 db.json
-functions
 
 # Editor directories and files
 .vscode/*

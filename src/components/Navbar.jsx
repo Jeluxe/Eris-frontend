@@ -41,9 +41,9 @@ const Navbar = ({
 	};
 
 	return (
-		<div className={`navbar ${call && !match ? "in-call-nav" : ""} ${call ? showChat ? "" : "nav-hide-chat" : ""}`}>
+		<div className={`navbar ${call && !match ? "in-call-nav" : ""} ${call ? showChat ? "" : !match ? "nav-hide-outlet" : "" : ""}`}>
 			{selectedUser ? (
-				<div className={`navbar-user ${call ? "in-call" : ""} ${call ? showChat ? "" : "hide-chat" : ""}`}>
+				<div className={`navbar-user ${call ? "in-call" : ""} ${call ? showChat ? "" : !match ? "hide-outlet" : "" : ""}`}>
 					<div className="navbar-user-info">
 						{smallDevice ? createBurgerMenuBtn() : ""}
 						<Avatar

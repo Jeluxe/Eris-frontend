@@ -5,7 +5,7 @@
 }
 
 .left-side {
-	display: block;
+	display: flex;
 }
 
 .right-side {
@@ -18,7 +18,7 @@
 .sidebar,
 .navbar,
 .status-box,
-.layout {
+.outlet {
 	background-color: rgba(240, 248, 255, 0.748);
 	color: black;
 	border-radius: 15px;
@@ -58,6 +58,13 @@
 .left-side-sm {
 	display: none;
 	width: 100%;
+	height: 100vh;
+}
+
+.left-side,
+.left-side-sm {
+	flex-direction: column;
+	justify-content: space-between;
 }
 
 @media only screen and (max-width: 1024px) {
@@ -71,7 +78,6 @@
 
 	.left-side-sm {
 		display: flex;
-		flex-direction: column;
 	}
 
 	.right-side {
@@ -80,30 +86,38 @@
 		box-shadow: none;
 	}
 
+	.sidebar {
+		padding: 20px 10px;
+	}
+
 	.sidebar-top {
 		display: flex;
 	}
 
-	.layout {
+	.outlet {
 		height: 100%;
 	}
 
 	.sidebar,
 	.navbar,
 	.status-box,
-	.layout {
+	.outlet {
 		border-radius: 0;
 	}
 
 	.navbar-friends {
-		padding: 24px !important;
+		padding: 24px;
 	}
 
-	.nav-hide-chat {
+	.nav-hide-outlet {
 		border-bottom-left-radius: 0 !important;
 		border-bottom-right-radius: 0 !important;
 	}
 
+
+	.call-navbar-participants:has(video) {
+		flex-direction: column;
+	}
 }
 
 @media only screen and (max-width: 490px) {
