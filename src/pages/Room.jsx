@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Avatar, Footer } from "../components";
 import { createElementForMessage, getTime, messagePositioning, getDate } from "../functions";
 

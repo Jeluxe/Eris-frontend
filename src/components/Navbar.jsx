@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMatches } from "react-router";
 import { Link } from "react-router-dom";
 import { CallIcon, FriendsIcon, VideoIcon, BurgerMenu } from "../assets/icons";
-import { Context } from "../context";
+import { useStateProvider } from "../context";
 import { Avatar, CallNavbar, Checkbox, UserStatus, VDivider } from "./";
 
 const style = (incomingCall) => {
@@ -24,7 +24,7 @@ const Navbar = ({
 	const matches = useMatches();
 	const [selectedUser, setSelectedUser] = useState(null)
 	const [incomingCall, setIncomingCall] = useState(false);
-	const { setCall, showChat } = useContext(Context)
+	const { setCall, showChat } = useStateProvider()
 
 	useEffect(() => {
 		matches && matches[1] && matches[1].pathname.includes("/@me/")

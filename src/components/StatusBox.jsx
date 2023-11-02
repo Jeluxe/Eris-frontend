@@ -1,4 +1,3 @@
-import React, { useContext, useState } from "react";
 import Avatar from "./Avatar";
 import UserStatus from "./UserStatus";
 import HDivider from "./H_Divider";
@@ -11,11 +10,11 @@ import {
 	SettingsIcon
 } from "../assets/icons";
 import { useNavigate } from "react-router";
-import { Context } from "../context";
+import { useStateProvider } from "../context";
 
 const StatusBox = ({ room = "aa", call }) => {
 	const navigate = useNavigate();
-	const { user, setCall, audioActions: { mute, setMute, deaf, setDeaf } } = useContext(Context)
+	const { user, setCall, audioActions: { mute, setMute, deaf, setDeaf } } = useStateProvider()
 
 	return (
 		<div className="status-box">

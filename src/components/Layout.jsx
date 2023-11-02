@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useMatch } from "react-router";
 import { Navbar, Sidebar, StatusBox } from "./";
 import { FriendList } from "../pages";
 import { getUsers } from "../functions";
-import { Context } from "../context";
+import { useStateProvider } from "../context";
 
 const Layout = () => {
   const match = useMatch("/");
-  const { callRef, call, setUser, showChat } = useContext(Context)
+  const { callRef, call, setUser, showChat } = useStateProvider()
   const [height, setHeight] = useState(null);
   const [burgerMenu, setBurgerMenu] = useState(false);
   const [smallDevice, setSmallDevice] = useState(false);

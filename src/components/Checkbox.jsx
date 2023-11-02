@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
-import { Context } from "../context";
+import { useStateProvider } from "../context";
 
 const Checkbox = ({ target }) => {
-	const { selected, setSelected } = useContext(Context)
+	const { selected, setSelected } = useStateProvider()
 	return (
 		<>
 			<input

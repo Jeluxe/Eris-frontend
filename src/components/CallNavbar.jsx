@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
 	MicIcon,
 	MicOffIcon,
@@ -11,7 +11,7 @@ import {
 	ArrowUp
 } from "../assets/icons";
 
-import { Context } from "../context";
+import { useStateProvider } from "../context";
 import { Avatar, Video } from "./";
 
 const CallNavbar = ({ color }) => {
@@ -19,7 +19,7 @@ const CallNavbar = ({ color }) => {
 		setCall,
 		audioActions: { mute, setMute, deaf, setDeaf },
 		showChat,
-		setShowChat } = useContext(Context)
+		setShowChat } = useStateProvider()
 	const [video, setVideo] = useState(false);
 
 	return (

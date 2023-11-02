@@ -1,4 +1,4 @@
-import { createContext, useRef, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import { useAudioActions } from "../hooks";
 
 export const Context = createContext()
@@ -28,3 +28,5 @@ export const ContextProvider = ({ children }) => {
     </Context.Provider>
   )
 }
+
+export const useStateProvider = () => useContext(Context)

@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useMatches } from 'react-router'
-import { Context } from '../context'
+import { useStateProvider } from '../context'
 import { SendIcon, TrashIcon } from '../assets/icons'
 import { useField, useRecorder } from '../hooks'
 import { blobToBuffer } from '../functions'
@@ -9,7 +9,7 @@ import Input from './Input'
 
 const Footer = ({ setMessages }) => {
   const matches = useMatches()
-  const { user } = useContext(Context)
+  const { user } = useStateProvider()
   const { reset, ...message } = useField('text')
   const { startRecording, stopRecording, url, blob, setBlob } = useRecorder();
   const [preview, setPreview] = useState(false);
