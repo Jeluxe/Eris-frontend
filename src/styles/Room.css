@@ -28,7 +28,8 @@
 }
 
 .message-sender {
-  font-weight: 500;
+  font-weight: 600;
+  margin-right: 12px;
 }
 
 .message-time,
@@ -38,7 +39,7 @@
 }
 
 .message-time {
-  padding-left: 6px;
+  margin: 0 5px;
   visibility: hidden;
 }
 

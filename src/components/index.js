@@ -11,6 +11,9 @@ import StatusBox from "./StatusBox";
 import UserStatus from "./UserStatus";
 import VDivider from "./V_Divider";
 import Video from "./Video";
+import Friend from "./Friend";
+import NewFriendForm from "../components/NewFriendForm";
+
 
 
 
@@ -27,5 +30,7 @@ export {
   StatusBox,
   UserStatus,
   VDivider,
-  Video
+  Video,
+  Friend,
+  NewFriendForm
 }

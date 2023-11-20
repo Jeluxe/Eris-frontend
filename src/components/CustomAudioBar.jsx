@@ -54,7 +54,7 @@ const CustomAudioBar = ({ src, controlsList }) => {
   };
 
   const whilePlaying = () => {
-    if (audioPlayer.current) {
+    if (audioPlayer.current && audioPlayer.current.currentTime < progressBar.current.max) {
       progressBar.current.value = audioPlayer.current.currentTime;
       changePlayerCurrentTime();
       animationRef.current = requestAnimationFrame(whilePlaying);

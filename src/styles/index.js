@@ -10,3 +10,4 @@ import "./AuthLayout.css";
 import "./Room.css";
 import "./Footer.css";
 import "./CustomAudioBar.css";
+import "./FriendList.css";

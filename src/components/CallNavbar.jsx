@@ -14,7 +14,7 @@ import {
 import { useStateProvider } from "../context";
 import { Avatar, Video } from "./";
 
-const CallNavbar = ({ color }) => {
+const CallNavbar = ({ avatar }) => {
 	const {
 		setCall,
 		audioActions: { mute, setMute, deaf, setDeaf },
@@ -24,7 +24,7 @@ const CallNavbar = ({ color }) => {
 
 	return (
 		<div className="call-navbar">
-			<div className="call-navbar-container" style={{ position: 'relative' }}>
+			<div className="call-navbar-container">
 				{/* <div className="call-navbar-time">10 : 10 : 10</div> */}
 
 				<div className="call-navbar-participants">
@@ -44,7 +44,7 @@ const CallNavbar = ({ color }) => {
 						) : (
 							<Avatar
 								size={80}
-								bgColor={`#${color}`}
+								bgColor={`${avatar}`}
 							/>
 						)}
 					</div>
@@ -59,12 +59,9 @@ const CallNavbar = ({ color }) => {
 					<div onClick={() => setVideo(!video)}>
 						{video ? <VideoOffIcon /> : <VideoIcon />}
 					</div>
-					{/* <div onClick={() => alert("sharing Screen")}>share</div> */}
 					<div onClick={() => setCall(false)}>
 						<LeaveCallIcon />
 					</div>
-					{/* showHideChat */}
-
 				</div>
 				<div className="show-hide-chat-button" onClick={() => setShowChat(!showChat)}>
 					{showChat ? <ArrowDown /> : <ArrowUp />}

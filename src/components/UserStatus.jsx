@@ -16,7 +16,7 @@ const UserStatus = ({ status = "", absolute = false }) => {
 				break;
 
 			default:
-				setColor("white");
+				setColor("gray");
 				break;
 		}
 	}, [status]);

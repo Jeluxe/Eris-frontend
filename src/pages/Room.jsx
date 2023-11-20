@@ -1,10 +1,18 @@
-import { useState } from "react";
-import { Avatar, Footer } from "../components";
+import { useEffect, useState } from "react";
+import { useMatches } from "react-router";
+import { useStateProvider } from "../context";
 import { createElementForMessage, getTime, messagePositioning, getDate } from "../functions";
+import { Avatar, Footer } from "../components";
 
 const Room = () => {
 	let loading = false;
-	const [messages, setMessages] = useState([]);
+	const matches = useMatches()
+	const { messages, addSocketEvent, removeSocketEvent } = useStateProvider()
+	const [filteredMessages, setFilteredMessages] = useState(messages)
+
+	useEffect(() => {
+		setFilteredMessages(messages?.filter(message => message.rid === matches[1]?.params.id))
+	}, [matches, messages])
 
 	if (loading) {
 		return <div>Loading...</div>;
@@ -13,12 +21,12 @@ const Room = () => {
 			<div className="chat-container">
 				<div className="messages-container">
 					<div className="messages-wrapper">
-						{messages?.map((message, idx) => {
+						{filteredMessages?.map((message, idx) => {
 							return (
 								<div key={idx} className="message">
 									{messagePositioning(messages[idx - 1], message) ? (
 										<>
-											<Avatar size={35} bgColor={message.sender.color} />
+											<Avatar size={35} bgColor={message.sender.avatar} />
 											<div>
 												<div>
 													<span className="message-sender">{message.sender.username}</span>
@@ -42,7 +50,7 @@ const Room = () => {
 						})}
 					</div>
 				</div>
-				<Footer setMessages={setMessages} />
+				<Footer />
 			</div>
 		);
 	};

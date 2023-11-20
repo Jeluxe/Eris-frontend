@@ -1,24 +1,34 @@
+import axios from 'axios'
 import { useField } from "../hooks";
 import AuthLayout from "../components/AuthLayout";
+import { useNavigate } from 'react-router';
 
 const Login = () => {
-	const { reset: usernameReset, ...username } = useField('text')
+	const navigate = useNavigate()
+	const { reset: emailReset, ...email } = useField('text')
 	const { reset: passwordReset, ...password } = useField('password')
 
 	const reset = () => {
-		usernameReset()
+		emailReset()
 		passwordReset()
 	}
 
-	const login = () => {
-		const loginInfo = { username: username.value, password: password.value }
+	const login = async () => {
+		const loginInfo = { email: email.value, password: password.value }
 		// validateFields(loginInfo)
-		// sendToServer(loginInfo)
-		reset()
+		try {
+			const response = await axios.post('/api/sign-in', loginInfo)
+			if (response.status === 200) {
+				reset()
+				navigate('/')
+			}
+		} catch (error) {
+			console.log(error)
+		}
 	}
 
 	return <AuthLayout
-		fields={{ username, password }}
+		fields={{ email, password }}
 		button={{ action: login, content: "Login" }}
 		link={{ href: "/signup", content: "Not signed up yet? Click Here!" }}
 	/>

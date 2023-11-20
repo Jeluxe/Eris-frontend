@@ -1,7 +1,7 @@
 import { useStateProvider } from "../context";
 
 const Checkbox = ({ target }) => {
-	const { selected, setSelected } = useStateProvider()
+	const { selectedFilter, setSelectedFilter } = useStateProvider()
 	return (
 		<>
 			<input
@@ -10,12 +10,12 @@ const Checkbox = ({ target }) => {
 				type="radio"
 				name="radio"
 				onChange={() => { }}
-				checked={selected === target}
+				checked={selectedFilter === target}
 			/>
 			<label
 				htmlFor={target}
 				className="navbar-category-label"
-				onClick={() => setSelected(target)}
+				onClick={() => setSelectedFilter(target)}
 			>
 				{target}
 			</label>

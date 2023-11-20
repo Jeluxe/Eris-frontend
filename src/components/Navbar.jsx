@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useMatches } from "react-router";
 import { Link } from "react-router-dom";
-import { CallIcon, FriendsIcon, VideoIcon, BurgerMenu } from "../assets/icons";
+import { CallIcon, FriendsIcon, VideoIcon, BurgerMenu, IoMdPersonAdd } from "../assets/icons";
 import { useStateProvider } from "../context";
 import { Avatar, CallNavbar, Checkbox, UserStatus, VDivider } from "./";
 
@@ -16,21 +16,14 @@ const style = (incomingCall) => {
 const categories = ["All", "Online", "Blocked", "Pending"];
 
 const Navbar = ({
-	smallDevice,
 	match,
 	call,
 	setBurgerMenu,
 }) => {
 	const matches = useMatches();
-	const [selectedUser, setSelectedUser] = useState(null)
 	const [incomingCall, setIncomingCall] = useState(false);
-	const { setCall, showChat } = useStateProvider()
-
-	useEffect(() => {
-		matches && matches[1] && matches[1].pathname.includes("/@me/")
-			? setSelectedUser(matches[1].params)
-			: setSelectedUser(null);
-	}, [matches]);
+	const [small, setSmall] = useState(false);
+	const { selectedRoom, setCall, showChat, smallDevice, setSelectedFilter } = useStateProvider()
 
 	const createBurgerMenuBtn = () => {
 		return smallDevice ? (
@@ -39,35 +32,50 @@ const Navbar = ({
 			""
 		);
 	};
+	const selectedUser = selectedRoom?.participants[1]
+	const condition = call.inCall && matches[1]?.params.id === call.roomId
+
+	useLayoutEffect(() => {
+		window.innerWidth < 1063 ? setSmall(true) : setSmall(false)
+
+		window.addEventListener('resize', (e) => {
+			const width = e.currentTarget.innerWidth;
+			width < 1063 ? setSmall(true) : setSmall(false)
+		})
+
+		return () => {
+			window.removeEventListener('resize', () => { })
+		}
+	}, [])
 
 	return (
-		<div className={`navbar ${call && !match ? "in-call-nav" : ""} ${call ? showChat ? "" : !match ? "nav-hide-outlet" : "" : ""}`}>
-			{selectedUser ? (
-				<div className={`navbar-user ${call ? "in-call" : ""} ${call ? showChat ? "" : !match ? "hide-outlet" : "" : ""}`}>
+		<div className={`navbar ${condition && !match ? "in-call-nav" : ""} ${condition ? showChat ? "" : !match ? "nav-hide-outlet" : "" : ""}`}>
+			{selectedRoom ? (
+				<div className={`navbar-user ${condition && !match ? "in-call" : ""} ${condition ? showChat ? "" : !match ? "hide-outlet" : "" : ""}`}>
 					<div className="navbar-user-info">
 						{smallDevice ? createBurgerMenuBtn() : ""}
 						<Avatar
 							size={40}
-							bgColor={`#${selectedUser.color}`}
+							bgColor={`${selectedUser?.avatar}`}
 						/>
-						<div>{selectedUser.id}</div>
-						<UserStatus status={"online"} />
+						<div>{selectedUser.username}</div>
+						<UserStatus status={selectedUser?.status} />
 					</div>
-					{call ? (
+					{call.inCall && call.roomId === matches[1]?.params.id ? (
 						<CallNavbar
-							color={selectedUser.color}
+							avatar={selectedUser?.avatar}
 						/>
 					) : (
 						<div className="navbar-actions">
 							<div
 								className="call-btn"
-								onClick={() => setCall(true)}
+								onClick={() => setCall({ inCall: true, roomId: selectedUser.id })}
 							>
 								<CallIcon style={style(incomingCall)} />
 							</div>
 							<div
 								className="video-call-btn"
-								onClick={() => setCall(true)}
+								onClick={() => setCall({ inCall: true, roomId: selectedUser.id })}
 							>
 								<VideoIcon style={style(incomingCall)} />
 							</div>
@@ -78,7 +86,11 @@ const Navbar = ({
 				<div className="navbar-friends">
 					{createBurgerMenuBtn()}
 					<FriendsIcon />
-					friends
+					<span
+						style={{ cursor: smallDevice ? "pointer" : "default" }}
+						onClick={() => (smallDevice ? setSelectedFilter('All') : "")}>
+						friends
+					</span>
 					{
 						!smallDevice ?
 							<>
@@ -90,10 +102,17 @@ const Navbar = ({
 											target={category}
 										/>
 									))}
-
-									<Link to="#" className="link add-friend-button">add Friend</Link>
+									{small ?
+										<div className="navbar-category-label" style={{ padding: 0, width: 30 }} onClick={() => setSelectedFilter('')}><IoMdPersonAdd /></div>
+										: <Link to="#" className="link add-friend-button" onClick={() => setSelectedFilter('')}>add Friend</Link>}
 								</div>
-							</> : ""
+							</> :
+							<div className="navbar-category-label"
+								onClick={() => setSelectedFilter('')}
+								style={{
+									position: "absolute",
+									right: 30
+								}}><IoMdPersonAdd /></div>
 					}
 				</div>
 			)}

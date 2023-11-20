@@ -1,23 +1,32 @@
-import { useEffect, useState } from "react";
-import { Link, useMatches } from "react-router-dom";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useStateProvider } from "../context";
 import { FriendsIcon, CloseIcon } from "../assets/icons";
-import { getUsers } from "../functions";
-import { Avatar, HDivider } from "./";
+import { Avatar, HDivider, UserStatus } from "./";
 
 const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
-	const matches = useMatches()
-	const [array] = useState(getUsers());
-	const [selected, setSelected] = useState("");
+	const { rooms, setRooms, selectedRoom, messages } = useStateProvider()
 
-	const activeLink = (name) => {
+	const activeLink = () => {
 		smallDevice ? setBurgerMenu(false) : "";
-		setSelected(name)
 	};
 
 	useEffect(() => {
-
-	}, [matches])
-
+		const lastMessage = messages?.at(-1)
+		const foundRoom = rooms?.find(room => room?.participants[1]?.id === lastMessage?.roomID)
+		if (foundRoom) {
+			const filteredList = rooms?.filter(room => room?.id !== foundRoom?.id)
+			const reorderedList = [foundRoom, ...filteredList].map((room, idx) => {
+				return {
+					id: room.id,
+					index: idx,
+					type: room.type,
+					participants: room.participants
+				}
+			})
+			setRooms(reorderedList)
+		}
+	}, [messages])
 
 	return (
 		<div className="sidebar">
@@ -25,7 +34,7 @@ const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
 				<Link
 					to="/"
 					className="link friends-link"
-					onClick={() => activeLink("")}
+					onClick={() => activeLink()}
 				>
 					<FriendsIcon />
 					Friends
@@ -42,23 +51,30 @@ const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
 			<div
 				className="sidebar-list"
 				style={{
-					minHeight: call ? "412px" : "112px",
+					minHeight: call.inCall ? "412px" : "112px",
 					height
 				}}
 			>
-				{array.map(({ name, color }, idx) => {
+				{rooms.map(({ participants }, idx) => {
+					const { id, username, avatar, status } = participants[1]
 					return (
 						<Link
 							key={idx}
-							className={`link user-links ${selected === name ? "active" : ""}`}
-							to={`/@me/${name}/${color?.substring(1, color.length)}`}
-							onClick={() => activeLink(name)}
+							className={`link user-links ${selectedRoom?.participants[1].id === id ? "active" : ""}`}
+							to={`/@me/${id}`}
+							onClick={() => activeLink()}
 						>
-							<Avatar
-								size={35}
-								bgColor={color}
-							/>
-							<p>{name}</p>
+							<div style={{ position: "relative", display: "flex" }}>
+								<Avatar
+									size={35}
+									bgColor={avatar}
+								/>
+								<UserStatus
+									status={status}
+									absolute={true}
+								/>
+							</div>
+							<p>{username}</p>
 						</Link>
 					);
 				})}

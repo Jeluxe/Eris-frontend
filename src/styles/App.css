@@ -67,7 +67,7 @@
 	justify-content: space-between;
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1023px) {
 	.app {
 		padding: 0;
 	}
@@ -103,10 +103,6 @@
 	.status-box,
 	.outlet {
 		border-radius: 0;
-	}
-
-	.navbar-friends {
-		padding: 24px;
 	}
 
 	.nav-hide-outlet {

@@ -1,20 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMatches } from 'react-router'
 import { useStateProvider } from '../context'
-import { SendIcon, TrashIcon } from '../assets/icons'
 import { useField, useRecorder } from '../hooks'
+import { SendIcon, TrashIcon } from '../assets/icons'
 import { blobToBuffer } from '../functions'
 import CustomAudioBar from './CustomAudioBar'
 import Input from './Input'
 
-const Footer = ({ setMessages }) => {
+const Footer = () => {
   const matches = useMatches()
-  const { user } = useStateProvider()
+  const { user, setMessages, emitData } = useStateProvider()
   const { reset, ...message } = useField('text')
   const { startRecording, stopRecording, url, blob, setBlob } = useRecorder();
   const [preview, setPreview] = useState(false);
   const [recording, setRecording] = useState(false);
   const [disabled, setDisabled] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      reset()
+      recordReset()
+    }
+  }, [matches])
+
 
   const toggleRecord = () => {
     setDisabled(true);
@@ -32,6 +40,7 @@ const Footer = ({ setMessages }) => {
     setBlob(null);
     setPreview(false);
     setDisabled(false);
+    setRecording(false)
   }
 
   const onClick = async () => {
@@ -51,22 +60,19 @@ const Footer = ({ setMessages }) => {
     }
   }
 
-  const sendMessage = (type, newMessage) => {
-    const newMsg = {
-      message: newMessage,
-      sender: {
-        id: user.id,
-        username: user.name,
-        color: user.color,
-      },
+  const sendMessage = (type, content) => {
+    const newMessage = {
+      content,
+      user,
+      rid: matches[1]?.params.id,
       type,
-      timestamp: new Date(),
+      timestamp: new Date().toString(),
       edited_timestamp: null
     }
 
-    // socket.emit("message", {
-    setMessages(messages => [...messages, newMsg])
-    // });
+    emitData("message", newMessage, (returnedNewMessage) => {
+      setMessages(messages => messages.concat(returnedNewMessage))
+    });
   }
 
   return (

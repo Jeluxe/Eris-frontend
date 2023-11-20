@@ -12,20 +12,20 @@ import {
 import { useNavigate } from "react-router";
 import { useStateProvider } from "../context";
 
-const StatusBox = ({ room = "aa", call }) => {
+const StatusBox = ({ call }) => {
 	const navigate = useNavigate();
-	const { user, setCall, audioActions: { mute, setMute, deaf, setDeaf } } = useStateProvider()
+	const { user, status, setCall, audioActions: { mute, setMute, deaf, setDeaf } } = useStateProvider()
 
 	return (
 		<div className="status-box">
-			{call ? (
+			{call.inCall ? (
 				<>
 					<div className="status-box-info sb-call">
 						<div>
 							<p>call in progress</p>
-							<span>in Room: {room}</span>
+							<span onClick={() => navigate(`/@me/${call.roomId}`)}>in Room: {call.roomId}</span>
 						</div>
-						<div onClick={() => setCall(false)}>
+						<div className="sb-user-action" onClick={() => setCall({ inCall: false, roomId: null })}>
 							<LeaveCallIcon />
 						</div>
 					</div>
@@ -37,14 +37,14 @@ const StatusBox = ({ room = "aa", call }) => {
 					<div style={{ position: "relative", display: "flex" }}>
 						<Avatar
 							size={35}
-							bgColor={`${user?.color}`}
+							bgColor={user?.avatar}
 						/>
 						<UserStatus
-							status="online"
+							status={status}
 							absolute={true}
 						/>
 					</div>
-					<div>{user?.name}</div>
+					<div>{user?.username}</div>
 				</div>
 				<div className="status-box-info sb-user-actions">
 					<div
