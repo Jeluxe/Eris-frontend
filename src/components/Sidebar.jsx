@@ -13,7 +13,7 @@ const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
 
 	useEffect(() => {
 		const lastMessage = messages?.at(-1)
-		const foundRoom = rooms?.find(room => room?.participants[1]?.id === lastMessage?.roomID)
+		const foundRoom = rooms?.find(room => room?.user?.id === lastMessage?.roomID)
 		if (foundRoom) {
 			const filteredList = rooms?.filter(room => room?.id !== foundRoom?.id)
 			const reorderedList = [foundRoom, ...filteredList].map((room, idx) => {
@@ -55,12 +55,12 @@ const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
 					height
 				}}
 			>
-				{rooms.map(({ participants }, idx) => {
-					const { id, username, avatar, status } = participants[1]
+				{rooms?.map(({ user }, idx) => {
+					const { id, username, avatar, status } = user
 					return (
 						<Link
 							key={idx}
-							className={`link user-links ${selectedRoom?.participants[1].id === id ? "active" : ""}`}
+							className={`link user-links ${selectedRoom?.id === id ? "active" : ""}`}
 							to={`/@me/${id}`}
 							onClick={() => activeLink()}
 						>

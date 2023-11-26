@@ -6,7 +6,7 @@ const userStatus = ['online', 'offline', 'idle'];
 const requestStatus = ["pending", "approved", "blocked"]
 
 const FriendList = () => {
-	const { user, friendList, selectedFilter, smallDevice } = useStateProvider();
+	const { friendList, selectedFilter, smallDevice } = useStateProvider();
 	const [friendListObject, setFriendListObject] = useState({})
 
 	useEffect(() => setFriendListObject(filterArray(friendList)), [friendList])
@@ -45,10 +45,6 @@ const FriendList = () => {
 		return filteredObject
 	}
 
-	const setCandidate = (cand) => {
-		return cand.user = cand.sender.id !== user.id ? cand.sender : cand.receiver;
-	}
-
 	return (
 		<div className="friends-container">
 			{
@@ -60,7 +56,7 @@ const FriendList = () => {
 									<b>{key}</b>
 									<div>{list.map((candidate, idx) => {
 										// candidate.user = candidate.sender.id !== user.id ? candidate.sender : candidate.receiver;
-										return <Friend key={idx} data={setCandidate(candidate)} />
+										return <Friend key={idx} data={candidate} />
 									})}</div>
 								</div>
 							})}
@@ -71,7 +67,7 @@ const FriendList = () => {
 								friendList.filter(filterClientsByStatus)
 									.map((friend, idx) => {
 										// friend.user = friend.sender.id !== user.id ? friend.sender : friend.receiver;
-										return <Friend key={idx} data={setCandidate(friend)} />
+										return <Friend key={idx} data={friend} />
 									})
 							}
 						</div>

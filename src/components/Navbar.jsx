@@ -23,7 +23,7 @@ const Navbar = ({
 	const matches = useMatches();
 	const [incomingCall, setIncomingCall] = useState(false);
 	const [small, setSmall] = useState(false);
-	const { selectedRoom, setCall, showChat, smallDevice, setSelectedFilter } = useStateProvider()
+	const { selectedRoom, setCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen } = useStateProvider()
 
 	const createBurgerMenuBtn = () => {
 		return smallDevice ? (
@@ -32,7 +32,7 @@ const Navbar = ({
 			""
 		);
 	};
-	const selectedUser = selectedRoom?.participants[1]
+	const selectedUser = selectedRoom?.user
 	const condition = call.inCall && matches[1]?.params.id === call.roomId
 
 	useLayoutEffect(() => {
@@ -108,7 +108,10 @@ const Navbar = ({
 								</div>
 							</> :
 							<div className="navbar-category-label"
-								onClick={() => setSelectedFilter('')}
+								onClick={() => {
+									isOpen ? setSelectedFilter('All') : setSelectedFilter('')
+									setIsOpen(!isOpen)
+								}}
 								style={{
 									position: "absolute",
 									right: 30

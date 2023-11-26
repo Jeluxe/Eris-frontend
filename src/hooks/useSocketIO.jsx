@@ -22,28 +22,47 @@ export const useSocketIO = (url) => {
       newSocket.disconnect();
     };
   }, [url]);
-    
-    const socketConnect = (user) => {
-        if(user && socket) {
-            socket.auth = user
-            socket.connect()
+
+  useEffect(() => {
+    if (socket) {
+      for (const [eventName, callback] of Object.entries(socketEvents)) {
+        socket.on(eventName, callback);
+      }
+    }
+
+    // Clean up event listeners when socket or socketEvents change
+    return () => {
+      if (socket) {
+        for (const [eventName, callback] of Object.entries(socketEvents)) {
+          socket.off(eventName, callback);
         }
+      }
+    };
+  }, [socket, socketEvents])
+
+  const socketConnect = (user) => {
+    if (user && socket) {
+      socket.auth = user
+      socket.connect()
     }
-    
-    const emitData = (event, data) => {
-        if(socket)
-        socket.emit(event, data)
+  }
+
+  const socketDisconnect = (user) => {
+    if (socket) {
+      socket.disconnect()
     }
+  }
+
+  const emitData = (event, ...args) => {
+    if (socket)
+      socket.emit(event, ...args)
+  }
 
   const addSocketEvent = (eventName, callback) => {
     setSocketEvents((prevSocketEvents) => ({
       ...prevSocketEvents,
       [eventName]: callback,
     }));
-
-    if (socket) {
-      socket.on(eventName, callback);
-    }
   };
 
   const removeSocketEvent = (eventName) => {
@@ -61,43 +80,9 @@ export const useSocketIO = (url) => {
 
   return {
     socketConnect,
+    socketDisconnect,
     emitData,
     addSocketEvent,
     removeSocketEvent,
   };
 }
-
-// import React, { useState,useEffect,useCallback } from 'react';
-// import useSocketIO from './useSocketIO';
-
-// function MySocketIOComponent() {
-    
-//   const { socketConnect,sendData, addEventListener, removeEventListener } = useSocketIO('https://example.com');
-
-//     const user = useCallback(async (data) => {
-//         const userData = await axios.get('/api/get-token')
-        
-//         return userData
-//     },[])
-    
-//   useEffect(() => {
-//     // Subscribe to custom events
-//     addEventListener('customEvent1', (data) => {
-//       console.log('Custom Event 1:', data);
-//     });
-
-//     addEventListener('customEvent2', (data) => {
-//       console.log('Custom Event 2:', data);
-//     });
-
-//     // Unsubscribe from events when the component unmounts
-//     return () => {
-//       removeEventListener('customEvent1');
-//       removeEventListener('customEvent2');
-//     };
-//   }, [addEventListener, removeEventListener]);
-    
-//     const sendMessage = (message)=> {
-//         sendData('message', message)
-//     }
-// }

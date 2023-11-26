@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet, useMatch, useMatches, useNavigate } from "react-router";
 import { Navbar, Sidebar, StatusBox } from "./";
 import { FriendList } from "../pages";
-import { getUser, getUsers, fetchData } from "../functions";
+import { fetchData, getRandomColor } from "../functions";
 import { useStateProvider } from "../context";
 import axios from "axios";
 
@@ -17,6 +17,7 @@ const Layout = () => {
     setStatus,
     rooms,
     setRooms,
+    friendList,
     setFriendList,
     setSelectedRoom,
     setMessages,
@@ -26,6 +27,7 @@ const Layout = () => {
     smallDevice,
     setSmallDevice,
     socketConnect,
+    socketDisconnect,
     addSocketEvent,
     removeSocketEvent
   } = useStateProvider()
@@ -56,15 +58,28 @@ const Layout = () => {
       fetchData(user.id).then(({ rooms, friends }) => {
         setRooms(rooms)
         setFriendList(friends)
-        setRooms(getUsers(user))
       })
     }
   }, [user]);
 
   useEffect(() => {
     if (rooms && matches && matches[1] && matches[1].pathname.includes("/@me/")) {
-      const foundRoom = rooms.find(room => room.participants[1].id === matches[1].params.id)
-      if (foundRoom) {
+      const foundRoom = rooms.find(room => room.user.id === matches[1].params.id)
+      const foundFriend = friendList.find(friend => friend.user.id === matches[1].params.id)
+      if (foundFriend && !foundRoom) {
+        const newTempRoom = {
+          id: foundFriend.id,
+          type: 0,
+          index: 0,
+          user: {
+            ...foundFriend.user,
+            avatar: getRandomColor(),
+            status: 'offline'
+          }
+        }
+        setSelectedRoom(newTempRoom)
+      }
+      else if (foundRoom) {
         setSelectedRoom(foundRoom)
       } else {
         setSelectedRoom(null);
@@ -83,8 +98,11 @@ const Layout = () => {
       console.log(err.response.data.message)
     })
 
-    addSocketEvent('change-status', updateUserStatus)
-    addSocketEvent("new-message", updateMessageList)
+    addSocketEvent('connect', () => console.log('connected'))
+    addSocketEvent('connected', (item) => console.log(item))
+    addSocketEvent('disconnect', () => console.log('disconnected'))
+    addSocketEvent('message', updateMessageList)
+    addSocketEvent('user-status-changed', updateUserStatus)
 
     window.addEventListener("resize", e => {
       const width = e.currentTarget.innerWidth;
@@ -92,26 +110,27 @@ const Layout = () => {
     });
 
     return () => {
-      removeSocketEvent('change-status', updateUserStatus)
-      removeSocketEvent("new-message", updateMessageList)
-
-      window.removeEventListener("resize", () => { });
-    };
-  }, []);
+      removeSocketEvent('connect')
+      removeSocketEvent('disconnect')
+      removeSocketEvent('message')
+      socketDisconnect()
+      window.removeEventListener('resize', () => { })
+    }
+  }, [])
 
   const updateMessageList = (newMessage) => {
     setMessages((prevMessages) => [...prevMessages, newMessage])
   }
 
   const updateUserStatus = (id, status) => {
-    setRooms((prevRooms) => prevRooms.map(room => {
+    setRooms((prevRooms) => [...prevRooms.map(room => {
       if (room.recepients[1].id === id) {
         return {
           ...room,
           recepients: [room.recepients[0], room.recepients[1] = { ...room.recepients[1], status }]
         }
       }
-    }))
+    })])
   }
 
   const toggleSmallScreen = (callRef, width) => {

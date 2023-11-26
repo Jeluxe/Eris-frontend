@@ -8,7 +8,6 @@ import {
 } from '../assets/icons'
 
 const Friend = ({ data: { id, requestStatus, user } }) => {
-
   const approve = () => {
     console.log('approved')
   }
@@ -21,7 +20,7 @@ const Friend = ({ data: { id, requestStatus, user } }) => {
     console.log('restored')
   }
 
-  const userInfoElement = ({ avatar, name }) => {
+  const userInfoElement = ({ avatar, username }) => {
     return <div style={{
       display: "flex",
       columnGap: "10px",
@@ -29,7 +28,7 @@ const Friend = ({ data: { id, requestStatus, user } }) => {
     }
     }>
       <Avatar size={36} bgColor={avatar} />
-      <div>{name}</div>
+      <div>{username}</div>
     </div >
   }
 

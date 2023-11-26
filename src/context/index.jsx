@@ -17,13 +17,15 @@ export const ContextProvider = ({ children }) => {
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [showChat, setShowChat] = useState(true);
   const [smallDevice, setSmallDevice] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const audioActions = useAudioActions();
   const {
     socketConnect,
+    socketDisconnect,
     emitData,
     addSocketEvent,
     removeSocketEvent,
-  } = useSocketIO()
+  } = useSocketIO("http://localhost:4000")
   const callRef = useRef(call);
 
   return (
@@ -50,8 +52,11 @@ export const ContextProvider = ({ children }) => {
       setSmallDevice,
       messages,
       setMessages,
+      isOpen,
+      setIsOpen,
 
       socketConnect,
+      socketDisconnect,
       emitData,
       addSocketEvent,
       removeSocketEvent,
