@@ -3,16 +3,17 @@
   --secondary: #ffd200;
 
   display: flex;
-  margin-right: 20px;
   align-items: center;
-
   border-radius: 9999px;
-  padding: 4px 14px 4px 4px;
+  padding-right: 14px;
   margin: 6px 0;
   box-shadow: 0 0 10px rgb(158, 141, 217) inset;
 }
 
 .play-pause {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   border-radius: 50%;
@@ -21,10 +22,8 @@
   height: 45px;
   font-size: 32px;
   color: #9c3dd1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   box-shadow: none;
+  outline: 0;
 }
 
 .play {
@@ -39,11 +38,15 @@
 }
 
 .current-time {
-  margin-left: 5px;
+  margin: 0 5px;
 }
 
 .duration {
-  margin-left: 10px;
+  margin-left: 5px;
+}
+
+.progress-bar-wrapper {
+  padding: 0 5px
 }
 
 .progress-bar {
@@ -57,15 +60,15 @@
   background: var(--bar-bg);
   border-radius: 10px;
   position: relative;
-  margin-top: -1px;
   width: 100%;
   height: 11px;
+  margin: 0;
 }
 
 .progress-bar::before {
   content: "";
-  height: 10px;
-  width: var(var(--seek-before-width));
+  height: 11px;
+  width: var(--seek-before-width);
   background-color: var(--seek-before-color);
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;

@@ -33,31 +33,6 @@ export const getRandomName = () => {
 	return name;
 };
 
-export const getUser = () => {
-	return { id: getRandomName(), name: getRandomName(), color: getRandomColor() }
-}
-
-export const getUsers = (user, length = 20) => {
-	let arr = [];
-	let num = 0;
-	while (num < length) {
-		arr.push({
-			id: getRandomName(),
-			type: 0,
-			index: num,
-			participants: [user, {
-				id: getRandomName(),
-				username: "mandy" + num,
-				avatar: getRandomColor(),
-				status: 'offline'
-			}]
-		});
-		num++;
-	}
-
-	return arr.length === 1 ? arr[0] : arr;
-};
-
 export const fetchData = async () => {
 	const { data: { rooms, friends } } = await axios.get(`/api/data`);
 	return { rooms, friends }
@@ -149,14 +124,11 @@ export const calculateTime = (secs) => {
 	return `${returnedMinutes}:${returnedSeconds}`;
 };
 
-export const createElementForMessage = (message) => {
+export const createElementForMessage = (message, clicked) => {
 	if (message.type === 1) {
-		return <div className="message-content">{message.content} {message.edited_timestamp ? "(edited)" : ""}</div>;
+		return <div id={`message-${message.id}`} className="message-content">{message.content} {message.edited_timestamp ? "(edited)" : ""}</div>;
 	} else if (message.type === 2) {
-		message.content = message.content?.data
-			? Buffer.from(message.content.data)
-			: message.content;
-		return <CustomAudioBar src={bufferToBlob(message.content)} />;
+		return <CustomAudioBar src={`data:audio/wav;base64,${message.content}`} clicked={clicked} />;
 	}
 };
 
@@ -168,9 +140,4 @@ export const blobToBuffer = (audioBlob) => {
 		};
 		reader.readAsArrayBuffer(audioBlob);
 	});
-};
-
-export const bufferToBlob = (buffer) => {
-	const audioBlob = new Blob([buffer], { type: "audio/webm" });
-	return URL.createObjectURL(audioBlob);
 };

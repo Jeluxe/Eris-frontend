@@ -13,7 +13,7 @@ import VDivider from "./V_Divider";
 import Video from "./Video";
 import Friend from "./Friend";
 import NewFriendForm from "../components/NewFriendForm";
-
+import Options from "./Options";
 
 
 
@@ -32,5 +32,6 @@ export {
   VDivider,
   Video,
   Friend,
-  NewFriendForm
+  NewFriendForm,
+  Options
 }

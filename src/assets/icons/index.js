@@ -7,11 +7,12 @@ import {
 } from "react-icons/bs";
 import {
 	TbHeadphones as DeafIcon,
-	TbHeadphonesOff as DeafOffIcon
+	TbHeadphonesOff as DeafOffIcon,
+	TbEdit as EditIcon
 } from "react-icons/tb";
 
 import { RiSettings5Fill as SettingsIcon } from "react-icons/ri";
-import { HiOutlinePhoneMissedCall as LeaveCallIcon } from "react-icons/hi";
+import { HiOutlinePhoneMissedCall as LeaveCallIcon, HiOutlineDotsVertical as OptionsIcon } from "react-icons/hi";
 import { ImPhone as CallIcon } from "react-icons/im";
 
 import { IoMdPersonAdd } from "react-icons/io";
@@ -52,5 +53,7 @@ export {
 	TrashIcon,
 	RestoreIcon,
 	AcceptIcon,
-	IoMdPersonAdd
+	IoMdPersonAdd,
+	OptionsIcon,
+	EditIcon
 };

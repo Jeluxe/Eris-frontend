@@ -54,9 +54,10 @@ const CustomAudioBar = ({ src, controlsList }) => {
   };
 
   const whilePlaying = () => {
-    if (audioPlayer.current && audioPlayer.current.currentTime < progressBar.current.max) {
+    if (audioPlayer.current) {
       progressBar.current.value = audioPlayer.current.currentTime;
       changePlayerCurrentTime();
+
       animationRef.current = requestAnimationFrame(whilePlaying);
     }
   };
@@ -78,16 +79,14 @@ const CustomAudioBar = ({ src, controlsList }) => {
     <div className="audio-player">
       {src && (
         <>
-          <audio ref={audioPlayer} controlsList={controlsList}>
-            <source src={src} />
-          </audio>
+          <audio ref={audioPlayer} controlsList={controlsList} src={src} />
 
           <button className="play-pause" onClick={() => togglePlayPause()}>
             {isPlaying ? <PauseIcon /> : <PlayIcon className="play" />}
           </button>
           <div className="current-time">{calculateTime(currentTime)}</div>
 
-          <div>
+          <div className="progress-bar-wrapper">
             <input
               ref={progressBar}
               className="progress-bar"
