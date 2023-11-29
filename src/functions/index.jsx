@@ -1,5 +1,4 @@
 import CustomAudioBar from "../components/CustomAudioBar";
-import axios from "axios";
 
 export const getRandomColor = () => {
 	// Define the characters that can be used in a hexadecimal color
@@ -16,27 +15,6 @@ export const getRandomColor = () => {
 	// Return the random color
 	return color;
 };
-
-export const getRandomName = () => {
-	// Define the characters that can be used in a name
-	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-	// Start with an empty name
-	var name = "";
-	// Loop six times, adding a random character to the name
-	for (var i = 0; i < 6; i++) {
-		// Pick a random index from the chars string
-		var index = Math.floor(Math.random() * 52);
-		// Append the character at that index to the name
-		name += chars[index];
-	}
-	// Return the random name
-	return name;
-};
-
-export const fetchData = async () => {
-	const { data: { rooms, friends } } = await axios.get(`/api/data`);
-	return { rooms, friends }
-}
 
 export const messagePositioning = (prevMsg, nextMsg) => {
 	if (
@@ -58,34 +36,34 @@ const isNewDay = (prevDate, nextDate) => {
 
 const getDay = (date) => new Date(date).getDate()
 
-export const getDate = (recievedDate) => {
+export const formatDate = (recievedDate) => {
 	recievedDate = new Date(recievedDate).toISOString();
 	let date = new Date().toISOString();
 
-	let filteredDate = recievedDate.split("T");
-	filteredDate[0] = filteredDate[0].split("-");
+	let processedDate = recievedDate.split("T");
+	processedDate[0] = processedDate[0].split("-");
 
 	date = date.split("T");
 	date[0] = date[0].split("-");
 
-	if (date[0][0] - filteredDate[0][0] === 0) {
+	if (date[0][0] - processedDate[0][0] === 0) {
 		//same year
-		if (date[0][1] - filteredDate[0][1] === 0) {
+		if (date[0][1] - processedDate[0][1] === 0) {
 			//same month
-			if (date[0][2] - filteredDate[0][2] === 0) {
+			if (date[0][2] - processedDate[0][2] === 0) {
 				//today
-				return fixDate(recievedDate, "T");
-			} else if (date[0][2] - filteredDate[0][2] === 1) {
+				return humanizeDate(recievedDate, "T");
+			} else if (date[0][2] - processedDate[0][2] === 1) {
 				//yesterday
-				return fixDate(recievedDate, "Y");
+				return humanizeDate(recievedDate, "Y");
 			}
 		}
 	}
 	//any other date
-	return fixDate(recievedDate);
+	return humanizeDate(recievedDate);
 };
 
-const fixDate = (date, type) => {
+const humanizeDate = (date, type) => {
 	date = new Date(date);
 	const day = date.getDate();
 	const month = date.getMonth();
@@ -124,7 +102,7 @@ export const calculateTime = (secs) => {
 	return `${returnedMinutes}:${returnedSeconds}`;
 };
 
-export const createElementForMessage = (message, clicked) => {
+export const messageRenderer = (message, clicked) => {
 	if (message.type === 1) {
 		return <div id={`message-${message.id}`} className="message-content">{message.content} {message.edited_timestamp ? "(edited)" : ""}</div>;
 	} else if (message.type === 2) {

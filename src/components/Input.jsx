@@ -1,18 +1,20 @@
 import { useState } from 'react'
 import { ShowPasswordIcon, HidePasswordIcon } from '../assets/icons'
 
-const Input = ({ type, onKeyDown = null, disabled = false, placeHolder, ...props }) => {
+const Input = ({ type, value = null, onChange = null, onKeyDown = null, disabled = false, placeHolder, ...props }) => {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
     <div className={`input-wrapper ${type === 'password' ? "password" : ""}`}>
       <input
-        placeholder={placeHolder}
         type={
           type === 'password' && !showPassword ?
             "password" : "text"
         }
+        value={value}
+        placeholder={placeHolder}
         disabled={disabled}
+        onChange={onChange}
         onKeyDown={onKeyDown}
         {...props}
       />

@@ -55,8 +55,11 @@ const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
 					height
 				}}
 			>
-				{rooms?.map(({ user }, idx) => {
-					const { id, username, avatar, status } = user
+				{rooms?.map((room, idx) => {
+					if (!room?.user) {
+						return;
+					}
+					const { id, username, avatar, status } = room?.user
 					return (
 						<Link
 							key={idx}

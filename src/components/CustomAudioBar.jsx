@@ -36,6 +36,10 @@ const CustomAudioBar = ({ src, controlsList }) => {
     };
     audioPlayer.current.onerror = (event) => console.log(event.target.error);
 
+    audioPlayer.current.onpause = () => {
+      setIsPlaying(false)
+    }
+
     audioPlayer.current.onended = () => {
       setIsPlaying(false);
     };
@@ -45,6 +49,8 @@ const CustomAudioBar = ({ src, controlsList }) => {
     const prevValue = isPlaying;
     setIsPlaying(!prevValue);
     if (!prevValue) {
+      const audioPlayers = document.querySelectorAll('.audio-player audio');
+      audioPlayers.forEach(player => (player !== audioPlayer.current) ? player.pause() : "")
       audioPlayer.current.play();
       animationRef.current = requestAnimationFrame(whilePlaying);
     } else {

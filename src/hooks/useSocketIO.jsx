@@ -8,14 +8,6 @@ export const useSocketIO = (url) => {
   useEffect(() => {
     const newSocket = io.connect(url, { autoConnect: false });
 
-    newSocket.on('connect', () => {
-      console.log('Socket.IO connection opened');
-    });
-
-    newSocket.on('disconnect', () => {
-      console.log('Socket.IO connection closed');
-    });
-
     setSocket(newSocket);
 
     return () => {
@@ -30,7 +22,6 @@ export const useSocketIO = (url) => {
       }
     }
 
-    // Clean up event listeners when socket or socketEvents change
     return () => {
       if (socket) {
         for (const [eventName, callback] of Object.entries(socketEvents)) {

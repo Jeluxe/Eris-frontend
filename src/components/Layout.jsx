@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Outlet, useMatch, useMatches, useNavigate } from "react-router";
+import { fetchData, refresh } from "../api";
+import { useStateProvider } from "../context";
 import { Navbar, Sidebar, StatusBox } from "./";
 import { FriendList } from "../pages";
-import { fetchData, getRandomColor } from "../functions";
-import { useStateProvider } from "../context";
-import axios from "axios";
+import { getRandomColor } from "../functions";
 
 const Layout = () => {
   const navigate = useNavigate()
@@ -52,19 +52,21 @@ const Layout = () => {
 
   useEffect(() => {
     if (user) {
-      setLoading(false)
       socketConnect(user)
       setStatus("online")
       fetchData(user.id).then(({ rooms, friends }) => {
         setRooms(rooms)
         setFriendList(friends)
+        setLoading(false)
       })
     }
   }, [user]);
 
   useEffect(() => {
-    if (rooms && matches && matches[1] && matches[1].pathname.includes("/@me/")) {
-      const foundRoom = rooms.find(room => room.user.id === matches[1].params.id)
+    if (rooms.length && matches && matches[1] && matches[1].pathname.includes("/@me/")) {
+      const foundRoom = rooms.find(room => {
+        return room?.user.id === matches[1].params.id
+      })
       const foundFriend = friendList.find(friend => friend.user.id === matches[1].params.id)
       if (foundFriend && !foundRoom) {
         const newTempRoom = {
@@ -85,13 +87,11 @@ const Layout = () => {
         setSelectedRoom(null);
         navigate('/')
       }
-    } else {
-      setSelectedRoom(null);
     }
   }, [matches, rooms]);
 
   useEffect(() => {
-    axios.post('/api/refresh').then(res => {
+    refresh().then(res => {
       setUser(res.data)
     }).catch(err => {
       navigate('/login')
@@ -99,10 +99,9 @@ const Layout = () => {
     })
 
     addSocketEvent('connect', () => console.log('connected'))
-    addSocketEvent('connected', (item) => console.log(item))
+    addSocketEvent('connected', updateUserStatus)
     addSocketEvent('disconnect', () => console.log('disconnected'))
     addSocketEvent('message', updateMessageList)
-    addSocketEvent('user-status-changed', updateUserStatus)
 
     window.addEventListener("resize", e => {
       const width = e.currentTarget.innerWidth;
@@ -124,10 +123,13 @@ const Layout = () => {
 
   const updateUserStatus = (id, status) => {
     setRooms((prevRooms) => [...prevRooms.map(room => {
-      if (room.recepients[1].id === id) {
+      if (room?.user?.id === id) {
         return {
           ...room,
-          recepients: [room.recepients[0], room.recepients[1] = { ...room.recepients[1], status }]
+          user: {
+            ...room.user,
+            status
+          }
         }
       }
     })])

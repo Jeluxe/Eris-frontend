@@ -1,18 +1,70 @@
 import { useEffect, useState } from "react";
 import { useMatches } from "react-router";
 import { useStateProvider } from "../context";
-import { createElementForMessage, getTime, messagePositioning, getDate } from "../functions";
-import { Avatar, Footer } from "../components";
+import { messageRenderer, getTime, messagePositioning, formatDate } from "../functions";
+import { Avatar, Footer, Input, Options } from "../components";
+import { getMessages } from "../api";
 
 const Room = () => {
 	let loading = false;
 	const matches = useMatches()
-	const { messages, addSocketEvent, removeSocketEvent } = useStateProvider()
-	const [filteredMessages, setFilteredMessages] = useState(messages)
+	const { messages, setMessages, selectedRoom, emitData } = useStateProvider()
+	const [selectedMessage, setSelectedMessage] = useState(null)
+	const [editedMessage, setEditedMessage] = useState(null)
 
 	useEffect(() => {
-		setFilteredMessages(messages?.filter(message => message.rid === matches[1]?.params.id))
-	}, [matches, messages])
+		if (matches[1].params.id) {
+			getMessages(matches[1].params.id)
+				.then((messages) => setMessages(messages))
+				.catch(err => console.error(err))
+		}
+	}, [matches])
+
+	const filterMessages = (msg) => {
+		return selectedRoom.id === msg.rid;
+	}
+
+	const editMessage = (id, content) => {
+		setSelectedMessage(id)
+		setEditedMessage(content)
+	}
+
+	const deleteMessage = async (id) => {
+		if (confirm('Are you sure you want to delete this message?')) {
+			emitData('delete-message', id)
+			console.log('message has been deleted!')
+		}
+	}
+
+	const onKeyDown = e => {
+		if (e.key === 'Escape') {
+			setSelectedMessage(null)
+			setEditedMessage(null)
+		}
+
+		if (e.key === "Enter") {
+			if (editedMessage.trim().length === 0) {
+				deleteMessage(selectedMessage)
+			} else {
+				emitData('edit-message', { id: selectedMessage, content: editedMessage })
+				console.log('message has been edited!')
+				setSelectedMessage(null)
+				setEditedMessage(null)
+			}
+		}
+	}
+
+	const onChange = e => {
+		setEditedMessage(e.target.value)
+	}
+
+	const inputRenderer = () => {
+		return <Input type="text" autoFocus value={editedMessage} onChange={onChange} onKeyDown={onKeyDown} />
+	}
+
+	const optionsRenderer = (message) => {
+		return <Options type={message.type} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} edit={() => editMessage(message.id, message.content)} deleteMessage={() => deleteMessage(message.id)} />
+	}
 
 	if (loading) {
 		return <div>Loading...</div>;
@@ -21,7 +73,7 @@ const Room = () => {
 			<div className="chat-container">
 				<div className="messages-container">
 					<div className="messages-wrapper">
-						{filteredMessages?.map((message, idx) => {
+						{messages?.filter(filterMessages).map((message, idx) => {
 							return (
 								<div key={idx} className="message">
 									{messagePositioning(messages[idx - 1], message) ? (
@@ -31,18 +83,23 @@ const Room = () => {
 												<div>
 													<span className="message-sender">{message.sender.username}</span>
 													<span className="message-date">
-														{getDate(message.timestamp)}
+														{formatDate(message.timestamp)}
 													</span>
 												</div>
-												{createElementForMessage(message)}
+												{selectedMessage === message.id ? inputRenderer(message.content) : messageRenderer(message)}
 											</div>
+											{optionsRenderer(message)}
 										</>
 									) : (
 										<>
 											<span className="message-time">
 												{getTime(message.timestamp)}
 											</span>
-											{createElementForMessage(message)}
+											<>
+												{selectedMessage === message.id ? inputRenderer(message.content) : messageRenderer(message)}
+												{message.edited && <span>(edited)</span>}
+											</>
+											{optionsRenderer(message)}
 										</>
 									)}
 								</div>
@@ -50,7 +107,7 @@ const Room = () => {
 						})}
 					</div>
 				</div>
-				<Footer />
+				{selectedMessage ? "" : <Footer />}
 			</div>
 		);
 	};
