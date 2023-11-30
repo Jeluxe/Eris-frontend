@@ -43,8 +43,16 @@
 	font-size: 15px;
 	font-weight: 700;
 
-	& > div > span {
-		font-size: 15px;
+	&>div>span {
 		font-weight: 500;
+		max-width: 217px;
+
+		&>div {
+			display: inline-block !important;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			margin-left: 5px;
+		}
 	}
 }

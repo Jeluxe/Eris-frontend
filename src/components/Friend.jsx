@@ -1,5 +1,5 @@
 import React from 'react'
-import Avatar from './Avatar'
+import { Avatar, UserStatus } from './'
 import { Link } from 'react-router-dom'
 import {
   TrashIcon,
@@ -20,27 +20,37 @@ const Friend = ({ data: { id, requestStatus, user } }) => {
     console.log('restored')
   }
 
-  const userInfoElement = ({ avatar, username }) => {
+  const userInfoElement = (showStatus, { avatar, username, status }) => {
     return <div style={{
       display: "flex",
       columnGap: "10px",
       alignItems: "center",
     }
     }>
-      <Avatar size={36} bgColor={avatar} />
+      <div style={{ position: "relative", display: "flex" }}>
+        <Avatar
+          size={36}
+          bgColor={avatar}
+        />
+        {showStatus ? <UserStatus
+          status={status}
+          absolute={true}
+        /> : ""}
+      </div>
       <div>{username}</div>
     </div >
   }
+
 
   return (
     <>{
       requestStatus !== 'pending' && requestStatus !== 'blocked' ?
         <Link to={`/@me/${user?.id}`} className='friend-wrapper'>
-          {userInfoElement(user)}
+          {userInfoElement(true, user)}
         </Link>
         :
         <div className='friend-wrapper'>
-          {userInfoElement(user)}
+          {userInfoElement(false, user)}
           {requestStatus === 'pending' ?
             <div className='friend-actions'>
               <div className='friend-action' onClick={() => approve(id)}><AcceptIcon /></div>

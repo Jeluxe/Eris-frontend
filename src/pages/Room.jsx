@@ -21,7 +21,7 @@ const Room = () => {
 	}, [matches])
 
 	const filterMessages = (msg) => {
-		return selectedRoom.id === msg.rid;
+		return (selectedRoom) ? selectedRoom.id === msg.rid : "";
 	}
 
 	const editMessage = (id, content) => {

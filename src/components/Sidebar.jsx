@@ -7,7 +7,7 @@ import { Avatar, HDivider, UserStatus } from "./";
 const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
 	const { rooms, setRooms, selectedRoom, messages } = useStateProvider()
 
-	const activeLink = () => {
+	const openSidebar = () => {
 		smallDevice ? setBurgerMenu(false) : "";
 	};
 
@@ -34,7 +34,7 @@ const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
 				<Link
 					to="/"
 					className="link friends-link"
-					onClick={() => activeLink()}
+					onClick={() => openSidebar()}
 				>
 					<FriendsIcon />
 					Friends
@@ -63,9 +63,9 @@ const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
 					return (
 						<Link
 							key={idx}
-							className={`link user-links ${selectedRoom?.id === id ? "active" : ""}`}
+							className={`link user-links ${selectedRoom?.user.id === id ? "active" : ""}`}
 							to={`/@me/${id}`}
-							onClick={() => activeLink()}
+							onClick={() => openSidebar()}
 						>
 							<div style={{ position: "relative", display: "flex" }}>
 								<Avatar

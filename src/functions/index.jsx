@@ -16,6 +16,22 @@ export const getRandomColor = () => {
 	return color;
 };
 
+export const updateListStatus = (list, id, status) => {
+	return list.map(item => {
+		if (item?.user?.id === id) {
+			return {
+				...item,
+				user: {
+					...item.user,
+					status
+				}
+			}
+		} else {
+			return friend;
+		}
+	})
+}
+
 export const messagePositioning = (prevMsg, nextMsg) => {
 	if (
 		!prevMsg ||

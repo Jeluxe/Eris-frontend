@@ -4,10 +4,10 @@ import { fetchData, refresh } from "../api";
 import { useStateProvider } from "../context";
 import { Navbar, Sidebar, StatusBox } from "./";
 import { FriendList } from "../pages";
-import { getRandomColor } from "../functions";
+import { getRandomColor, updateListStatus } from "../functions";
 
 const Layout = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const match = useMatch("/");
   const matches = useMatches();
 
@@ -19,6 +19,7 @@ const Layout = () => {
     setRooms,
     friendList,
     setFriendList,
+    selectedRoom,
     setSelectedRoom,
     setMessages,
     callRef,
@@ -30,7 +31,7 @@ const Layout = () => {
     socketDisconnect,
     addSocketEvent,
     removeSocketEvent
-  } = useStateProvider()
+  } = useStateProvider();
 
   const [height, setHeight] = useState(null);
   const [burgerMenu, setBurgerMenu] = useState(false);
@@ -52,40 +53,47 @@ const Layout = () => {
 
   useEffect(() => {
     if (user) {
-      socketConnect(user)
-      setStatus("online")
+      socketConnect(user);
+      setStatus("online");
       fetchData(user.id).then(({ rooms, friends }) => {
-        setRooms(rooms)
-        setFriendList(friends)
-        setLoading(false)
-      })
-    }
+        setRooms(rooms);
+        setFriendList(friends);
+        setLoading(false);
+      });
+    };
   }, [user]);
 
   useEffect(() => {
-    if (rooms.length && matches && matches[1] && matches[1].pathname.includes("/@me/")) {
-      const foundRoom = rooms.find(room => {
-        return room?.user.id === matches[1].params.id
-      })
-      const foundFriend = friendList.find(friend => friend.user.id === matches[1].params.id)
-      if (foundFriend && !foundRoom) {
-        const newTempRoom = {
-          id: foundFriend.id,
-          type: 0,
-          index: 0,
-          user: {
-            ...foundFriend.user,
-            avatar: getRandomColor(),
-            status: 'offline'
+    if (rooms.length) {
+      if (matches[1]) {
+        const foundRoom = rooms.find(room => {
+          return room?.user.id === matches[1].params.id;
+        })
+
+        const foundFriend = friendList.find(friend => friend.user.id === matches[1].params.id)
+
+        if (foundFriend && !foundRoom) {
+          const newTempRoom = {
+            id: foundFriend.id,
+            type: 0,
+            index: 0,
+            user: {
+              ...foundFriend.user,
+              avatar: getRandomColor(),
+              status: 'offline'
+            }
           }
+          setRooms((prevRooms) => [...prevRooms, newTempRoom])
+          setSelectedRoom(newTempRoom)
         }
-        setSelectedRoom(newTempRoom)
-      }
-      else if (foundRoom) {
-        setSelectedRoom(foundRoom)
-      } else {
+        else if (foundRoom) {
+          setSelectedRoom(foundRoom)
+        }
+        else if (!selectedRoom) {
+          navigate('/')
+        }
+      } else if (selectedRoom && !matches[1]) {
         setSelectedRoom(null);
-        navigate('/')
       }
     }
   }, [matches, rooms]);
@@ -99,7 +107,7 @@ const Layout = () => {
     })
 
     addSocketEvent('connect', () => console.log('connected'))
-    addSocketEvent('connected', updateUserStatus)
+    addSocketEvent('user-connected', updateUserStatus)
     addSocketEvent('disconnect', () => console.log('disconnected'))
     addSocketEvent('message', updateMessageList)
 
@@ -110,6 +118,7 @@ const Layout = () => {
 
     return () => {
       removeSocketEvent('connect')
+      removeSocketEvent('user-connected')
       removeSocketEvent('disconnect')
       removeSocketEvent('message')
       socketDisconnect()
@@ -121,18 +130,14 @@ const Layout = () => {
     setMessages((prevMessages) => [...prevMessages, newMessage])
   }
 
+  // const loadMoreMessages = (loadedMessages) => {
+  //   setMessages((prevMessages) => [...loadedMessages, ...prevMessages])
+  // }
+
   const updateUserStatus = (id, status) => {
-    setRooms((prevRooms) => [...prevRooms.map(room => {
-      if (room?.user?.id === id) {
-        return {
-          ...room,
-          user: {
-            ...room.user,
-            status
-          }
-        }
-      }
-    })])
+    setRooms((prevRooms) => [...updateListStatus(prevRooms, id, status)])
+
+    setFriendList((prevFriendList) => [...updateListStatus(prevFriendList, id, status)])
   }
 
   const toggleSmallScreen = (callRef, width) => {
@@ -144,7 +149,7 @@ const Layout = () => {
     setSmallDevice(width < 1024 ? true : false);
   };
 
-  const condition = call.inCall && matches[1]?.params.id === call.roomId
+  const condition = call.inCall && matches[1]?.params.id === call.roomId;
 
   if (loading) {
     return <div>loading</div>

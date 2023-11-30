@@ -23,7 +23,7 @@ const StatusBox = ({ call }) => {
 					<div className="status-box-info sb-call">
 						<div>
 							<p>call in progress</p>
-							<span onClick={() => navigate(`/@me/${call.roomId}`)}>in Room: {call.roomId}</span>
+							<span>Room: <div onClick={() => navigate(`/@me/${call.roomId}`)}>{call.roomId}</div></span>
 						</div>
 						<div className="sb-user-action" onClick={() => setCall({ inCall: false, roomId: null })}>
 							<LeaveCallIcon />
