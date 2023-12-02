@@ -37,8 +37,10 @@ const FriendList = () => {
 		}
 
 		friends.forEach(friend => {
-			if (friend.requestStatus !== 'pending' && friend.requestStatus !== 'blocked') {
-				filteredObject[friend?.user?.status || 'offline'] = [...filteredObject[friend?.user?.status || 'offline'], friend]
+			const status = friend?.user.status || 'offline'
+			console.log(status)
+			if (friend.status !== 'BLOCKED') {
+				filteredObject[status] = [...filteredObject[status], friend]
 			}
 		});
 
