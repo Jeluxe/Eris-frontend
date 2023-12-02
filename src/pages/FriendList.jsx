@@ -3,7 +3,7 @@ import { Friend, NewFriendForm } from "../components";
 import { useStateProvider } from "../context";
 
 const userStatus = ['online', 'offline', 'idle'];
-const requestStatus = ["pending", "approved", "blocked"]
+const requestStatus = ["PENDING", "APPROVED", "BLOCKED"]
 
 const FriendList = () => {
 	const { friendList, selectedFilter, smallDevice } = useStateProvider();
@@ -11,19 +11,18 @@ const FriendList = () => {
 
 	useEffect(() => setFriendListObject(filterArray(friendList)), [friendList])
 
-	const filterClientsByStatus = (client) => {
-		const validation = client.requestStatus !== "pending" && client.requestStatus !== "blocked"
-		const status = "offline"
+	const filterClientsByStatus = (request) => {
+		const validation = request.status !== "PENDING" && request.status !== "BLOCKED"
 
 		switch (selectedFilter) {
 			case "All":
-				return userStatus.includes(status) && validation
+				return userStatus.includes(request.user.status) && validation
 			case "Online":
-				return userStatus.includes(status) && status === "online" && validation
+				return userStatus.includes(request.user.status) && request.user.status === "online" && validation
 			case "Blocked":
-				return requestStatus.includes(client.requestStatus) && client.requestStatus === "blocked"
+				return requestStatus.includes(request.status) && request.status === "BLOCKED"
 			case "Pending":
-				return requestStatus.includes(client.requestStatus) && client.requestStatus === "pending"
+				return requestStatus.includes(request.status) && request.status === "PENDING"
 			default:
 				break;
 		}
@@ -38,8 +37,7 @@ const FriendList = () => {
 
 		friends.forEach(friend => {
 			const status = friend?.user.status || 'offline'
-			console.log(status)
-			if (friend.status !== 'BLOCKED') {
+			if (friend.status !== 'PENDING' || friend.status !== 'BLOCKED') {
 				filteredObject[status] = [...filteredObject[status], friend]
 			}
 		});

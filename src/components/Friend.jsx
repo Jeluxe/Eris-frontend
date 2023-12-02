@@ -7,7 +7,7 @@ import {
   AcceptIcon
 } from '../assets/icons'
 
-const Friend = ({ data: { id, requestStatus, user } }) => {
+const Friend = ({ data: { id, status: requestStatus, user } }) => {
   const approve = () => {
     console.log('approved')
   }
@@ -44,14 +44,14 @@ const Friend = ({ data: { id, requestStatus, user } }) => {
 
   return (
     <>{
-      requestStatus !== 'pending' && requestStatus !== 'blocked' ?
+      requestStatus !== 'PENDING' && requestStatus !== 'BLOCKED' ?
         <Link to={`/@me/${user?.id}`} className='friend-wrapper'>
           {userInfoElement(true, user)}
         </Link>
         :
         <div className='friend-wrapper'>
           {userInfoElement(false, user)}
-          {requestStatus === 'pending' ?
+          {requestStatus === 'PENDING' ?
             <div className='friend-actions'>
               <div className='friend-action' onClick={() => approve(id)}><AcceptIcon /></div>
               <div className='friend-action trash' onClick={() => decline(id)}><TrashIcon /></div>
