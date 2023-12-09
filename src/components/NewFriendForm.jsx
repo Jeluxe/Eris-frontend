@@ -1,35 +1,34 @@
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useField } from '../hooks'
+import { useStateProvider } from '../context'
 import Input from './Input'
+import { debounce } from '../functions'
 
 const NewFriendForm = () => {
-  const [notification, setNotfication] = useState("")
+  const { emitData } = useStateProvider()
+  const [notification, setNotfication] = useState({})
   const { reset, ...newFriend } = useField('text')
 
   const searchForUsers = async () => {
     if (newFriend.value.trim()) {
 
-      // sendRequestToServer()
-      // .then(res  => setNofification(res))
-      // .catch(err => setNofification(err))
-      setNotfication(Math.random() < 0.5 ? "success" : "failed")
+      emitData('new-friend-request', newFriend.value, (data) => {
+        if (data.type === 'error') {
+          setNotfication(data)
+        } else {
+          setFriendList((prevFriendList) => [...prevFriendList, data])
+          setNotfication({ type: 'success', message: `sent friend request to ${data.user.username} successfully` })
+        }
+      })
     }
-  }
-
-  const debounce = (fn, ms) => {
-    let timeout;
-
-    return () => {
-      if (timeout)
-        clearTimeout(timeout)
-
-      timeout = setTimeout(() => {
-        fn()
-      }, ms);
-    }
+    reset()
   }
 
   const debouncedSearch = debounce(searchForUsers, 500);
+
+  useEffect(() => {
+    setNotfication({})
+  }, [newFriend.value])
 
   return (
     <div className='new-friend-form'>
@@ -37,7 +36,7 @@ const NewFriendForm = () => {
         <Input {...newFriend} placeHolder={"Enter username here..."} />
         <button onClick={debouncedSearch}>add</button>
       </div>
-      {notification && <span className={`notification ${notification === 'success' ? "success" : "error"}`}>{notification}</span>}
+      {notification && <span className={`notification ${notification.type === 'success' ? "success" : "error"}`}>{notification.message}</span>}
     </div>
   )
 }

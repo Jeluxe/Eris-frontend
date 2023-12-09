@@ -32,6 +32,19 @@ export const updateListStatus = (list, id, status) => {
 	})
 }
 
+export const debounce = (fn, ms) => {
+	let timeout;
+
+	return () => {
+		if (timeout)
+			clearTimeout(timeout)
+
+		timeout = setTimeout(() => {
+			fn()
+		}, ms);
+	}
+}
+
 export const messagePositioning = (prevMsg, nextMsg) => {
 	if (
 		!prevMsg ||
