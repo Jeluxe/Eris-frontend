@@ -1,23 +1,23 @@
-import React from 'react'
-import { Avatar, UserStatus } from './'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  TrashIcon,
+  AcceptIcon,
   RestoreIcon,
-  AcceptIcon
+  TrashIcon
 } from '../assets/icons'
+import { useStateProvider } from '../context'
+import { Avatar, UserStatus } from './'
 
-const Friend = ({ data: { id, status: requestStatus, user } }) => {
-  const approve = () => {
-    console.log('approved')
-  }
 
-  const decline = () => {
-    console.log('declined')
-  }
+const Friend = ({ data: { id, status: friendRequestStatus, user, isSender } }) => {
+  const { emitData } = useStateProvider()
+  const [requestStatus, setRequestStatus] = useState(friendRequestStatus)
 
-  const restore = () => {
-    console.log('restored')
+  const makeDecision = (decision) => {
+    emitData('update-friend-request', id, decision, (result) => {
+      console.log(result)
+      setRequestStatus(result)
+    })
   }
 
   const userInfoElement = (showStatus, { avatar, username, status }) => {
@@ -53,12 +53,12 @@ const Friend = ({ data: { id, status: requestStatus, user } }) => {
           {userInfoElement(false, user)}
           {requestStatus === 'PENDING' ?
             <div className='friend-actions'>
-              <div className='friend-action' onClick={() => approve(id)}><AcceptIcon /></div>
-              <div className='friend-action trash' onClick={() => decline(id)}><TrashIcon /></div>
+              {isSender && <div className='friend-action' onClick={() => makeDecision('accept')}><AcceptIcon /></div>}
+              <div className='friend-action trash' onClick={() => makeDecision('decline')}><TrashIcon /></div>
             </div>
             :
             <div className='friend-actions'>
-              <div className='friend-action' onClick={() => restore(id)}><RestoreIcon /></div>
+              <div className='friend-action' onClick={() => makeDecision('restore')}><RestoreIcon /></div>
             </div>
           }
         </div>
