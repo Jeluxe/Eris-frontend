@@ -54,7 +54,7 @@
   --seek-before-width: 0;
   --seek-before-color: #ffc2a1;
   --knobby: #a85be4;
-  --selected-knobby: #26c9c3;
+  --selected-knobby: #be9af8;
 
   appearance: none;
   background: var(--bar-bg);

@@ -30,10 +30,8 @@
 
 .user-links {
 	padding: 10px 150px 10px 10px;
-}
-
-.user-links:last-child {
-	border-bottom: none;
+	border-radius: .25rem;
+	margin-bottom: .20rem;
 }
 
 .friends-link:hover {
