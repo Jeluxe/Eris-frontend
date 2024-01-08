@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Outlet, useMatch, useMatches, useNavigate } from "react-router";
 import { fetchData, refresh } from "../api";
 import { useStateProvider } from "../context";
-import { Navbar, Sidebar, StatusBox } from "./";
-import { FriendList } from "../pages";
 import { getRandomColor, updateListStatus } from "../functions";
+import { FriendList } from "../pages";
+import { Navbar, Sidebar, StatusBox } from "./";
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const Layout = () => {
     setSelectedRoom,
     setMessages,
     callRef,
-    call,
+    inCall,
     showChat,
     smallDevice,
     setSmallDevice,
@@ -38,8 +39,8 @@ const Layout = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    callRef.current = call;
-  }, [call]);
+    callRef.current = inCall;
+  }, [inCall]);
 
   useEffect(() => {
     if (!smallDevice) {
@@ -49,7 +50,7 @@ const Layout = () => {
 
   useEffect(() => {
     toggleSmallScreen(callRef, window.innerWidth);
-  }, [burgerMenu, call]);
+  }, [burgerMenu, inCall]);
 
   useEffect(() => {
     if (user) {
@@ -60,7 +61,7 @@ const Layout = () => {
         setFriendList(friends);
         setLoading(false);
       });
-    };
+    }
   }, [user]);
 
   useEffect(() => {
@@ -149,7 +150,7 @@ const Layout = () => {
     setSmallDevice(width < 1024 ? true : false);
   };
 
-  const condition = call.inCall && matches[1]?.params.id === call.roomId;
+  const condition = inCall.activeCall && matches[1]?.params.id === inCall.roomId;
 
   if (loading) {
     return <div>loading</div>
@@ -164,11 +165,8 @@ const Layout = () => {
               <Sidebar
                 smallDevice={smallDevice}
                 height={height}
-                call={call}
                 setBurgerMenu={smallDevice ? setBurgerMenu : ""} />
-              <StatusBox
-                call={call}
-              />
+              <StatusBox />
             </div>
             : ""
         }
@@ -179,7 +177,6 @@ const Layout = () => {
           <Navbar
             smallDevice={smallDevice}
             match={match}
-            call={call}
             burgerMenu={burgerMenu}
             setBurgerMenu={setBurgerMenu}
           />

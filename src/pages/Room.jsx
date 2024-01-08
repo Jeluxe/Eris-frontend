@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useMatches } from "react-router";
-import { useStateProvider } from "../context";
-import { messageRenderer, getTime, messagePositioning, formatDate } from "../functions";
-import { Avatar, Footer, Input, Options } from "../components";
 import { getMessages } from "../api";
+import { Avatar, Footer, Input, Options } from "../components";
+import { useStateProvider } from "../context";
+import { formatDate, getTime, messagePositioning, messageRenderer } from "../functions";
 
 const Room = () => {
 	let loading = false;
@@ -110,7 +110,7 @@ const Room = () => {
 				{selectedMessage ? "" : <Footer />}
 			</div>
 		);
-	};
+	}
 };
 
 export default Room;

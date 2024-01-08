@@ -1,7 +1,7 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useMatches } from "react-router";
 import { Link } from "react-router-dom";
-import { CallIcon, FriendsIcon, VideoIcon, BurgerMenu, IoMdPersonAdd } from "../assets/icons";
+import { BurgerMenu, CallIcon, FriendsIcon, IoMdPersonAdd, VideoIcon } from "../assets/icons";
 import { useStateProvider } from "../context";
 import { Avatar, CallNavbar, Checkbox, UserStatus, VDivider } from "./";
 
@@ -17,13 +17,11 @@ const categories = ["All", "Online", "Blocked", "Pending"];
 
 const Navbar = ({
 	match,
-	call,
 	setBurgerMenu,
 }) => {
 	const matches = useMatches();
-	const [incomingCall, setIncomingCall] = useState(false);
 	const [small, setSmall] = useState(false);
-	const { selectedRoom, setCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen } = useStateProvider()
+	const { selectedRoom, inCall, setInCall, incomingCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen } = useStateProvider()
 
 	const createBurgerMenuBtn = () => {
 		return smallDevice ? (
@@ -33,7 +31,7 @@ const Navbar = ({
 		);
 	};
 	const selectedUser = selectedRoom?.user
-	const condition = call.inCall && matches[1]?.params.id === call.roomId
+	const condition = inCall.activeCall && matches[1]?.params.id === inCall.roomId
 
 	useLayoutEffect(() => {
 		window.innerWidth < 1063 ? setSmall(true) : setSmall(false)
@@ -61,7 +59,7 @@ const Navbar = ({
 						<div>{selectedUser.username}</div>
 						<UserStatus status={selectedUser?.status} />
 					</div>
-					{call.inCall && call.roomId === matches[1]?.params.id ? (
+					{inCall.activeCall && inCall.roomId === matches[1]?.params.id ? (
 						<CallNavbar
 							avatar={selectedUser?.avatar}
 						/>
@@ -69,13 +67,13 @@ const Navbar = ({
 						<div className="navbar-actions">
 							<div
 								className="call-btn"
-								onClick={() => setCall({ inCall: true, roomId: selectedUser.id })}
+								onClick={() => setInCall({ activeCall: true, roomId: selectedUser.id })}
 							>
 								<CallIcon style={style(incomingCall)} />
 							</div>
 							<div
 								className="video-call-btn"
-								onClick={() => setCall({ inCall: true, roomId: selectedUser.id })}
+								onClick={() => setInCall({ activeCall: true, roomId: selectedUser.id })}
 							>
 								<VideoIcon style={style(incomingCall)} />
 							</div>

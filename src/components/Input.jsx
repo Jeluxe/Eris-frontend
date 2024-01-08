@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ShowPasswordIcon, HidePasswordIcon } from '../assets/icons'
+import { HidePasswordIcon, ShowPasswordIcon } from '../assets/icons'
 
 const Input = ({ type, value = null, onChange = null, onKeyDown = null, disabled = false, placeHolder, ...props }) => {
   const [showPassword, setShowPassword] = useState(false)

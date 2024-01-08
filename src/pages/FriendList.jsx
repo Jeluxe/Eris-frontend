@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Friend, NewFriendForm } from "../components";
 import { useStateProvider } from "../context";
 

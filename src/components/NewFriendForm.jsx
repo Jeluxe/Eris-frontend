@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useField } from '../hooks'
 import { useStateProvider } from '../context'
-import Input from './Input'
 import { debounce } from '../functions'
+import { useField } from '../hooks'
+import Input from './Input'
 
 const NewFriendForm = () => {
-  const { emitData } = useStateProvider()
+  const { emitData, setFriendList } = useStateProvider()
   const [notification, setNotfication] = useState({})
   const { reset, ...newFriend } = useField('text')
 

@@ -5,8 +5,8 @@ import {
 	RouterProvider,
 } from "react-router-dom";
 import Layout from "./components/Layout";
-import { Room, Login, Signup, Home, Settings } from "./pages";
 import { ContextProvider } from "./context";
+import { Home, Login, Room, Settings, Signup } from "./pages";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(

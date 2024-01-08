@@ -1,8 +1,8 @@
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  PlayIcon,
-  PauseIcon
-} from '../assets/icons'
+  PauseIcon,
+  PlayIcon
+} from '../assets/icons';
 import { calculateTime } from "../functions";
 
 const CustomAudioBar = ({ src, controlsList }) => {

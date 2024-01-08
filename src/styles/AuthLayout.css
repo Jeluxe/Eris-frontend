@@ -34,11 +34,11 @@
   width: 100%;
 }
 
-.input-wrapper > input {
+.input-wrapper>input {
   border: none;
 }
 
-.auth-button > button {
+.auth-button>button {
   border: none;
   border-radius: 5px;
   padding: 10px 15px;

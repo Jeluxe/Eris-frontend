@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 
-export const useAudioActions = () => {
+export const useMediaActions = () => {
 	const [mute, setMute] = useState(false);
 	const [muted, setMuted] = useState(false);
 	const [deaf, setDeaf] = useState(false);
+	const [video, setVideo] = useState(false);
+
+	useEffect(() => {
+		setVideo(!video)
+	}, [video])
 
 	useEffect(() => {
 		if (!deaf && mute && muted) {
@@ -26,5 +31,5 @@ export const useAudioActions = () => {
 		}
 	}, [mute]);
 
-	return { mute, setMute, deaf, setDeaf };
+	return { video, setVideo, mute, setMute, deaf, setDeaf };
 };

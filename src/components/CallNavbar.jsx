@@ -1,14 +1,13 @@
-import { useState } from "react";
 import {
-	MicIcon,
-	MicOffIcon,
+	ArrowDown,
+	ArrowUp,
 	DeafIcon,
 	DeafOffIcon,
-	VideoIcon,
-	VideoOffIcon,
 	LeaveCallIcon,
-	ArrowDown,
-	ArrowUp
+	MicIcon,
+	MicOffIcon,
+	VideoIcon,
+	VideoOffIcon
 } from "../assets/icons";
 
 import { useStateProvider } from "../context";
@@ -16,11 +15,8 @@ import { Avatar, Video } from "./";
 
 const CallNavbar = ({ avatar }) => {
 	const {
-		setCall,
-		audioActions: { mute, setMute, deaf, setDeaf },
-		showChat,
-		setShowChat } = useStateProvider()
-	const [video, setVideo] = useState(false);
+		setCall, mute, setMute, deaf, setDeaf, video, setVideo, showChat, setShowChat
+	} = useStateProvider()
 
 	return (
 		<div className="call-navbar">

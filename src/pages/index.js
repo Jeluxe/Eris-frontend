@@ -6,4 +6,5 @@ import Settings from "./Settings";
 import Signup from "./Signup";
 
 
-export { FriendList, Home, Room, Login, Settings, Signup, };
+export { FriendList, Home, Login, Room, Settings, Signup };
+

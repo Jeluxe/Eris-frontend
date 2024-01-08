@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { CloseIcon, FriendsIcon } from "../assets/icons";
 import { useStateProvider } from "../context";
-import { FriendsIcon, CloseIcon } from "../assets/icons";
 import { Avatar, HDivider, UserStatus } from "./";
 
-const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
-	const { rooms, setRooms, selectedRoom, messages } = useStateProvider()
+const Sidebar = ({ smallDevice, height, setBurgerMenu }) => {
+	const { inCall, rooms, setRooms, selectedRoom, messages } = useStateProvider()
 
 	const openSidebar = () => {
 		smallDevice ? setBurgerMenu(false) : "";
@@ -51,7 +51,7 @@ const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
 			<div
 				className="sidebar-list"
 				style={{
-					minHeight: call.inCall ? "412px" : "112px",
+					minHeight: inCall.activeCall ? "412px" : "112px",
 					height
 				}}
 			>
@@ -59,7 +59,7 @@ const Sidebar = ({ smallDevice, height, call, setBurgerMenu }) => {
 					if (!room?.user) {
 						return;
 					}
-					const { id, username, avatar, status } = room?.user
+					const { id, username, avatar, status } = room.user
 					return (
 						<Link
 							key={idx}

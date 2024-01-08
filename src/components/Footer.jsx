@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useMatches } from 'react-router'
-import { useStateProvider } from '../context'
-import { useField, useRecorder } from '../hooks'
 import { SendIcon, TrashIcon } from '../assets/icons'
+import { useStateProvider } from '../context'
 import { blobToBuffer } from '../functions'
+import { useField, useRecorder } from '../hooks'
 import CustomAudioBar from './CustomAudioBar'
 import Input from './Input'
 

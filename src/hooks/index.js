@@ -1,6 +1,8 @@
-import { useAudioActions } from "./useAudioActions";
 import { useField } from "./useField";
+import { useMediaActions } from "./useMediaActions";
+import { useMediasoup } from './useMediasoup';
 import { useRecorder } from "./useRecorder";
-import { useSocketIO } from './useSocketIO'
+import { useSocketIO } from './useSocketIO';
 
-export { useAudioActions, useField, useRecorder, useSocketIO, }
+export { useField, useMediaActions, useMediasoup, useRecorder, useSocketIO };
+

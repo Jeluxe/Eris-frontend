@@ -96,7 +96,7 @@
   transform: scale(0.99);
 }
 
-.navbar-category:checked + .navbar-category-label {
+.navbar-category:checked+.navbar-category-label {
   height: 22px;
   background: rgba(58, 5, 203, 0.784);
   color: wheat;

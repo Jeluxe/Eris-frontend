@@ -1,6 +1,4 @@
-import Avatar from "./Avatar";
-import UserStatus from "./UserStatus";
-import HDivider from "./H_Divider";
+import { useNavigate } from "react-router";
 import {
 	DeafIcon,
 	DeafOffIcon,
@@ -9,23 +7,27 @@ import {
 	MicOffIcon,
 	SettingsIcon
 } from "../assets/icons";
-import { useNavigate } from "react-router";
 import { useStateProvider } from "../context";
+import Avatar from "./Avatar";
+import HDivider from "./H_Divider";
+import UserStatus from "./UserStatus";
 
-const StatusBox = ({ call }) => {
+const StatusBox = () => {
 	const navigate = useNavigate();
-	const { user, status, setCall, audioActions: { mute, setMute, deaf, setDeaf } } = useStateProvider()
+	const {
+		user, status, InCall, setInCall, mute, setMute, deaf, setDeaf
+	} = useStateProvider()
 
 	return (
 		<div className="status-box">
-			{call.inCall ? (
+			{InCall.activeCall ? (
 				<>
 					<div className="status-box-info sb-call">
 						<div>
 							<p>call in progress</p>
-							<span>Room: <div onClick={() => navigate(`/@me/${call.roomId}`)}>{call.roomId}</div></span>
+							<span>Room: <div onClick={() => navigate(`/@me/${InCall.roomId}`)}>{InCall.roomId}</div></span>
 						</div>
-						<div className="sb-user-action" onClick={() => setCall({ inCall: false, roomId: null })}>
+						<div className="sb-user-action" onClick={() => setInCall({ activeCall: false, roomId: null })}>
 							<LeaveCallIcon />
 						</div>
 					</div>

@@ -110,14 +110,13 @@
 		border-bottom-right-radius: 0 !important;
 	}
 
-
 	.call-navbar-participants:has(video) {
 		flex-direction: column;
 	}
 }
 
 @media only screen and (max-width: 490px) {
-	.call-navbar-actions > div {
+	.call-navbar-actions>div {
 		padding: 1px 10px !important;
 	}
 }

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { OptionsIcon, TrashIcon, EditIcon } from '../assets/icons'
+import { useEffect, useRef, useState } from 'react'
+import { EditIcon, OptionsIcon, TrashIcon } from '../assets/icons'
 
 const Options = ({ type, selectedMessage, setSelectedMessage, edit, deleteMessage }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false)

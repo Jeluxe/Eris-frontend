@@ -40,7 +40,7 @@
     translate: 0 1px;
   }
 
-  & > svg {
+  &>svg {
     transform: scale(1.2);
   }
 

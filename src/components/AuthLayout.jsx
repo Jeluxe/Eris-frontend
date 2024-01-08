@@ -1,6 +1,5 @@
-import React from 'react'
-import Input from './Input'
 import { Link } from 'react-router-dom'
+import Input from './Input'
 
 const AuthLayout = ({ fields, button, link }) => {
   return (

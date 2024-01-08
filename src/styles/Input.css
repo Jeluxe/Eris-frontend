@@ -25,6 +25,6 @@
   outline: none;
 }
 
-.input-wrapper.password:not(:focus-within) > button {
+.input-wrapper.password:not(:focus-within)>button {
   display: none;
 }

@@ -16,7 +16,7 @@
 	padding: 20px;
 	column-gap: 20px;
 
-	& > div {
+	&>div {
 		display: flex;
 		background: rgb(209, 209, 209);
 		border: 1px solid black;
@@ -26,7 +26,7 @@
 		cursor: pointer;
 	}
 
-	& > div:last-child {
+	&>div:last-child {
 		background: red;
 		color: rgba(255, 255, 255, 0.819);
 	}

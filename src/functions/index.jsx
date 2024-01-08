@@ -17,12 +17,12 @@ export const getRandomColor = () => {
 };
 
 export const updateListStatus = (list, id, status) => {
-	return list.map(item => {
-		if (item?.user?.id === id) {
+	return list.map(friend => {
+		if (friend?.user?.id === id) {
 			return {
-				...item,
+				...friend,
 				user: {
-					...item.user,
+					...friend.user,
 					status
 				}
 			}
