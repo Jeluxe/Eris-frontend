@@ -38,7 +38,7 @@ export const useSocketIO = (url) => {
     }
   }
 
-  const socketDisconnect = (user) => {
+  const socketDisconnect = () => {
     if (socket) {
       socket.disconnect()
     }
@@ -57,16 +57,14 @@ export const useSocketIO = (url) => {
   };
 
   const removeSocketEvent = (eventName) => {
-    const callback = socketEvents[eventName];
+    if (socket && socketEvents[eventName]) {
+      socket.off(eventName, socketEvents[eventName]);
 
-    if (callback && socket) {
-      socket.off(eventName, callback);
+      setSocketEvents((prevSocketEvents) => {
+        const { [eventName]: removedEvent, ...rest } = prevSocketEvents;
+        return rest;
+      });
     }
-
-    setSocketEvents((prevSocketEvents) => {
-      const { [eventName]: removedEvent, ...rest } = prevSocketEvents;
-      return rest;
-    });
   };
 
   return {
