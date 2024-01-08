@@ -15,19 +15,22 @@ import UserStatus from "./UserStatus";
 const StatusBox = () => {
 	const navigate = useNavigate();
 	const {
-		user, status, InCall, setInCall, mute, setMute, deaf, setDeaf
+		user, status, inCall, setInCall, mute, setMute, deaf, setDeaf, closeConnection
 	} = useStateProvider()
 
 	return (
 		<div className="status-box">
-			{InCall.activeCall ? (
+			{inCall.activeCall ? (
 				<>
 					<div className="status-box-info sb-call">
 						<div>
 							<p>call in progress</p>
-							<span>Room: <div onClick={() => navigate(`/@me/${InCall.roomId}`)}>{InCall.roomId}</div></span>
+							<span>Room: <div onClick={() => navigate(`/@me/${inCall.roomID}`)}>{inCall.roomID}</div></span>
 						</div>
-						<div className="sb-user-action" onClick={() => setInCall({ activeCall: false, roomId: null })}>
+						<div className="sb-user-action" onClick={() => {
+							closeConnection();
+							setInCall({ activeCall: false, roomId: null });
+						}}>
 							<LeaveCallIcon />
 						</div>
 					</div>

@@ -1,3 +1,4 @@
+import { useParams } from "react-router";
 import {
 	ArrowDown,
 	ArrowUp,
@@ -14,8 +15,14 @@ import { useStateProvider } from "../context";
 import { Avatar, Video } from "./";
 
 const CallNavbar = ({ avatar }) => {
+	const { id } = useParams()
 	const {
-		setCall, mute, setMute, deaf, setDeaf, video, setVideo, showChat, setShowChat
+		inCall, setInCall, mute,
+		setMute, deaf, setDeaf,
+		video, setVideo, showChat,
+		setShowChat, videoContainer,
+		localVideoRef, remoteStreams,
+		closeConnection
 	} = useStateProvider()
 
 	return (
@@ -23,27 +30,32 @@ const CallNavbar = ({ avatar }) => {
 			<div className="call-navbar-container">
 				{/* <div className="call-navbar-time">10 : 10 : 10</div> */}
 
-				<div className="call-navbar-participants">
-					<div>
-						{video ? (
-							<Video />
-						) : (
-							<Avatar
-								size={80}
-								bgColor={"green"}
-							/>
-						)}
-					</div>
-					<div>
-						{video ? (
-							<Video />
-						) : (
-							<Avatar
-								size={80}
-								bgColor={`${avatar}`}
-							/>
-						)}
-					</div>
+				<div
+					ref={videoContainer}
+					id='videoContainer'
+				>
+					{
+						inCall.activeCall && id === inCall.roomID &&
+						<>
+							<div>
+								{video ? (<Video
+									type="local"
+									ref={localVideoRef}
+									muted={true}
+								/>) : (
+									<Avatar
+										size={80}
+										bgColor={"green"}
+									/>
+								)}
+							</div>
+							{
+								remoteStreams?.map((remoteStream, idx) =>
+									<Video key={idx} type="remote" remoteStream={Object.values(remoteStream)[0]} />
+								)
+							}
+						</>
+					}
 				</div>
 				<div className="call-navbar-actions">
 					<div onClick={() => setMute(!mute)}>
@@ -55,7 +67,10 @@ const CallNavbar = ({ avatar }) => {
 					<div onClick={() => setVideo(!video)}>
 						{video ? <VideoOffIcon /> : <VideoIcon />}
 					</div>
-					<div onClick={() => setCall(false)}>
+					<div onClick={() => {
+						closeConnection()
+						setInCall({ activeCall: false, roomID: null })
+					}}>
 						<LeaveCallIcon />
 					</div>
 				</div>

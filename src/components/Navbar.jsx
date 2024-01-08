@@ -31,7 +31,7 @@ const Navbar = ({
 		);
 	};
 	const selectedUser = selectedRoom?.user
-	const condition = inCall.activeCall && matches[1]?.params.id === inCall.roomId
+	const condition = inCall.activeCall && matches[1]?.params.id === inCall.roomID
 
 	useLayoutEffect(() => {
 		window.innerWidth < 1063 ? setSmall(true) : setSmall(false)
@@ -59,7 +59,7 @@ const Navbar = ({
 						<div>{selectedUser.username}</div>
 						<UserStatus status={selectedUser?.status} />
 					</div>
-					{inCall.activeCall && inCall.roomId === matches[1]?.params.id ? (
+					{inCall.activeCall && inCall.roomID === matches[1]?.params.id ? (
 						<CallNavbar
 							avatar={selectedUser?.avatar}
 						/>
@@ -67,13 +67,19 @@ const Navbar = ({
 						<div className="navbar-actions">
 							<div
 								className="call-btn"
-								onClick={() => setInCall({ activeCall: true, roomId: selectedUser.id })}
+								onClick={() => {
+									call(selectedUser.id);
+									setInCall({ activeCall: true, roomId: selectedUser.id })
+								}}
 							>
 								<CallIcon style={style(incomingCall)} />
 							</div>
 							<div
 								className="video-call-btn"
-								onClick={() => setInCall({ activeCall: true, roomId: selectedUser.id })}
+								onClick={() => {
+									call(selectedUser.id);
+									setInCall({ activeCall: true, roomId: selectedUser.id })
+								}}
 							>
 								<VideoIcon style={style(incomingCall)} />
 							</div>

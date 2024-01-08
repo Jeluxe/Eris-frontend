@@ -1,5 +1,5 @@
 import { createContext, useContext, useRef, useState } from "react";
-import { useAudioActions, useSocketIO } from "../hooks";
+import { useMediaActions, useMediasoup, useSocketIO } from "../hooks";
 
 export const Context = createContext()
 
@@ -9,16 +9,19 @@ export const ContextProvider = ({ children }) => {
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [friendList, setFriendList] = useState([])
-  const [call, setCall] = useState({
-    inCall: false,
-    roomId: null
+  const [inCall, setInCall] = useState({
+    activeCall: false,
+    roomID: null
   });
+  const callRef = useRef(inCall);
+  const videoContainer = useRef();
+  const [incomingCall, setIncomingCall] = useState(false);
   const [messages, setMessages] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [showChat, setShowChat] = useState(true);
   const [smallDevice, setSmallDevice] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const audioActions = useAudioActions();
+  const mediaActions = useMediaActions();
   const {
     socketConnect,
     socketDisconnect,
@@ -26,7 +29,21 @@ export const ContextProvider = ({ children }) => {
     addSocketEvent,
     removeSocketEvent,
   } = useSocketIO("http://localhost:4000")
-  const callRef = useRef(call);
+  const { mute: muteToggle, video: videoToggle } = mediaActions;
+  const {
+    call, localVideoRef, remoteStreams, closeConnection
+  } = useMediasoup({
+    userID: user.id,
+    videoContainer,
+    videoToggle,
+    muteToggle,
+    socket: {
+      emitData,
+      addSocketEvent,
+      removeSocketEvent,
+    },
+    inCall: inCall
+  })
 
   return (
     <Context.Provider value={{
@@ -40,11 +57,13 @@ export const ContextProvider = ({ children }) => {
       setSelectedRoom,
       friendList,
       setFriendList,
-      call,
-      setCall,
+      inCall,
+      setInCall,
+      incomingCall,
+      setIncomingCall,
       showChat,
       setShowChat,
-      audioActions,
+      ...mediaActions,
       callRef,
       selectedFilter,
       setSelectedFilter,
@@ -54,7 +73,15 @@ export const ContextProvider = ({ children }) => {
       setMessages,
       isOpen,
       setIsOpen,
+      videoContainer,
 
+      //useMediasoup props
+      call,
+      localVideoRef,
+      remoteStreams,
+      closeConnection,
+
+      //useSocketIO props
       socketConnect,
       socketDisconnect,
       emitData,
@@ -66,4 +93,4 @@ export const ContextProvider = ({ children }) => {
   )
 }
 
-export const useStateProvider = () => useContext(Context)
+export const useStateProvider = () => useContext(Context);

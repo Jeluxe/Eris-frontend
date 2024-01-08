@@ -144,13 +144,13 @@ const Layout = () => {
   const toggleSmallScreen = (callRef, width) => {
     setHeight(
       width < 1024
-        ? `calc(100vh - ${callRef.current.inCall ? "258px" : "190px"})`
-        : `calc(100vh - ${callRef.current.inCall ? "300px" : "234px"})`
+        ? `calc(100vh - ${callRef.current.activeCall ? "258px" : "190px"})`
+        : `calc(100vh - ${callRef.current.activeCall ? "300px" : "234px"})`
     );
     setSmallDevice(width < 1024 ? true : false);
   };
 
-  const condition = inCall.activeCall && matches[1]?.params.id === inCall.roomId;
+  const condition = inCall.activeCall && matches[1]?.params.id === inCall.roomID;
 
   if (loading) {
     return <div>loading</div>

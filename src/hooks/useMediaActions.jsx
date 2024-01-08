@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 
 export const useMediaActions = () => {
-	const [mute, setMute] = useState(false);
+	const initializedValue = localStorage.getItem("muted")
+		? JSON.parse(localStorage.getItem("muted"))
+		: false;
+	const [mute, setMute] = useState(initializedValue);
 	const [muted, setMuted] = useState(false);
 	const [deaf, setDeaf] = useState(false);
 	const [video, setVideo] = useState(false);
