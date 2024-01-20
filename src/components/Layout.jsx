@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, useMatch, useMatches, useNavigate } from "react-router";
 import { fetchData, refresh } from "../api";
-import { useStateProvider } from "../context";
+import { MediasoupProvider, useSocketIOProvider, useStateProvider } from "../context";
 import { getRandomColor, updateListStatus } from "../functions";
 import { FriendList } from "../pages";
 import { Navbar, Sidebar, StatusBox } from "./";
@@ -28,11 +28,14 @@ const Layout = () => {
     showChat,
     smallDevice,
     setSmallDevice,
+  } = useStateProvider();
+
+  const {
     socketConnect,
     socketDisconnect,
     addSocketEvent,
     removeSocketEvent
-  } = useStateProvider();
+  } = useSocketIOProvider()
 
   const [height, setHeight] = useState(null);
   const [burgerMenu, setBurgerMenu] = useState(false);
@@ -60,7 +63,20 @@ const Layout = () => {
         setRooms(rooms);
         setFriendList(friends);
         setLoading(false);
+        addSocketEvent('connect', () => console.log('connected'))
+        addSocketEvent('user-connected', updateUserStatus)
+        addSocketEvent('disconnect', () => console.log('disconnected'))
+        addSocketEvent('message', updateMessageList)
       });
+
+      return () => {
+        removeSocketEvent('connect')
+        removeSocketEvent('user-connected')
+        removeSocketEvent('disconnect')
+        removeSocketEvent('message')
+        socketDisconnect()
+        window.removeEventListener('resize', () => { })
+      }
     }
   }, [user]);
 
@@ -107,22 +123,12 @@ const Layout = () => {
       console.log(err.response.data.message)
     })
 
-    addSocketEvent('connect', () => console.log('connected'))
-    addSocketEvent('user-connected', updateUserStatus)
-    addSocketEvent('disconnect', () => console.log('disconnected'))
-    addSocketEvent('message', updateMessageList)
-
     window.addEventListener("resize", e => {
       const width = e.currentTarget.innerWidth;
       toggleSmallScreen(callRef, width);
     });
 
     return () => {
-      removeSocketEvent('connect')
-      removeSocketEvent('user-connected')
-      removeSocketEvent('disconnect')
-      removeSocketEvent('message')
-      socketDisconnect()
       window.removeEventListener('resize', () => { })
     }
   }, [])
@@ -157,7 +163,7 @@ const Layout = () => {
   }
 
   return (
-    <div>
+    <MediasoupProvider>
       <div className="app">
         {
           (smallDevice && burgerMenu) || (!smallDevice) ?
@@ -195,7 +201,7 @@ const Layout = () => {
           </main>
         </div>
       </div>
-    </div >
+    </MediasoupProvider >
   );
 };
 

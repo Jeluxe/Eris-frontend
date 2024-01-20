@@ -4,8 +4,8 @@ import {
 	Route,
 	RouterProvider,
 } from "react-router-dom";
-import Layout from "./components/Layout";
-import { ContextProvider } from "./context";
+import { Layout } from "./components";
+import { ContextProvider, SocketIOProvider } from "./context";
 import { Home, Login, Room, Settings, Signup } from "./pages";
 
 const router = createBrowserRouter(
@@ -50,7 +50,9 @@ const App = () => {
 
 	return (
 		<ContextProvider>
-			<RouterProvider router={router} />
+			<SocketIOProvider>
+				<RouterProvider router={router} />
+			</SocketIOProvider>
 		</ContextProvider>
 	)
 

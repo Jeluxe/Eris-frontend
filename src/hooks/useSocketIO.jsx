@@ -31,10 +31,10 @@ export const useSocketIO = (url) => {
     };
   }, [socket, socketEvents])
 
-  const socketConnect = (user) => {
+  const socketConnect = async (user) => {
     if (user && socket) {
       socket.auth = user
-      socket.connect()
+      await socket.connect()
     }
   }
 

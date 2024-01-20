@@ -10,8 +10,7 @@ import {
 	VideoIcon,
 	VideoOffIcon
 } from "../assets/icons";
-
-import { useStateProvider } from "../context";
+import { useMediasoupProvider, useStateProvider } from "../context";
 import { Avatar, Video } from "./";
 
 const CallNavbar = ({ avatar }) => {
@@ -21,9 +20,13 @@ const CallNavbar = ({ avatar }) => {
 		setMute, deaf, setDeaf,
 		video, setVideo, showChat,
 		setShowChat, videoContainer,
-		localVideoRef, remoteStreams,
-		closeConnection
 	} = useStateProvider()
+
+	const {
+		localVideoRef,
+		remoteStreams,
+		closeConnection
+	} = useMediasoupProvider();
 
 	return (
 		<div className="call-navbar">
@@ -32,7 +35,7 @@ const CallNavbar = ({ avatar }) => {
 
 				<div
 					ref={videoContainer}
-					id='videoContainer'
+					id='video-container'
 				>
 					{
 						inCall.activeCall && id === inCall.roomID &&

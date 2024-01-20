@@ -10,10 +10,6 @@ export const useMediaActions = () => {
 	const [video, setVideo] = useState(false);
 
 	useEffect(() => {
-		setVideo(!video)
-	}, [video])
-
-	useEffect(() => {
 		if (!deaf && mute && muted) {
 			setMute(true);
 		} else if (deaf && !mute && !muted) {

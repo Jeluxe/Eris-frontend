@@ -2,20 +2,24 @@ import { useEffect, useState } from "react";
 import { useMatches } from "react-router";
 import { getMessages } from "../api";
 import { Avatar, Footer, Input, Options } from "../components";
-import { useStateProvider } from "../context";
+import { useSocketIOProvider, useStateProvider } from "../context";
 import { formatDate, getTime, messagePositioning, messageRenderer } from "../functions";
 
 const Room = () => {
-	let loading = false;
-	const matches = useMatches()
-	const { messages, setMessages, selectedRoom, emitData } = useStateProvider()
-	const [selectedMessage, setSelectedMessage] = useState(null)
-	const [editedMessage, setEditedMessage] = useState(null)
+	const [loading, setLoading] = useState(true)
+	const matches = useMatches();
+	const { messages, setMessages, selectedRoom } = useStateProvider();
+	const { emitData } = useSocketIOProvider();
+	const [selectedMessage, setSelectedMessage] = useState(null);
+	const [editedMessage, setEditedMessage] = useState(null);
 
 	useEffect(() => {
 		if (matches[1].params.id) {
 			getMessages(matches[1].params.id)
-				.then((messages) => setMessages(messages))
+				.then((messages) => {
+					setMessages(messages)
+					setLoading(false);
+				})
 				.catch(err => console.error(err))
 		}
 	}, [matches])

@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useMatches } from 'react-router'
 import { SendIcon, TrashIcon } from '../assets/icons'
-import { useStateProvider } from '../context'
+import { useSocketIOProvider, useStateProvider } from '../context'
 import { blobToBuffer } from '../functions'
 import { useField, useRecorder } from '../hooks'
-import CustomAudioBar from './CustomAudioBar'
-import Input from './Input'
+import { CustomAudioBar, Input } from './'
 
 const Footer = () => {
-  const matches = useMatches()
-  const { user, setMessages, emitData } = useStateProvider()
-  const { reset, ...message } = useField('text')
+  const matches = useMatches();
+  const { user, setMessages } = useStateProvider();
+  const { emitData } = useSocketIOProvider();
+  const { reset, ...message } = useField('text');
   const { startRecording, stopRecording, url, blob, setBlob } = useRecorder();
   const [preview, setPreview] = useState(false);
   const [recording, setRecording] = useState(false);

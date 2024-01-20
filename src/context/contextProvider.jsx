@@ -1,5 +1,5 @@
 import { createContext, useContext, useRef, useState } from "react";
-import { useMediaActions, useMediasoup, useSocketIO } from "../hooks";
+import { useMediaActions } from "../hooks";
 
 export const Context = createContext()
 
@@ -22,28 +22,6 @@ export const ContextProvider = ({ children }) => {
   const [smallDevice, setSmallDevice] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const mediaActions = useMediaActions();
-  const {
-    socketConnect,
-    socketDisconnect,
-    emitData,
-    addSocketEvent,
-    removeSocketEvent,
-  } = useSocketIO("http://localhost:4000")
-  const { mute: muteToggle, video: videoToggle } = mediaActions;
-  const {
-    call, localVideoRef, remoteStreams, closeConnection
-  } = useMediasoup({
-    userID: user.id,
-    videoContainer,
-    videoToggle,
-    muteToggle,
-    socket: {
-      emitData,
-      addSocketEvent,
-      removeSocketEvent,
-    },
-    inCall: inCall
-  })
 
   return (
     <Context.Provider value={{
@@ -74,19 +52,6 @@ export const ContextProvider = ({ children }) => {
       isOpen,
       setIsOpen,
       videoContainer,
-
-      //useMediasoup props
-      call,
-      localVideoRef,
-      remoteStreams,
-      closeConnection,
-
-      //useSocketIO props
-      socketConnect,
-      socketDisconnect,
-      emitData,
-      addSocketEvent,
-      removeSocketEvent,
     }}>
       {children}
     </Context.Provider>

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
 	DeafIcon,
@@ -7,16 +8,17 @@ import {
 	MicOffIcon,
 	SettingsIcon
 } from "../assets/icons";
-import { useStateProvider } from "../context";
-import Avatar from "./Avatar";
-import HDivider from "./H_Divider";
-import UserStatus from "./UserStatus";
+import { useMediasoupProvider, useStateProvider } from "../context";
+import { Avatar, HDivider, UserStatus } from "./";
 
 const StatusBox = () => {
 	const navigate = useNavigate();
 	const {
-		user, status, inCall, setInCall, mute, setMute, deaf, setDeaf, closeConnection
+		user, status, inCall, setInCall, mute, setMute, deaf, setDeaf
 	} = useStateProvider()
+	const { closeConnection } = useMediasoupProvider();
+
+	useEffect(() => { console.log(inCall) }, [inCall])
 
 	return (
 		<div className="status-box">
@@ -29,7 +31,7 @@ const StatusBox = () => {
 						</div>
 						<div className="sb-user-action" onClick={() => {
 							closeConnection();
-							setInCall({ activeCall: false, roomId: null });
+							setInCall({ activeCall: false, roomID: null });
 						}}>
 							<LeaveCallIcon />
 						</div>

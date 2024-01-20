@@ -5,12 +5,12 @@ import {
   RestoreIcon,
   TrashIcon
 } from '../assets/icons'
-import { useStateProvider } from '../context'
+import { useSocketIOProvider } from '../context'
 import { Avatar, UserStatus } from './'
 
 
 const Friend = ({ data: { id, status: friendRequestStatus, user, isSender } }) => {
-  const { emitData } = useStateProvider()
+  const { emitData } = useSocketIOProvider()
   const [requestStatus, setRequestStatus] = useState(friendRequestStatus)
 
   const makeDecision = (decision) => {
@@ -25,8 +25,7 @@ const Friend = ({ data: { id, status: friendRequestStatus, user, isSender } }) =
       display: "flex",
       columnGap: "10px",
       alignItems: "center",
-    }
-    }>
+    }}>
       <div style={{ position: "relative", display: "flex" }}>
         <Avatar
           size={36}
