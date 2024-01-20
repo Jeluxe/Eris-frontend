@@ -9,7 +9,7 @@
   padding: 10px 24px 10px 10px;
   outline: none;
   border-radius: 5px;
-  width: 250px;
+  width: 100%;
 
   &::placeholder {
     text-transform: capitalize;

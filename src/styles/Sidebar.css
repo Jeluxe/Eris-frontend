@@ -44,11 +44,11 @@
 }
 
 .user-links:hover {
-	background-color: rgba(95, 85, 184, 0.502);
+	background-color: var(--links);
 }
 
 .active,
 .user-links:active {
-	background-color: rgba(83, 31, 181, 0.793);
+	background-color: var(--links-active);
 	color: wheat
 }

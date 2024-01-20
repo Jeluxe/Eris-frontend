@@ -3,6 +3,10 @@
   overflow-y: auto;
 }
 
+.friend-list {
+  padding: 30px;
+}
+
 .friend-wrapper {
   display: flex;
   align-items: center;
@@ -13,10 +17,14 @@
   border-bottom: 1px solid black;
   text-decoration: none;
   color: black;
-}
 
-.friend-list {
-  padding: 30px;
+  &:hover {
+    background-color: var(--links);
+  }
+
+  &:active {
+    background-color: var(--links-active);
+  }
 }
 
 .friend-actions {
@@ -54,10 +62,6 @@
   justify-content: center;
   flex-direction: column;
   padding: 40px 20px;
-
-  & input {
-    width: 100%;
-  }
 
   & button {
     margin-left: 20px;

@@ -1,4 +1,4 @@
-import CustomAudioBar from "../components/CustomAudioBar";
+import { CustomAudioBar } from "../components";
 
 export const getRandomColor = () => {
 	// Define the characters that can be used in a hexadecimal color

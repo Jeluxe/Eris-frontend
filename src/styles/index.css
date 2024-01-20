@@ -4,6 +4,8 @@
   background: linear-gradient(90deg,
       rgba(66, 0, 104, 1) 0%,
       rgb(0, 92, 158) 100%);
+  --links: rgba(95, 85, 184, 0.502);
+  --links-active: rgba(83, 31, 181, 0.793);
 }
 
 /* 

@@ -9,8 +9,6 @@
 }
 
 .status-box {
-	width: calc(100% - 30px);
-	margin-top: 20px;
 	padding: 10px 15px;
 	flex-direction: column;
 	justify-content: space-between;

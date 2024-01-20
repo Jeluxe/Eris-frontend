@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import AuthLayout from "../components/AuthLayout";
+import { AuthLayout } from "../components";
 import { useField } from "../hooks";
 
 const Login = () => {
