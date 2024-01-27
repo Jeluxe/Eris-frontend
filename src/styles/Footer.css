@@ -3,7 +3,6 @@
 }
 
 .footer input {
-  width: 100%;
   background: rgba(134, 91, 209, 0.2);
 }
 
@@ -61,8 +60,6 @@
 
 .buttons .delete,
 .buttons .send {
-
-
   & svg {
     height: 100%;
   }

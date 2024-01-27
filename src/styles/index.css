@@ -4,6 +4,8 @@
   background: linear-gradient(90deg,
       rgba(66, 0, 104, 1) 0%,
       rgb(0, 92, 158) 100%);
+  --light-theme: #fff;
+  --dark-theme: #121212;
   --links: rgba(95, 85, 184, 0.502);
   --links-active: rgba(83, 31, 181, 0.793);
 }
@@ -77,7 +79,7 @@ svg {
 .sidebar-list,
 .messages-container {
   &::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.56);
+    background-color: rgba(0, 0, 0, 0.56);
     border-radius: 9999px;
   }
 }
@@ -85,21 +87,21 @@ svg {
 .sidebar-list,
 .messages-container {
   &::-webkit-scrollbar-track {
-    background: transparent;
+    background-color: transparent;
   }
 }
 
-@media (prefers-color-scheme: light) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: var(--dark-theme);
   }
 
   a:hover {
     color: #747bff;
   }
 
-  button {
-    background-color: #f9f9f9;
+  .link.add-friend-button {
+    color: #111
   }
-}
+} */

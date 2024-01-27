@@ -16,14 +16,14 @@ import { Avatar, Video } from "./";
 const CallNavbar = ({ avatar }) => {
 	const { id } = useParams()
 	const {
-		inCall, setInCall, mute,
-		setMute, deaf, setDeaf,
-		video, setVideo, showChat,
+		inCall, setInCall, muteToggle,
+		setMuteToggle, deafToggle, setDeafToggle,
+		videoToggle, setVideoToggle, showChat,
 		setShowChat, videoContainer,
 	} = useStateProvider()
 
 	const {
-		localVideoRef,
+		localStreamRef,
 		remoteStreams,
 		closeConnection
 	} = useMediasoupProvider();
@@ -40,35 +40,33 @@ const CallNavbar = ({ avatar }) => {
 					{
 						inCall.activeCall && id === inCall.roomID &&
 						<>
-							<div>
-								{video ? (<Video
-									type="local"
-									ref={localVideoRef}
-									muted={true}
-								/>) : (
-									<Avatar
-										size={80}
-										bgColor={"green"}
-									/>
-								)}
-							</div>
+							<Video
+								type="local"
+								muted={true}
+								stream={localStreamRef.current}
+								videoOn={videoToggle}
+							/>
+							{videoToggle ? "" : <Avatar
+								size={80}
+								bgColor={"green"}
+							/>}
 							{
 								remoteStreams?.map((remoteStream, idx) =>
-									<Video key={idx} type="remote" remoteStream={Object.values(remoteStream)[0]} />
+									<Video key={idx} type="remote" stream={Object.values(remoteStream)[0]} />
 								)
 							}
 						</>
 					}
 				</div>
 				<div className="call-navbar-actions">
-					<div onClick={() => setMute(!mute)}>
-						{mute ? <MicOffIcon /> : <MicIcon />}
+					<div onClick={() => setMuteToggle(!muteToggle)}>
+						{muteToggle ? <MicOffIcon /> : <MicIcon />}
 					</div>
-					<div onClick={() => setDeaf(!deaf)}>
-						{deaf ? <DeafOffIcon /> : <DeafIcon />}
+					<div onClick={() => setDeafToggle(!deafToggle)}>
+						{deafToggle ? <DeafOffIcon /> : <DeafIcon />}
 					</div>
-					<div onClick={() => setVideo(!video)}>
-						{video ? <VideoOffIcon /> : <VideoIcon />}
+					<div onClick={() => setVideoToggle(!videoToggle)}>
+						{!videoToggle ? <VideoIcon /> : <VideoOffIcon />}
 					</div>
 					<div onClick={() => {
 						closeConnection()

@@ -5,7 +5,9 @@ import { SocketIOProvider, useSocketIOProvider } from './socketIOProvider.jsx'
 export {
   ContextProvider,
   MediasoupProvider,
-  SocketIOProvider, useMediasoupProvider,
-  useSocketIOProvider, useStateProvider
+  SocketIOProvider,
+  useMediasoupProvider,
+  useSocketIOProvider,
+  useStateProvider
 }
 

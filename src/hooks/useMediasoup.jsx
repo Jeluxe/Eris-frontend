@@ -1,5 +1,6 @@
 import * as mediasoupClient from "mediasoup-client";
 import { useEffect, useRef, useState } from 'react';
+import { useSocketIOProvider } from "../context";
 
 const produceParams = {
   encoding: [
@@ -14,8 +15,7 @@ const produceParams = {
 
 export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteToggle, inCall }) => {
   const { emitData, addSocketEvent, removeSocketEvent } = useSocketIOProvider()
-
-  const [roomName, setRoomName] = useState(null)
+  const roomName = useRef(null)
   const device = useRef(null);
   const rtpCapabilities = useRef(null);
   const producerTransport = useRef(null);
@@ -26,7 +26,6 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
   const consumerTransports = useRef([]);
   const tracks = useRef(null);
   const localStreamRef = useRef();
-  const localVideoRef = useRef();
   const videoOn = useRef(videoToggle);
   const muted = useRef(muteToggle);
   const remoteStreamsRef = useRef([])
@@ -98,13 +97,7 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
   }, [])
 
   useEffect(() => {
-    if (localStreamRef.current && roomName && inCall.activeCall && inCall.roomID === roomName) {
-      localVideoRef.current.srcObject = localStreamRef.current;
-    }
-  }, [roomName])
-
-  useEffect(() => {
-    playPause(videoProducer, videoOn, videoToggle);
+    playPause(videoProducer, videoOn, !videoToggle);
   }, [videoToggle]);
 
   useEffect(() => {
@@ -126,7 +119,7 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
   };
 
   const call = (selectedUserID) => {
-    setRoomName(selectedUserID)
+    roomName.current = selectedUserID;
     getMedia()
       .then(streamSuccess)
       .catch((error) => console.log(error.message));
@@ -154,7 +147,7 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
   };
 
   const joinRoom = () => {
-    emitData("joinRoom", { roomName }, (data) => {
+    emitData("joinRoom", { targetID: roomName.current }, (data) => {
       rtpCapabilities.current = data.rtpCapabilities;
 
       // once we have rtpCapabilities from the Router, create device.
@@ -253,7 +246,6 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
               console.log("publishing...");
               break;
             case "connected":
-              localVideoRef.current.srcObject = localStreamRef.current;
               console.log("connected");
               break;
             case "failed":
@@ -468,9 +460,6 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
       transportData?.transport?.close()
     );
 
-    if (localVideoRef.current)
-      localVideoRef.current.srcObject = null;
-
     device.current = null;
     await localStreamRef.current
       ?.getTracks()
@@ -489,5 +478,5 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
     emitData("leaveRoom");
   };
 
-  return { call, localVideoRef, remoteStreams, closeConnection }
+  return { call, localStreamRef, remoteStreams, closeConnection }
 }

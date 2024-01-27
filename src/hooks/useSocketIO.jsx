@@ -6,7 +6,7 @@ export const useSocketIO = (url) => {
   const [socketEvents, setSocketEvents] = useState({});
 
   useEffect(() => {
-    const newSocket = io.connect(url, { autoConnect: false });
+    const newSocket = io(url, { autoConnect: false });
 
     setSocket(newSocket);
 

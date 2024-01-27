@@ -14,7 +14,7 @@ import { Avatar, HDivider, UserStatus } from "./";
 const StatusBox = () => {
 	const navigate = useNavigate();
 	const {
-		user, status, inCall, setInCall, mute, setMute, deaf, setDeaf
+		user, status, inCall, setInCall, muteToggle, setMuteToggle, deafToggle, setDeafToggle
 	} = useStateProvider()
 	const { closeConnection } = useMediasoupProvider();
 
@@ -56,15 +56,15 @@ const StatusBox = () => {
 				<div className="status-box-info sb-user-actions">
 					<div
 						className="sb-user-action"
-						onClick={() => setMute(!mute)}
+						onClick={() => setMuteToggle(!muteToggle)}
 					>
-						{!mute ? <MicIcon /> : <MicOffIcon />}
+						{!muteToggle ? <MicIcon /> : <MicOffIcon />}
 					</div>
 					<div
 						className="sb-user-action"
-						onClick={() => setDeaf(!deaf)}
+						onClick={() => setDeafToggle(!deafToggle)}
 					>
-						{!deaf ? <DeafIcon /> : <DeafOffIcon />}
+						{!deafToggle ? <DeafIcon /> : <DeafOffIcon />}
 					</div>
 					<div
 						className="sb-user-action"

@@ -4,6 +4,10 @@
 	padding: 20px;
 }
 
+.hide {
+	display: none;
+}
+
 .left-side {
 	display: flex;
 }

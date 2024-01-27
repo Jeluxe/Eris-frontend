@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useMatches } from "react-router";
 import { Link } from "react-router-dom";
 import { BurgerMenu, CallIcon, FriendsIcon, IoMdPersonAdd, VideoIcon } from "../assets/icons";
@@ -21,7 +21,7 @@ const Navbar = ({
 }) => {
 	const matches = useMatches();
 	const [small, setSmall] = useState(false);
-	const { selectedRoom, inCall, setInCall, incomingCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen } = useStateProvider()
+	const { selectedRoom, inCall, setInCall, incomingCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen, setVideoToggle } = useStateProvider()
 	const { call } = useMediasoupProvider()
 	const createBurgerMenuBtn = () => {
 		return smallDevice ? (
@@ -46,10 +46,6 @@ const Navbar = ({
 		}
 	}, [])
 
-	useEffect(() => {
-		console.log(inCall.activeCall && inCall.roomID === matches[1]?.params.id)
-	}, [inCall])
-
 	return (
 		<div className={`navbar ${condition && !match ? "in-call-nav" : ""} ${condition ? showChat ? "" : !match ? "nav-hide-outlet" : "" : ""}`}>
 			{selectedRoom ? (
@@ -72,7 +68,7 @@ const Navbar = ({
 							<div
 								className="call-btn"
 								onClick={() => {
-									console.log(selectedUser)
+									setVideoToggle(false)
 									call(selectedUser.id);
 									setInCall({ activeCall: true, roomID: selectedUser.id });
 								}}
@@ -82,6 +78,7 @@ const Navbar = ({
 							<div
 								className="video-call-btn"
 								onClick={() => {
+									setVideoToggle(true)
 									call(selectedUser.id);
 									setInCall({ activeCall: true, roomID: selectedUser.id });
 								}}

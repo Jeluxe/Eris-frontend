@@ -4,31 +4,31 @@ export const useMediaActions = () => {
 	const initializedValue = localStorage.getItem("muted")
 		? JSON.parse(localStorage.getItem("muted"))
 		: false;
-	const [mute, setMute] = useState(initializedValue);
+	const [muteToggle, setMuteToggle] = useState(initializedValue);
 	const [muted, setMuted] = useState(false);
-	const [deaf, setDeaf] = useState(false);
-	const [video, setVideo] = useState(false);
+	const [deafToggle, setDeafToggle] = useState(false);
+	const [videoToggle, setVideoToggle] = useState(false);
 
 	useEffect(() => {
-		if (!deaf && mute && muted) {
-			setMute(true);
-		} else if (deaf && !mute && !muted) {
-			setMute(true);
-		} else if (!deaf && mute && !muted) {
-			setMute(false);
+		if (!deafToggle && muteToggle && muted) {
+			setMuteToggle(true);
+		} else if (deafToggle && !muteToggle && !muted) {
+			setMuteToggle(true);
+		} else if (!deafToggle && muteToggle && !muted) {
+			setMuteToggle(false);
 		}
-	}, [deaf]);
+	}, [deafToggle]);
 
 	useEffect(() => {
-		if (deaf && !mute) {
-			setDeaf(false);
+		if (deafToggle && !muteToggle) {
+			setDeafToggle(false);
 			setMuted(false);
-		} else if (mute && !deaf) {
+		} else if (muteToggle && !deafToggle) {
 			setMuted(true);
-		} else if (!mute && !deaf) {
+		} else if (!muteToggle && !deafToggle) {
 			setMuted(false);
 		}
-	}, [mute]);
+	}, [muteToggle]);
 
-	return { video, setVideo, mute, setMute, deaf, setDeaf };
+	return { videoToggle, setVideoToggle, muteToggle, setMuteToggle, deafToggle, setDeafToggle };
 };
