@@ -31,8 +31,6 @@ const CallNavbar = ({ avatar }) => {
 	return (
 		<div className="call-navbar">
 			<div className="call-navbar-container">
-				{/* <div className="call-navbar-time">10 : 10 : 10</div> */}
-
 				<div
 					ref={videoContainer}
 					id='video-container'
@@ -51,8 +49,10 @@ const CallNavbar = ({ avatar }) => {
 								bgColor={"green"}
 							/>}
 							{
-								remoteStreams?.map((remoteStream, idx) =>
-									<Video key={idx} type="remote" stream={Object.values(remoteStream)[0]} />
+								remoteStreams?.map((remoteStream, idx) => {
+									const [key, value] = Object.entries(remoteStream)[0];
+									return <Video key={idx} type="remote" id={key} stream={value} />
+								}
 								)
 							}
 						</>
