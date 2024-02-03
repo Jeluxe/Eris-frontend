@@ -6,19 +6,15 @@ export const useMediaActions = () => {
 	const [muted, setMuted] = useState(false);
 	const [deafToggle, setDeafToggle] = useState(false);
 	const [videoToggle, setVideoToggle] = useState(false);
-	let firstTime = true;
 
 	useEffect(() => {
-		if (!firstTime) {
-			if (!deafToggle && muteToggle && muted) {
-				setMuteToggle(true);
-			} else if (deafToggle && !muteToggle && !muted) {
-				setMuteToggle(true);
-			} else if (!deafToggle && muteToggle && !muted) {
-				setMuteToggle(false);
-			}
+		if (!deafToggle && muteToggle && muted) {
+			setMuteToggle(true);
+		} else if (deafToggle && !muteToggle && !muted) {
+			setMuteToggle(true);
+		} else if (!deafToggle && muteToggle && !muted) {
+			setMuteToggle(false);
 		}
-		firstTime = false;
 	}, [deafToggle]);
 
 	useEffect(() => {

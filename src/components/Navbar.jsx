@@ -20,7 +20,6 @@ const Navbar = ({
 	setBurgerMenu,
 }) => {
 	const matches = useMatches();
-	const [small, setSmall] = useState(false);
 	const { selectedRoom, inCall, setInCall, incomingCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen, setVideoToggle } = useStateProvider()
 	const { call } = useMediasoupProvider()
 	const createBurgerMenuBtn = () => {
@@ -30,26 +29,13 @@ const Navbar = ({
 			""
 		);
 	};
-	const selectedUser = selectedRoom?.user
+	const selectedUser = selectedRoom?.recipients
 	const condition = inCall.activeCall && matches[1]?.params.id === inCall.roomID
 
-	useLayoutEffect(() => {
-		window.innerWidth < 1063 ? setSmall(true) : setSmall(false)
-
-		window.addEventListener('resize', (e) => {
-			const width = e.currentTarget.innerWidth;
-			width < 1063 ? setSmall(true) : setSmall(false)
-		})
-
-		return () => {
-			window.removeEventListener('resize', () => { })
-		}
-	}, [])
-
 	return (
-		<div className={`navbar ${condition && !match ? "in-call-nav" : ""} ${condition ? showChat ? "" : !match ? "nav-hide-outlet" : "" : ""}`}>
+		<div className={`navbar ${condition && !match ? "in-call-nav" : ""}${condition ? showChat ? "" : !match ? " nav-hide-outlet" : "" : ""}`}>
 			{selectedRoom ? (
-				<div className={`navbar-user ${condition && !match ? "in-call" : ""} ${condition ? showChat ? "" : !match ? "hide-outlet" : "" : ""}`}>
+				<div className={`navbar-user ${condition && !match ? "in-call" : ""}${condition ? showChat ? "" : !match ? " hide-outlet" : "" : ""}`}>
 					<div className="navbar-user-info">
 						{smallDevice ? createBurgerMenuBtn() : ""}
 						<Avatar
@@ -66,21 +52,21 @@ const Navbar = ({
 					) : (
 						<div className="navbar-actions">
 							<div
-								className="call-btn"
+								className="call-button center circle"
 								onClick={() => {
 									setVideoToggle(false)
 									call(selectedUser.id);
-									setInCall({ activeCall: true, roomID: selectedUser.id });
+									setInCall({ activeCall: true, roomID: selectedRoom.id });
 								}}
 							>
 								<CallIcon style={style(incomingCall)} />
 							</div>
 							<div
-								className="video-call-btn"
+								className="video-call-button center circle"
 								onClick={() => {
 									setVideoToggle(true)
 									call(selectedUser.id);
-									setInCall({ activeCall: true, roomID: selectedUser.id });
+									setInCall({ activeCall: true, roomID: selectedRoom.id });
 								}}
 							>
 								<VideoIcon style={style(incomingCall)} />
@@ -108,10 +94,8 @@ const Navbar = ({
 											target={category}
 										/>
 									))}
-									{small ?
-										<div className="navbar-category-label" style={{ padding: 0, width: 30 }} onClick={() => setSelectedFilter('')}><IoMdPersonAdd /></div>
-										: <Link to="#" className="link add-friend-button" onClick={() => setSelectedFilter('')}>add Friend</Link>}
 								</div>
+								<Link to="#" className="link add-friend-button" onClick={() => setSelectedFilter('')}>add Friend</Link>
 							</> :
 							<div className="navbar-category-label"
 								onClick={() => {

@@ -13,6 +13,7 @@ import NewFriendForm from "./NewFriendForm";
 import Options from "./Options";
 import Sidebar from "./Sidebar";
 import StatusBox from "./StatusBox";
+import Textarea from "./Textarea";
 import UserStatus from "./UserStatus";
 import VDivider from "./V_Divider";
 import Video from "./Video";
@@ -21,12 +22,8 @@ export {
   AuthLayout, Avatar, CallNavbar,
   Checkbox, CustomAudioBar, Footer, Friend, HDivider,
   Input,
-  Layout,
-  Navbar, NewFriendForm,
-  Options, Sidebar,
-  StatusBox,
-  UserStatus,
-  VDivider,
-  Video
+  Layout, Navbar, NewFriendForm,
+  Options, Sidebar, StatusBox, Textarea, UserStatus,
+  VDivider, Video
 };
 

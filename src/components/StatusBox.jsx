@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
 	DeafIcon,
@@ -18,30 +17,28 @@ const StatusBox = () => {
 	} = useStateProvider()
 	const { closeConnection } = useMediasoupProvider();
 
-	useEffect(() => { console.log(inCall) }, [inCall])
-
 	return (
 		<div className="status-box">
 			{inCall.activeCall ? (
-				<>
-					<div className="status-box-info sb-call">
-						<div>
-							<p>call in progress</p>
-							<span>Room: <div onClick={() => navigate(`/@me/${inCall.roomID}`)}>{inCall.roomID}</div></span>
-						</div>
-						<div className="sb-user-action" onClick={() => {
+				<div className="sb-wrapper sb-call">
+					<div>
+						<p>call in progress</p>
+						<span>Room: <div onClick={() => navigate(`/@me/${inCall.roomID}`)}>{inCall.roomID}</div></span>
+					</div>
+					<div className="sb-user-action"
+						style={{ marginTop: 5 }}
+						onClick={() => {
 							closeConnection();
 							setInCall({ activeCall: false, roomID: null });
 						}}>
-							<LeaveCallIcon />
-						</div>
+						<LeaveCallIcon />
 					</div>
-					<HDivider />
-				</>
+				</div>
 			) : null}
-			<div className="status-box-info sb-user">
-				<div className="status-box-info sb-user-info">
-					<div style={{ position: "relative", display: "flex" }}>
+			{inCall.activeCall ? <HDivider /> : ""}
+			<div className="sb-wrapper">
+				<div className="sb-user">
+					<div>
 						<Avatar
 							size={35}
 							bgColor={user?.avatar}
@@ -53,7 +50,7 @@ const StatusBox = () => {
 					</div>
 					<div>{user?.username}</div>
 				</div>
-				<div className="status-box-info sb-user-actions">
+				<div className="sb-user-actions">
 					<div
 						className="sb-user-action"
 						onClick={() => setMuteToggle(!muteToggle)}

@@ -23,7 +23,7 @@ const UserStatus = ({ status = "", absolute = false }) => {
 
 	return (
 		<div
-			className={`user-status ${absolute ? "is-absolute" : ""}`}
+			className={`user-status circle ${absolute ? "absolute" : ""}`}
 			style={{
 				backgroundColor: color
 			}}

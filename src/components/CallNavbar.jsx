@@ -29,11 +29,12 @@ const CallNavbar = ({ avatar }) => {
 	} = useMediasoupProvider();
 
 	return (
-		<div className="call-navbar">
+		<div className="call-navbar v-center">
 			<div className="call-navbar-container">
 				<div
 					ref={videoContainer}
 					id='video-container'
+					className="center"
 				>
 					{
 						inCall.activeCall && id === inCall.roomID &&
@@ -59,23 +60,23 @@ const CallNavbar = ({ avatar }) => {
 					}
 				</div>
 				<div className="call-navbar-actions">
-					<div onClick={() => setMuteToggle(!muteToggle)}>
+					<div className="circle center" onClick={() => setMuteToggle(!muteToggle)}>
 						{muteToggle ? <MicOffIcon /> : <MicIcon />}
 					</div>
-					<div onClick={() => setDeafToggle(!deafToggle)}>
+					<div className="circle center" onClick={() => setDeafToggle(!deafToggle)}>
 						{deafToggle ? <DeafOffIcon /> : <DeafIcon />}
 					</div>
-					<div onClick={() => setVideoToggle(!videoToggle)}>
+					<div className="circle center" onClick={() => setVideoToggle(!videoToggle)}>
 						{!videoToggle ? <VideoIcon /> : <VideoOffIcon />}
 					</div>
-					<div onClick={() => {
+					<div className="circle center" onClick={() => {
 						closeConnection()
 						setInCall({ activeCall: false, roomID: null })
 					}}>
 						<LeaveCallIcon />
 					</div>
 				</div>
-				<div className="show-hide-chat-button" onClick={() => setShowChat(!showChat)}>
+				<div className="show-hide-chat-button circle" onClick={() => setShowChat(!showChat)}>
 					{showChat ? <ArrowDown /> : <ArrowUp />}
 				</div>
 			</div>

@@ -10,42 +10,39 @@
   --links-active: rgba(83, 31, 181, 0.793);
 }
 
-/* 
-themes: linear-gradient(
-		90deg,
-		rgb(109, 241, 109) 0%,
-		rgb(234, 234, 234) 50%,
-		rgb(76, 216, 76) 100%
-	);
-
-linear-gradient(
-		90deg,
-		rgba(66, 0, 104, 1) 0%,
-		rgba(255, 255, 255, 0.9) 50%,
-		rgba(0, 132, 158, 1) 100%
-	); */
-
-body,
-p {
-  margin: 0;
+*,
+:after,
+:before {
+  box-sizing: border-box;
+  outline: none;
 }
 
-body {
-  min-height: 100vh;
+html,
+body,
+p,
+#root {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+img {
+  pointer-events: none;
+  border-radius: 9999px;
 }
 
 button {
   padding: 10px 5px;
 }
 
-img {
-  pointer-events: none;
-}
-
-img,
-.call-btn,
-.video-call-btn {
-  border-radius: 9999px;
+button,
+a {
+  cursor: pointer;
 }
 
 svg {
@@ -53,12 +50,8 @@ svg {
   height: 2em;
 }
 
-#root {
-  min-height: 100vh;
-}
-
 .v-divider {
-  border: 1px solid rgba(82, 82, 82, 0.818);
+  border: 1px solid rgba(0, 0, 0, 0.35);
   margin: 0 10px;
   height: 100%;
 }
@@ -69,39 +62,22 @@ svg {
   width: 100%;
 }
 
-.sidebar-list,
-.messages-container {
-  &::-webkit-scrollbar {
-    width: 0.5em;
-  }
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.sidebar-list,
-.messages-container {
-  &::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.56);
-    border-radius: 9999px;
-  }
+.v-center {
+  display: flex;
+  align-items: center;
 }
 
-.sidebar-list,
-.messages-container {
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
+.h-center {
+  display: flex;
+  justify-content: center;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    color: #213547;
-    background-color: var(--dark-theme);
-  }
-
-  a:hover {
-    color: #747bff;
-  }
-
-  .link.add-friend-button {
-    color: #111
-  }
-} */
+.circle {
+  border-radius: 9999px;
+}

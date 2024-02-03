@@ -21,7 +21,7 @@ const Sidebar = ({ smallDevice, height, setBurgerMenu }) => {
 					id: room.id,
 					index: idx,
 					type: room.type,
-					participants: room.participants
+					recipients: room.recipients
 				}
 			})
 			setRooms(reorderedList)
@@ -56,15 +56,16 @@ const Sidebar = ({ smallDevice, height, setBurgerMenu }) => {
 				}}
 			>
 				{rooms?.map((room, idx) => {
-					if (!room?.user) {
+					if (!room?.recipients) {
 						return;
 					}
-					const { id, username, avatar, status } = room.user
+
+					const { username, avatar, status } = room.recipients
 					return (
 						<Link
 							key={idx}
-							className={`link user-links ${selectedRoom?.user.id === id ? "active" : ""}`}
-							to={`/@me/${id}`}
+							className={`link user-links ${selectedRoom?.id === room.id ? "active" : ""}`}
+							to={`/@me/${room.id}`}
 							onClick={() => openSidebar()}
 						>
 							<div style={{ position: "relative", display: "flex" }}>

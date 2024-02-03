@@ -3,13 +3,13 @@ import { Input } from './'
 
 const AuthLayout = ({ fields, button, link }) => {
   return (
-    <div className='auth-container' >
-      <div className='auth-wrapper' >
+    <div className='auth-container center' >
+      <div className='auth-wrapper center' >
         <h2>{button.content} Page</h2>
-        <div className='auth-inputs-container'>
+        <div className='auth-inputs-container v-center'>
           {Object.entries(fields).map((field, idx) => {
             return (
-              <div key={idx} className="inputs">
+              <div key={idx} className="inputs v-center">
                 <Input {...field[1]} placeHolder={
                   field[1].type === 'password' ?
                     sperateWordsByUpperCase(field[0]) :

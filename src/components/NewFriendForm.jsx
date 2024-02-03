@@ -14,11 +14,13 @@ const NewFriendForm = () => {
     if (newFriend.value.trim()) {
 
       emitData('new-friend-request', newFriend.value, (data) => {
-        if (data.type === 'error') {
-          setNotfication(data)
-        } else {
-          setFriendList((prevFriendList) => [...prevFriendList, data])
-          setNotfication({ type: 'success', message: `sent friend request to ${data.user.username} successfully` })
+        if (data) {
+          if (data.type === 'error') {
+            setNotfication(data)
+          } else {
+            setFriendList((prevFriendList) => [...prevFriendList, data])
+            setNotfication({ type: 'success', message: `sent friend request to ${data.user.username} successfully` })
+          }
         }
       })
     }

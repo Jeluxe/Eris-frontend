@@ -1,15 +1,16 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AcceptIcon,
   RestoreIcon,
   TrashIcon
 } from '../assets/icons'
-import { useSocketIOProvider } from '../context'
+import { useSocketIOProvider, useStateProvider } from '../context'
 import { Avatar, UserStatus } from './'
 
 
 const Friend = ({ data: { id, status: friendRequestStatus, user, isSender } }) => {
+  const { rooms } = useStateProvider()
   const { emitData } = useSocketIOProvider()
   const [requestStatus, setRequestStatus] = useState(friendRequestStatus)
 
@@ -40,11 +41,19 @@ const Friend = ({ data: { id, status: friendRequestStatus, user, isSender } }) =
     </div >
   }
 
+  const getRoomID = useCallback((userID) => {
+    const foundRoom = rooms?.find(room => room.recipients?.id === userID);
+    if (foundRoom) {
+      return foundRoom.id
+    }
+    return userID
+  }, [rooms])
+
 
   return (
     <>{
       requestStatus !== 'PENDING' && requestStatus !== 'BLOCKED' ?
-        <Link to={`/@me/${user?.id}`} className='friend-wrapper'>
+        <Link to={`/@me/${getRoomID(user.id)}`} className='friend-wrapper'>
           {userInfoElement(true, user)}
         </Link>
         :

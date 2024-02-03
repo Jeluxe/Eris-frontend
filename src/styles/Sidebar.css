@@ -1,23 +1,41 @@
 .sidebar {
 	padding: 20px 10px;
+	flex-grow: 1;
+	background-color: rgba(240, 248, 255, 0.748);
+	color: black;
+	border-radius: 15px;
+	box-shadow: 0 0 10px 1px black;
 }
 
 .sidebar-top {
 	display: flex;
 	align-items: center;
 	margin-bottom: 10px;
-	padding: 5px 0;
 	column-gap: 15px;
-
-	& div {
-		display: flex;
-	}
 }
 
 .sidebar-list {
 	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
+
+	&::-webkit-scrollbar {
+		width: 0.5em;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: rgba(0, 0, 0, 0.56);
+		border-radius: 9999px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background-color: transparent;
+	}
+}
+
+.friends-link,
+.user-links {
+	column-gap: 10px;
 }
 
 .friends-link {
@@ -26,29 +44,29 @@
 	width: 100%;
 	border-radius: 5px;
 	background-color: rgba(126, 120, 176, 0.581);
+
+	&:hover {
+		background-color: rgba(99, 94, 139, 0.581);
+		transform: scale(1.01);
+	}
+
+	&:active {
+		transform: scale(0.99);
+	}
 }
 
 .user-links {
 	padding: 10px 150px 10px 10px;
 	border-radius: .25rem;
 	margin-bottom: .20rem;
-}
 
-.friends-link:hover {
-	background-color: rgba(99, 94, 139, 0.581);
-	transform: scale(1.01);
-}
-
-.friends-link:active {
-	transform: scale(0.99);
-}
-
-.user-links:hover {
-	background-color: var(--links);
+	&:hover {
+		background-color: var(--links);
+	}
 }
 
 .active,
 .user-links:active {
 	background-color: var(--links-active);
-	color: wheat
+	color: wheat;
 }

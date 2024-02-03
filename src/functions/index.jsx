@@ -17,17 +17,17 @@ export const getRandomColor = () => {
 };
 
 export const updateListStatus = (list, id, status) => {
-	return list.map(friend => {
-		if (friend?.user?.id === id) {
+	return list.map(entity => {
+		if (entity?.user?.id === id) {
 			return {
-				...friend,
+				...entity,
 				user: {
-					...friend.user,
+					...entity.user,
 					status
 				}
 			}
 		} else {
-			return friend;
+			return entity;
 		}
 	})
 }
@@ -133,7 +133,7 @@ export const calculateTime = (secs) => {
 
 export const messageRenderer = (message, clicked) => {
 	if (message.type === 1) {
-		return <div id={`message-${message.id}`} className="message-content">{message.content} {message.edited_timestamp ? "(edited)" : ""}</div>;
+		return <div id={`message-${message.id}`} className="message-content">{message.content} {message.edited ? " (edited)" : ""}</div>;
 	} else if (message.type === 2) {
 		return <CustomAudioBar src={`data:audio/wav;base64,${message.content}`} clicked={clicked} />;
 	}

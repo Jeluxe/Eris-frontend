@@ -1,0 +1,26 @@
+textarea {
+  resize: none;
+  display: flex;
+  align-items: center;
+  padding: .875rem 1rem;
+  min-height: 38px;
+  max-height: 500px;
+  line-height: 18px;
+  font-size: 16px;
+  overflow-x: hidden;
+  white-space: normal;
+}
+
+#send-button:last-child {
+  width: 35px;
+  height: 35px;
+  margin: 5px 10px;
+  border: none;
+  background-color: rgb(160, 130, 217);
+  color: aliceblue;
+  padding: 10px
+}
+
+.show-scrollbar {
+  overflow-y: auto;
+}

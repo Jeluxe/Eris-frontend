@@ -1,14 +1,8 @@
 .auth-container {
-  display: flex;
-  min-height: 100vh;
-  align-items: center;
-  justify-content: center;
+  min-height: 100%;
 }
 
 .auth-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
   row-gap: 20px;
   background: rgba(213, 255, 255, 0.561);
@@ -21,16 +15,12 @@
 }
 
 .auth-inputs-container {
-  display: flex;
-  align-items: center;
   flex-direction: column;
   row-gap: 25px;
   padding-bottom: 20px;
 }
 
 .inputs {
-  display: flex;
-  align-items: center;
   width: 100%;
 }
 

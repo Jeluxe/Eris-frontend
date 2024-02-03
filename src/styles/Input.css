@@ -7,7 +7,6 @@
 
 .input-wrapper input {
   padding: 10px 24px 10px 10px;
-  outline: none;
   border-radius: 5px;
   width: 100%;
 
@@ -22,7 +21,6 @@
   right: 0;
   border: none;
   background: none;
-  outline: none;
 }
 
 .input-wrapper.password:not(:focus-within)>button {

@@ -1,29 +1,42 @@
+/*sb stands for status-box */
 .status-box,
-.status-box-info,
+.sb-wrapper,
 .sb-user,
-.sb-user-info,
 .sb-user-actions,
 .sb-user-action,
-.sb-call :last-child {
+.sb-call {
 	display: flex;
 }
 
 .status-box {
-	padding: 10px 15px;
 	flex-direction: column;
 	justify-content: space-between;
+	max-height: 150px;
+	margin-top: 20px;
+	padding: 10px 15px;
+	background-color: rgba(240, 248, 255, 0.748);
+	color: black;
+	border-radius: 15px;
+	box-shadow: 0 0 10px 1px black;
 }
 
-.status-box-info {
-	align-items: center;
-}
-
-.sb-user,
-.status-box-info {
+.sb-wrapper {
 	justify-content: space-between;
 }
 
-.sb-user-info,
+.sb-user {
+	align-items: center;
+
+	& div:first-child {
+		position: relative;
+		display: flex;
+	}
+
+	& div:last-child {
+		margin-left: 5px;
+	}
+}
+
 .sb-user-actions {
 	column-gap: 6px;
 }
@@ -42,11 +55,11 @@
 	font-weight: 700;
 
 	&>div>span {
+		display: flex;
 		font-weight: 500;
-		max-width: 217px;
+		max-width: 210px;
 
 		&>div {
-			display: inline-block !important;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
