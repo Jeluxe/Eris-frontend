@@ -49,18 +49,21 @@ const Room = () => {
 		if (e.key === "Enter") {
 			if (editedContent.trim().length === 0) {
 				deleteMessage(selectedMessage);
-			} else {
-				const message = emitData('edit-message',
-					{ message: selectedMessage, newContent: editedContent },
-					(something) => console.log(something));
-				if (message?.success) {
-					console.log('message has been edited!')
-					setSelectedMessage(null)
-					setEditedContent(null)
-				} else {
-					console.log(message?.error)
-				}
+			} else if (selectedMessage.content !== editedContent) {
+				emitData('edit-message',
+					{ message: selectedMessage, newContent: editedContent }, ({ editedMessage, error }) => {
+						if (!error) {
+							const updatedMessages = [...messages.map(message =>
+								message.id === editedMessage.id ? editedMessage : message
+							)]
+							setMessages(updatedMessages)
+						} else {
+							console.log(error)
+						}
+					});
 			}
+			setSelectedMessage(null)
+			setEditedContent(null)
 		}
 	}
 
