@@ -35,7 +35,13 @@ const Room = () => {
 
 	const deleteMessage = async (message) => {
 		if (confirm('Are you sure you want to delete this message?')) {
-			emitData('delete-message', { id: message.id, rid: message.rid });
+			emitData('delete-message', { id: message.id, rid: message.rid }, ({ deletedMessageID, error }) => {
+				if (!error) {
+					setMessages(prevMessages => [...prevMessages.filter((message) => message.id !== deletedMessageID)])
+				} else {
+					console.log(error)
+				}
+			});
 			console.log('message has been deleted!');
 		}
 	}
