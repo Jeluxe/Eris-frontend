@@ -1,6 +1,4 @@
-import { useLayoutEffect, useState } from "react";
-import { useMatches } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useMatch, useParams } from "react-router-dom";
 import { BurgerMenu, CallIcon, FriendsIcon, IoMdPersonAdd, VideoIcon } from "../assets/icons";
 import { useMediasoupProvider, useStateProvider } from "../context";
 import { Avatar, CallNavbar, Checkbox, UserStatus, VDivider } from "./";
@@ -16,10 +14,11 @@ const style = (incomingCall) => {
 const categories = ["All", "Online", "Blocked", "Pending"];
 
 const Navbar = ({
-	match,
+	isUserInCall,
 	setBurgerMenu,
 }) => {
-	const matches = useMatches();
+	const match = useMatch("/");
+	const params = useParams();
 	const { selectedRoom, inCall, setInCall, incomingCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen, setVideoToggle } = useStateProvider()
 	const { call } = useMediasoupProvider()
 	const createBurgerMenuBtn = () => {
@@ -30,12 +29,17 @@ const Navbar = ({
 		);
 	};
 	const selectedUser = selectedRoom?.recipients
-	const condition = inCall.activeCall && matches[1]?.params.id === inCall.roomID
+
+	const setCall = (video) => {
+		setVideoToggle(video)
+		call(selectedUser.id);
+		setInCall({ activeCall: true, roomID: selectedRoom.id });
+	}
 
 	return (
-		<div className={`navbar ${condition && !match ? "in-call-nav" : ""}${condition ? showChat ? "" : !match ? " nav-hide-outlet" : "" : ""}`}>
+		<div className={`navbar ${isUserInCall && !match ? "in-call-nav" : ""}${isUserInCall ? showChat ? "" : !match ? " nav-hide-outlet" : "" : ""}`}>
 			{selectedRoom ? (
-				<div className={`navbar-user ${condition && !match ? "in-call" : ""}${condition ? showChat ? "" : !match ? " hide-outlet" : "" : ""}`}>
+				<div className={`navbar-user ${isUserInCall && !match ? "in-call" : ""}${isUserInCall ? showChat ? "" : !match ? " hide-outlet" : "" : ""}`}>
 					<div className="navbar-user-info">
 						{smallDevice ? createBurgerMenuBtn() : ""}
 						<Avatar
@@ -45,7 +49,7 @@ const Navbar = ({
 						<div>{selectedUser.username}</div>
 						<UserStatus status={selectedUser?.status} />
 					</div>
-					{inCall.activeCall && inCall.roomID === matches[1]?.params.id ? (
+					{isUserInCall ? (
 						<CallNavbar
 							avatar={selectedUser?.avatar}
 						/>
@@ -53,21 +57,13 @@ const Navbar = ({
 						<div className="navbar-actions">
 							<div
 								className="call-button center circle"
-								onClick={() => {
-									setVideoToggle(false)
-									call(selectedUser.id);
-									setInCall({ activeCall: true, roomID: selectedRoom.id });
-								}}
+								onClick={() => setCall(false)}
 							>
 								<CallIcon style={style(incomingCall)} />
 							</div>
 							<div
 								className="video-call-button center circle"
-								onClick={() => {
-									setVideoToggle(true)
-									call(selectedUser.id);
-									setInCall({ activeCall: true, roomID: selectedRoom.id });
-								}}
+								onClick={() => setCall(true)}
 							>
 								<VideoIcon style={style(incomingCall)} />
 							</div>

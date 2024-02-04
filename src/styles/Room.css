@@ -133,6 +133,6 @@
 }
 
 .message-content {
-  line-break: anywhere;
+  white-space: pre-line;
   padding: 0.2em 0;
 }

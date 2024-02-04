@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { EditIcon, OptionsIcon, TrashIcon } from '../assets/icons'
 
-const Options = ({ type, selectedMessage, setSelectedMessage, edit, deleteMessage }) => {
+const Options = ({ type, selectedMessage, setSelectedMessage, editMessage, deleteMessage }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const ref = useRef(null)
 
@@ -47,7 +47,7 @@ const Options = ({ type, selectedMessage, setSelectedMessage, edit, deleteMessag
       {
         dropdownOpen ?
           <div className='dropdown'>
-            {type !== 2 ? <button className='option' onClick={() => onClick(edit)} disabled={selectedMessage}>
+            {type !== 2 ? <button className='option' onClick={() => onClick(editMessage)} disabled={selectedMessage}>
               <EditIcon />
               edit
             </button> : ""}

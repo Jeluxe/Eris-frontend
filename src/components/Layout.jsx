@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Outlet, useMatch, useMatches, useNavigate } from "react-router";
 import { fetchData, refresh } from "../api";
 import { MediasoupProvider, useSocketIOProvider, useStateProvider } from "../context";
@@ -37,7 +36,6 @@ const Layout = () => {
     removeSocketEvent
   } = useSocketIOProvider()
 
-  const [height, setHeight] = useState(null);
   const [burgerMenu, setBurgerMenu] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -48,12 +46,10 @@ const Layout = () => {
   useEffect(() => {
     if (!smallDevice) {
       setBurgerMenu(false);
+    } else {
+      setBurgerMenu(true)
     }
   }, [smallDevice]);
-
-  useEffect(() => {
-    toggleSmallScreen(callRef, window.innerWidth);
-  }, [burgerMenu, inCall]);
 
   useEffect(() => {
     if (user) {
@@ -81,37 +77,31 @@ const Layout = () => {
   }, [user]);
 
   useEffect(() => {
-    if (rooms.length) {
-      if (matches[1]) {
-        const foundRoom = rooms.find(room => {
-          return room?.user.id === matches[1].params.id;
-        })
-
-        const foundFriend = friendList.find(friend => friend.user.id === matches[1].params.id)
-
-        if (foundFriend && !foundRoom) {
-          const newTempRoom = {
-            id: foundFriend.id,
-            type: 0,
-            index: 0,
-            user: {
-              ...foundFriend.user,
-              avatar: getRandomColor(),
-              status: 'offline'
-            }
+    if (rooms.length && matches[1]?.params?.id) {
+      const foundRoom = rooms.find(room => room.id === matches[1].params.id);
+      const foundFriend = friendList.find(friend => friend.user.id === matches[1].params.id);
+      if (foundFriend && !foundRoom) {
+        const newTempRoom = {
+          id: foundFriend.id,
+          type: 0,
+          index: 0,
+          user: {
+            ...foundFriend.user,
+            avatar: getRandomColor(),
+            status: 'offline'
           }
-          setRooms((prevRooms) => [...prevRooms, newTempRoom])
-          setSelectedRoom(newTempRoom)
         }
-        else if (foundRoom) {
-          setSelectedRoom(foundRoom)
-        }
-        else if (!selectedRoom) {
-          navigate('/')
-        }
-      } else if (selectedRoom && !matches[1]) {
-        setSelectedRoom(null);
+        setRooms((prevRooms) => [...prevRooms, newTempRoom])
+        setSelectedRoom(newTempRoom)
       }
+      else if (foundRoom) {
+        setSelectedRoom(foundRoom)
+      }
+      else if (!selectedRoom) {
+        navigate('/')
+      }
+    } else if (!matches[1]?.params) {
+      setSelectedRoom(null);
     }
   }, [matches, rooms]);
 
@@ -125,7 +115,7 @@ const Layout = () => {
 
     window.addEventListener("resize", e => {
       const width = e.currentTarget.innerWidth;
-      toggleSmallScreen(callRef, width);
+      toggleSmallScreen(width);
     });
 
     return () => {
@@ -137,26 +127,18 @@ const Layout = () => {
     setMessages((prevMessages) => [...prevMessages, newMessage])
   }
 
-  // const loadMoreMessages = (loadedMessages) => {
-  //   setMessages((prevMessages) => [...loadedMessages, ...prevMessages])
-  // }
-
   const updateUserStatus = (id, status) => {
-    setRooms((prevRooms) => [...updateListStatus(prevRooms, id, status)])
-
-    setFriendList((prevFriendList) => [...updateListStatus(prevFriendList, id, status)])
+    setRooms((rooms) => [...updateListStatus(rooms, id, status)])
+    setFriendList((friendList) => [...updateListStatus(friendList, id, status)])
   }
 
-  const toggleSmallScreen = (callRef, width) => {
-    setHeight(
-      width < 1024
-        ? `calc(100vh - ${callRef.current.activeCall ? "258px" : "190px"})`
-        : `calc(100vh - ${callRef.current.activeCall ? "300px" : "234px"})`
-    );
+  const toggleSmallScreen = (width) => {
     setSmallDevice(width < 1024 ? true : false);
   };
 
-  const condition = inCall.activeCall && matches[1]?.params.id === inCall.roomID;
+  const isUserInCall = useMemo(() => {
+    return inCall.activeCall && matches[1]?.params?.id === inCall.roomID
+  }, [inCall]);
 
   if (loading) {
     return <div>loading</div>
@@ -170,30 +152,20 @@ const Layout = () => {
             <div className={!smallDevice ? "left-side" : "left-side-sm"}>
               <Sidebar
                 smallDevice={smallDevice}
-                height={height}
                 setBurgerMenu={smallDevice ? setBurgerMenu : ""} />
               <StatusBox />
             </div>
             : ""
         }
-        <div
-          className="right-side"
-          style={{ display: burgerMenu ? "none" : "block" }}
-        >
+        <div className={`right-side ${smallDevice && burgerMenu ? "hide" : ""}`}>
           <Navbar
-            smallDevice={smallDevice}
-            match={match}
-            burgerMenu={burgerMenu}
+            isUserInCall={isUserInCall}
             setBurgerMenu={setBurgerMenu}
           />
           <main
             className="outlet"
             style={{
-              display: condition ? showChat || match ? "block" : "none" : "",
-              height: `calc(100vh - ${!smallDevice
-                ? condition && !match ? "450px" : `126px`
-                : condition && !match ? "407px" : `82px`
-                })`,
+              display: isUserInCall ? showChat || match ? "" : "none" : "",
             }}
 
           >

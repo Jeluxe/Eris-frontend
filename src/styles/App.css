@@ -9,7 +9,7 @@
 }
 
 .hide {
-	display: none !important;
+	display: none;
 }
 
 .left-side {
@@ -89,7 +89,7 @@
 	.right-side,
 	.nav-hide-outlet,
 	.outlet {
-		border-radius: 0 !important;
+		border-radius: 0;
 	}
 
 	.call-navbar-participants:has(video) {
@@ -99,6 +99,6 @@
 
 @media only screen and (max-width: 490px) {
 	.call-navbar-actions>div {
-		padding: 1px 10px !important;
+		padding: 1px 10px;
 	}
 }

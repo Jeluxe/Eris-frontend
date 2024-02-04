@@ -4,18 +4,18 @@ import { CloseIcon, FriendsIcon } from "../assets/icons";
 import { useStateProvider } from "../context";
 import { Avatar, HDivider, UserStatus } from "./";
 
-const Sidebar = ({ smallDevice, height, setBurgerMenu }) => {
-	const { inCall, rooms, setRooms, selectedRoom, messages } = useStateProvider()
+const Sidebar = ({ smallDevice, setBurgerMenu }) => {
+	const { rooms, setRooms, selectedRoom, messages } = useStateProvider();
 
 	const openSidebar = () => {
 		smallDevice ? setBurgerMenu(false) : "";
 	};
 
 	useEffect(() => {
-		const lastMessage = messages?.at(-1)
-		const foundRoom = rooms?.find(room => room?.user?.id === lastMessage?.roomID)
+		const lastMessage = messages?.at(-1);
+		const foundRoom = rooms?.find(room => room?.user?.id === lastMessage?.roomID);
 		if (foundRoom) {
-			const filteredList = rooms?.filter(room => room?.id !== foundRoom?.id)
+			const filteredList = rooms?.filter(room => room?.id !== foundRoom?.id);
 			const reorderedList = [foundRoom, ...filteredList].map((room, idx) => {
 				return {
 					id: room.id,
@@ -23,10 +23,10 @@ const Sidebar = ({ smallDevice, height, setBurgerMenu }) => {
 					type: room.type,
 					recipients: room.recipients
 				}
-			})
-			setRooms(reorderedList)
+			});
+			setRooms(reorderedList);
 		}
-	}, [messages])
+	}, [messages]);
 
 	return (
 		<div className="sidebar">
@@ -48,19 +48,13 @@ const Sidebar = ({ smallDevice, height, setBurgerMenu }) => {
 				)}
 			</div>
 			<HDivider />
-			<div
-				className="sidebar-list"
-				style={{
-					minHeight: inCall.activeCall ? "412px" : "112px",
-					height
-				}}
-			>
+			<div className="sidebar-list">
 				{rooms?.map((room, idx) => {
 					if (!room?.recipients) {
 						return;
 					}
 
-					const { username, avatar, status } = room.recipients
+					const { username, avatar, status } = room.recipients;
 					return (
 						<Link
 							key={idx}

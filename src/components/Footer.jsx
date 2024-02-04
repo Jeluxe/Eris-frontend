@@ -1,28 +1,34 @@
 import { useEffect, useState } from 'react'
-import { useMatches } from 'react-router'
+import { useParams } from 'react-router'
 import { SendIcon, TrashIcon } from '../assets/icons'
 import { useSocketIOProvider, useStateProvider } from '../context'
 import { blobToBuffer } from '../functions'
-import { useField, useRecorder } from '../hooks'
-import { CustomAudioBar, Input } from './'
+import { useRecorder } from '../hooks'
+import { CustomAudioBar, Textarea } from './'
+
+const style = (condition) => {
+  return {
+    alignItems: condition ? "normal" : "end",
+    flexDirection: condition ? "column" : "row"
+  }
+}
 
 const Footer = () => {
-  const matches = useMatches();
-  const { user, setMessages } = useStateProvider();
+  const params = useParams()
+  const { user, setMessages, selectedRoom } = useStateProvider();
   const { emitData } = useSocketIOProvider();
-  const { reset, ...message } = useField('text');
   const { startRecording, stopRecording, url, blob, setBlob } = useRecorder();
   const [preview, setPreview] = useState(false);
   const [recording, setRecording] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [message, setMessage] = useState("")
 
   useEffect(() => {
     return () => {
       reset()
       recordReset()
     }
-  }, [matches])
-
+  }, [params])
 
   const toggleRecord = () => {
     setDisabled(true);
@@ -36,6 +42,10 @@ const Footer = () => {
     }
   };
 
+  const reset = () => {
+    setMessage("")
+  }
+
   const recordReset = () => {
     setBlob(null);
     setPreview(false);
@@ -43,31 +53,47 @@ const Footer = () => {
     setRecording(false)
   }
 
-  const onClick = async () => {
+  const record = async () => {
     const audioData = await blobToBuffer(blob);
 
     sendMessage(2, audioData)
-
     recordReset()
   };
 
-  const onKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      if (message.value.trim() !== "") {
-        sendMessage(1, message.value)
-        reset()
-      }
+  const send = () => {
+    if (message.trim() !== "") {
+      sendMessage(1, message)
+      reset()
     }
+  }
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
+      e.target.style.height = 'auto';
+    }
+  }
+
+  const resize = (e) => {
+    e.target.style.height = 'auto';
+    e.target.style.height = (e.target.scrollHeight) + 'px';
+  }
+
+  const onInput = (e) => {
+    resize(e)
+    setMessage(e.target.value)
   }
 
   const sendMessage = (type, content) => {
     const newMessage = {
       content,
-      user,
-      rid: matches[1]?.params.id,
+      rid: selectedRoom.type === 0 ?
+        params?.id !== selectedRoom.recipients.id ?
+          params?.id : selectedRoom.recipients.id
+        : selectedRoom.id,
       type,
       timestamp: new Date().toString(),
-      edited_timestamp: null
     }
 
     emitData("message", newMessage, (returnedNewMessage) => {
@@ -76,7 +102,7 @@ const Footer = () => {
   }
 
   return (
-    <div className='footer'>
+    <div className='footer' style={style(url && preview)}>
       {
         url && preview ? (
           <div className='preview'>
@@ -85,7 +111,7 @@ const Footer = () => {
               <div className='buttons'>
                 <button
                   className="send"
-                  onClick={() => onClick()}
+                  onClick={() => record()}
                 >
                   <SendIcon />
                 </button>
@@ -104,36 +130,37 @@ const Footer = () => {
           ""
         )
       }
-      <div style={{ display: "flex" }}>
-        {url && disabled ? (
-          ""
-        ) : (
-          <button
-            className="circleBtn recordIcon"
-            onClick={() => toggleRecord()}
-          >
-            <svg height="34" width="34">
-              <circle
-                cx="17"
-                cy="17"
-                r="14"
-                stroke="black"
-                strokeWidth="3"
-                fill="none"
-              />
-              <circle
-                className={`${recording ? "recording" : ""}`}
-                cx="17"
-                cy="17"
-                r="7"
-                stroke="red"
-                strokeWidth="3"
-                fill="red"
-              />
-            </svg>
-          </button>
-        )}
-        <Input onKeyDown={onKeyDown} disabled={disabled} {...message} placeHolder={'type here...'} />
+      {url && disabled ? (
+        ""
+      ) : (
+        <button
+          className="recordIcon"
+          onClick={() => toggleRecord()}
+        >
+          <svg viewBox='-13 -13 45 45'>
+            <circle
+              cx="10"
+              cy="10"
+              r="14"
+              stroke="black"
+              strokeWidth="3"
+              fill="none"
+            />
+            <circle
+              className={`${recording ? "recording" : ""}`}
+              cx="10"
+              cy="10"
+              r="7"
+              stroke="red"
+              strokeWidth="3"
+              fill="red"
+            />
+          </svg>
+        </button>
+      )}
+      <div style={{ display: "flex", width: "100%", alignItems: "end" }}>
+        <Textarea message={message} onKeyDown={onKeyDown} onInput={onInput} placeholder={'type here...'} disabled={disabled} />
+        <button id='send-button' className='send center circle' onClick={send}><SendIcon /></button>
       </div>
     </div>
   )

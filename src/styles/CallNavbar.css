@@ -57,7 +57,7 @@
 
 .in-call-nav {
 	min-height: 330px;
-	background: #00000089 !important;
+	background: #00000089;
 }
 
 .in-call {
@@ -67,8 +67,8 @@
 
 .nav-hide-outlet {
 	height: 100%;
-	max-height: none !important;
-	border-radius: 15px !important;
+	max-height: none;
+	border-radius: 15px;
 }
 
 .show-hide-chat-button {

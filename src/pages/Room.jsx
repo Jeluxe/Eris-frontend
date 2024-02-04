@@ -1,73 +1,79 @@
 import { useEffect, useState } from "react";
-import { useMatches } from "react-router";
+import { useParams } from "react-router";
 import { getMessages } from "../api";
 import { Avatar, Footer, Input, Options } from "../components";
 import { useSocketIOProvider, useStateProvider } from "../context";
 import { formatDate, getTime, messagePositioning, messageRenderer } from "../functions";
 
 const Room = () => {
-	const [loading, setLoading] = useState(true)
-	const matches = useMatches();
-	const { messages, setMessages, selectedRoom } = useStateProvider();
+	const params = useParams();
 	const { emitData } = useSocketIOProvider();
+	const { messages, setMessages, selectedRoom } = useStateProvider();
+	const [loading, setLoading] = useState(true);
 	const [selectedMessage, setSelectedMessage] = useState(null);
-	const [editedMessage, setEditedMessage] = useState(null);
+	const [editedContent, setEditedContent] = useState(null);
 
 	useEffect(() => {
-		if (matches[1].params.id) {
-			getMessages(matches[1].params.id)
+		if (params?.id) {
+			getMessages(params?.id)
 				.then((messages) => {
-					setMessages(messages)
+					setMessages(messages);
 					setLoading(false);
 				})
-				.catch(err => console.error(err))
+				.catch(err => console.error(err));
 		}
-	}, [matches])
+	}, [params])
 
 	const filterMessages = (msg) => {
 		return (selectedRoom) ? selectedRoom.id === msg.rid : "";
 	}
 
-	const editMessage = (id, content) => {
-		setSelectedMessage(id)
-		setEditedMessage(content)
+	const editMessage = (message) => {
+		setSelectedMessage(message);
+		setEditedContent(message.content);
 	}
 
-	const deleteMessage = async (id) => {
+	const deleteMessage = async (message) => {
 		if (confirm('Are you sure you want to delete this message?')) {
-			emitData('delete-message', id)
-			console.log('message has been deleted!')
+			emitData('delete-message', { id: message.id, rid: message.rid });
+			console.log('message has been deleted!');
 		}
 	}
 
 	const onKeyDown = e => {
 		if (e.key === 'Escape') {
-			setSelectedMessage(null)
-			setEditedMessage(null)
+			setSelectedMessage(null);
+			setEditedContent(null);
 		}
 
 		if (e.key === "Enter") {
-			if (editedMessage.trim().length === 0) {
-				deleteMessage(selectedMessage)
+			if (editedContent.trim().length === 0) {
+				deleteMessage(selectedMessage);
 			} else {
-				emitData('edit-message', { id: selectedMessage, content: editedMessage })
-				console.log('message has been edited!')
-				setSelectedMessage(null)
-				setEditedMessage(null)
+				const message = emitData('edit-message',
+					{ message: selectedMessage, newContent: editedContent },
+					(something) => console.log(something));
+				if (message?.success) {
+					console.log('message has been edited!')
+					setSelectedMessage(null)
+					setEditedContent(null)
+				} else {
+					console.log(message?.error)
+				}
 			}
 		}
 	}
 
 	const onChange = e => {
-		setEditedMessage(e.target.value)
+		setEditedContent(e.target.value)
 	}
 
 	const inputRenderer = () => {
-		return <Input type="text" autoFocus value={editedMessage} onChange={onChange} onKeyDown={onKeyDown} />
+		return <Input type="text" autoFocus value={editedContent} onChange={onChange} onKeyDown={onKeyDown} />
 	}
 
 	const optionsRenderer = (message) => {
-		return <Options type={message.type} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} edit={() => editMessage(message.id, message.content)} deleteMessage={() => deleteMessage(message.id)} />
+		return <Options type={message.type} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} editMessage={() => editMessage(message)} deleteMessage={() => deleteMessage(message)} />
 	}
 
 	if (loading) {
@@ -79,7 +85,7 @@ const Room = () => {
 					<div className="messages-wrapper">
 						{messages?.filter(filterMessages).map((message, idx) => {
 							return (
-								<div key={idx} className="message">
+								<div key={idx} className="message v-center">
 									{messagePositioning(messages[idx - 1], message) ? (
 										<>
 											<Avatar size={35} bgColor={message.sender.avatar} />
@@ -90,7 +96,7 @@ const Room = () => {
 														{formatDate(message.timestamp)}
 													</span>
 												</div>
-												{selectedMessage === message.id ? inputRenderer(message.content) : messageRenderer(message)}
+												{selectedMessage?.id === message.id ? inputRenderer() : messageRenderer(message)}
 											</div>
 											{optionsRenderer(message)}
 										</>
@@ -100,8 +106,7 @@ const Room = () => {
 												{getTime(message.timestamp)}
 											</span>
 											<>
-												{selectedMessage === message.id ? inputRenderer(message.content) : messageRenderer(message)}
-												{message.edited && <span>(edited)</span>}
+												{selectedMessage?.id === message.id ? inputRenderer() : messageRenderer(message)}
 											</>
 											{optionsRenderer(message)}
 										</>
