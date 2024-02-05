@@ -47,7 +47,7 @@ const Options = ({ type, selectedMessage, setSelectedMessage, editMessage, delet
       {
         dropdownOpen ?
           <div className='dropdown'>
-            {type !== 2 ? <button className='option' onClick={() => onClick(editMessage)} disabled={selectedMessage}>
+            {type !== 2 ? <button className='option' onClick={() => onClick(editMessage)} >
               <EditIcon />
               edit
             </button> : ""}

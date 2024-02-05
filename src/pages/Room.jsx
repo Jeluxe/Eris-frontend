@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { getMessages } from "../api";
-import { Avatar, Footer, Input, Options } from "../components";
+import { Avatar, Footer, Options, Textarea } from "../components";
 import { useSocketIOProvider, useStateProvider } from "../context";
 import { formatDate, getTime, messagePositioning, messageRenderer } from "../functions";
 
@@ -48,41 +48,62 @@ const Room = () => {
 
 	const onKeyDown = e => {
 		if (e.key === 'Escape') {
-			setSelectedMessage(null);
-			setEditedContent(null);
+			closeEditMode()
 		}
 
-		if (e.key === "Enter") {
-			if (editedContent.trim().length === 0) {
-				deleteMessage(selectedMessage);
-			} else if (selectedMessage.content !== editedContent) {
-				emitData('edit-message',
-					{ message: selectedMessage, newContent: editedContent }, ({ editedMessage, error }) => {
-						if (!error) {
-							const updatedMessages = [...messages.map(message =>
-								message.id === editedMessage.id ? editedMessage : message
-							)]
-							setMessages(updatedMessages)
-						} else {
-							console.log(error)
-						}
-					});
-			}
-			setSelectedMessage(null)
-			setEditedContent(null)
+		if (e.key === 'Enter' && !e.shiftKey) {
+			handleEditing()
 		}
 	}
 
-	const onChange = e => {
+	const handleEditing = () => {
+		if (editedContent.trim().length === 0) {
+			deleteMessage(selectedMessage);
+		} else if (selectedMessage.content !== editedContent) {
+			emitData('edit-message',
+				{ message: selectedMessage, newContent: editedContent }, ({ editedMessage, error }) => {
+					if (!error) {
+						const updatedMessages = [...messages.map(message =>
+							message.id === editedMessage.id ? editedMessage : message
+						)]
+						setMessages(updatedMessages)
+					} else {
+						console.log(error)
+					}
+				});
+		}
+		closeEditMode()
+	}
+
+	const closeEditMode = () => {
+		setSelectedMessage(null)
+		setEditedContent(null)
+	}
+
+	const onInput = e => {
 		setEditedContent(e.target.value)
 	}
 
+	const clickToChange = (e) => {
+		e.preventDefault();
+		handleEditing();
+	}
+
+	const clickToDelete = (e) => {
+		e.preventDefault();
+		closeEditMode();
+	}
+
 	const inputRenderer = () => {
-		return <Input type="text" autoFocus value={editedContent} onChange={onChange} onKeyDown={onKeyDown} />
+		return <div className="edit-mode">
+			<Textarea autoFocus message={editedContent} onInput={onInput} onKeyDown={onKeyDown} />
+			<span style={{ fontSize: "12px" }}>Esc to <a className="edit-label" onClick={clickToDelete}>cancel</a>•Enter to <a className="edit-label" onClick={clickToChange}>save</a></span>
+		</div>
 	}
 
 	const optionsRenderer = (message) => {
-		return <Options type={message.type} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} editMessage={() => editMessage(message)} deleteMessage={() => deleteMessage(message)} />
+		if (selectedMessage?.id !== message.id)
+			return <Options type={message.type} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} editMessage={() => editMessage(message)} deleteMessage={() => deleteMessage(message)} />
 	}
 
 	if (loading) {
@@ -98,7 +119,7 @@ const Room = () => {
 									{messagePositioning(messages[idx - 1], message) ? (
 										<>
 											<Avatar size={35} bgColor={message.sender.avatar} />
-											<div>
+											<div className="message-wrapper">
 												<div>
 													<span className="message-sender">{message.sender.username}</span>
 													<span className="message-date">
@@ -114,9 +135,7 @@ const Room = () => {
 											<span className="message-time">
 												{getTime(message.timestamp)}
 											</span>
-											<>
-												{selectedMessage?.id === message.id ? inputRenderer() : messageRenderer(message)}
-											</>
+											{selectedMessage?.id === message.id ? inputRenderer() : messageRenderer(message)}
 											{optionsRenderer(message)}
 										</>
 									)}
