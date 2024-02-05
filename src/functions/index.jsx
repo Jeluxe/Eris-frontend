@@ -133,7 +133,7 @@ export const calculateTime = (secs) => {
 
 export const messageRenderer = (message, clicked) => {
 	if (message.type === 1) {
-		return <div id={`message-${message.id}`} className="message-content">{message.content} {message.edited ? " (edited)" : ""}</div>;
+		return <div id={`message-${message.id}`} className="message-content">{message.content} {message.edited ? <span className="edited"> (edited)</span> : ""}</div>;
 	} else if (message.type === 2) {
 		return <CustomAudioBar src={`data:audio/wav;base64,${message.content}`} clicked={clicked} />;
 	}

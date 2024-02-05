@@ -137,3 +137,8 @@
   white-space: pre-line;
   padding: 0.2em 0;
 }
+
+.edited {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.666);
+}
