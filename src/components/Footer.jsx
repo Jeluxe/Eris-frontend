@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { SendIcon, TrashIcon } from '../assets/icons'
 import { useSocketIOProvider, useStateProvider } from '../context'
-import { blobToBuffer } from '../functions'
-import { useRecorder } from '../hooks'
+import { blobToBuffer, calculateTime } from '../functions'
+import { useRecorder, useTimer } from '../hooks'
 import { CustomAudioBar, Textarea } from './'
 
 const style = (condition) => {
@@ -15,9 +15,10 @@ const style = (condition) => {
 
 const Footer = () => {
   const params = useParams()
-  const { user, setMessages, selectedRoom } = useStateProvider();
+  const { setMessages, selectedRoom } = useStateProvider();
   const { emitData } = useSocketIOProvider();
   const { startRecording, stopRecording, url, blob, setBlob } = useRecorder();
+  const { timer, isRunning, handleStartStop, handleReset } = useTimer();
   const [preview, setPreview] = useState(false);
   const [recording, setRecording] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -32,6 +33,7 @@ const Footer = () => {
 
   const toggleRecord = () => {
     setDisabled(true);
+    handleStartStop()
     if (!recording) {
       startRecording();
       setRecording(true);
@@ -50,7 +52,8 @@ const Footer = () => {
     setBlob(null);
     setPreview(false);
     setDisabled(false);
-    setRecording(false)
+    setRecording(false);
+    handleReset();
   }
 
   const record = async () => {
@@ -130,35 +133,37 @@ const Footer = () => {
           ""
         )
       }
-      {url && disabled ? (
-        ""
-      ) : (
-        <button
-          className="recordIcon"
-          onClick={() => toggleRecord()}
-        >
-          <svg viewBox='-13 -13 45 45'>
-            <circle
-              cx="10"
-              cy="10"
-              r="14"
-              stroke="black"
-              strokeWidth="3"
-              fill="none"
-            />
-            <circle
-              className={`${recording ? "recording" : ""}`}
-              cx="10"
-              cy="10"
-              r="7"
-              stroke="red"
-              strokeWidth="3"
-              fill="red"
-            />
-          </svg>
-        </button>
-      )}
-      <div style={{ display: "flex", width: "100%", alignItems: "end" }}>
+      <div style={{ display: "flex", width: "100%", alignItems: "end" }} >
+        {url && disabled ? (
+          ""
+        ) : (
+
+          <button
+            id="recordIcon"
+            onClick={() => toggleRecord()}
+          >
+            <svg viewBox='-13 -13 45 45'>
+              <circle
+                cx="10"
+                cy="10"
+                r="14"
+                stroke="black"
+                strokeWidth="3"
+                fill="none"
+              />
+              <circle
+                className={`${recording ? "recording" : ""}`}
+                cx="10"
+                cy="10"
+                r="7"
+                stroke="red"
+                strokeWidth="3"
+                fill="red"
+              />
+            </svg>
+            {isRunning ? <div className='recording-time'>{calculateTime(timer)}</div> : ""}
+          </button>
+        )}
         <Textarea message={message} onKeyDown={onKeyDown} onInput={onInput} placeholder={'type here...'} disabled={disabled} />
         <button id='send-button' className='send center circle' onClick={send}><SendIcon /></button>
       </div>
