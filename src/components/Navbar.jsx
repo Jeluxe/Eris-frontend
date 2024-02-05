@@ -18,8 +18,7 @@ const Navbar = ({
 	setBurgerMenu,
 }) => {
 	const match = useMatch("/");
-	const params = useParams();
-	const { selectedRoom, inCall, setInCall, incomingCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen, setVideoToggle } = useStateProvider()
+	const { selectedRoom, setInCall, incomingCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen, setVideoToggle } = useStateProvider()
 	const { call } = useMediasoupProvider()
 	const createBurgerMenuBtn = () => {
 		return smallDevice ? (
@@ -32,7 +31,7 @@ const Navbar = ({
 
 	const setCall = (video) => {
 		setVideoToggle(video)
-		call(selectedUser.id);
+		call(selectedRoom.id);
 		setInCall({ activeCall: true, roomID: selectedRoom.id });
 	}
 
