@@ -37,6 +37,7 @@
 .message {
   font-size: 16px;
   position: relative;
+  padding: 2px 0;
 
   &:hover {
     background-color: rgba(130, 96, 159, 0.122);
@@ -111,6 +112,12 @@
   }
 }
 
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+}
+
 .message-sender {
   font-weight: 600;
   margin-right: 12px;
@@ -123,7 +130,7 @@
 }
 
 .message-time {
-  margin: 0 5px;
+  margin: 0 10px 0 1px;
   width: 34px;
   visibility: hidden;
   align-self: baseline;
@@ -135,7 +142,21 @@
 
 .message-content {
   white-space: pre-line;
-  padding: 0.2em 0;
+}
+
+.edit-mode {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+}
+
+.edit-label {
+  color: rgb(2, 146, 194);
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .edited {

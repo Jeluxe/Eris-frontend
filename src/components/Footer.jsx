@@ -78,16 +78,6 @@ const Footer = () => {
     }
   }
 
-  const resize = (e) => {
-    e.target.style.height = 'auto';
-    e.target.style.height = (e.target.scrollHeight) + 'px';
-  }
-
-  const onInput = (e) => {
-    resize(e)
-    setMessage(e.target.value)
-  }
-
   const sendMessage = (type, content) => {
     const newMessage = {
       content,
@@ -164,7 +154,7 @@ const Footer = () => {
             {isRunning ? <div className='recording-time'>{calculateTime(timer)}</div> : ""}
           </button>
         )}
-        <Textarea message={message} onKeyDown={onKeyDown} onInput={onInput} placeholder={'type here...'} disabled={disabled} />
+        <Textarea message={message} onKeyDown={onKeyDown} onInput={(e) => setMessage(e.target.value)} placeholder={'type here...'} disabled={disabled} />
         <button id='send-button' className='send center circle' onClick={send}><SendIcon /></button>
       </div>
     </div>
