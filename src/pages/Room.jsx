@@ -125,7 +125,7 @@ const Room = () => {
 						})}
 					</div>
 				</div>
-				{selectedMessage ? "" : <Footer />}
+				<Footer />
 			</div>
 		);
 	}

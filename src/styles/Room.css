@@ -126,6 +126,7 @@
   margin: 0 5px;
   width: 34px;
   visibility: hidden;
+  align-self: baseline;
 }
 
 .message:hover>.message-time {
