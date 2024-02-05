@@ -13,9 +13,9 @@ const produceParams = {
   },
 };
 
-export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteToggle, inCall }) => {
+export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteToggle }) => {
   const { emitData, addSocketEvent, removeSocketEvent } = useSocketIOProvider()
-  const roomName = useRef(null)
+  const roomID = useRef(null)
   const device = useRef(null);
   const rtpCapabilities = useRef(null);
   const producerTransport = useRef(null);
@@ -26,8 +26,6 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
   const consumerTransports = useRef([]);
   const tracks = useRef(null);
   const localStreamRef = useRef();
-  const videoOn = useRef(videoToggle);
-  const muted = useRef(muteToggle);
   const remoteStreamsRef = useRef([])
   const [remoteStreams, setRemoteStreams] = useState([])
 
@@ -97,17 +95,14 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
   }, [])
 
   useEffect(() => {
-    playPause(videoProducer, videoOn, !videoToggle);
+    playPause(videoProducer, !videoToggle);
   }, [videoToggle]);
 
   useEffect(() => {
-    playPause(audioProducer, muted, muteToggle);
-    if (audioProducer.current) {
-      localStorage.setItem("muted", muted.current);
-    }
+    playPause(audioProducer, muteToggle);
   }, [muteToggle]);
 
-  const playPause = (producer, buttonDisplay, value) => {
+  const playPause = (producer, value) => {
     if (producer.current) {
       if (value) {
         producer.current.pause();
@@ -115,11 +110,10 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
         producer.current.resume();
       }
     }
-    buttonDisplay.current = value;
   };
 
-  const call = (selectedUserID) => {
-    roomName.current = selectedUserID;
+  const call = (selectedRoomID) => {
+    roomID.current = selectedRoomID;
     getMedia()
       .then(streamSuccess)
       .catch((error) => console.log(error.message));
@@ -147,7 +141,7 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
   };
 
   const joinRoom = () => {
-    emitData("joinRoom", { targetID: roomName.current }, (data) => {
+    emitData("joinRoom", roomID.current, (data) => {
       rtpCapabilities.current = data.rtpCapabilities;
 
       // once we have rtpCapabilities from the Router, create device.
@@ -271,7 +265,7 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
         ...produceParams,
       });
 
-      videoOn.current ? producer.pause() : "";
+      videoToggle ? producer.pause() : "";
       videoProducer.current = producer;
     }
 
@@ -280,7 +274,7 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
         track: tracks.current.audio,
         ...produceParams,
       });
-      muted.current ? producer.pause() : "";
+      muteToggle ? producer.pause() : "";
       audioProducer.current = producer;
     }
 

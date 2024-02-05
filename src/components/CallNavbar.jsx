@@ -43,7 +43,7 @@ const CallNavbar = ({ avatar }) => {
 								type="local"
 								muted={true}
 								stream={localStreamRef.current}
-								videoOn={videoToggle}
+								videoToggle={videoToggle}
 							/>
 							{videoToggle ? "" : <Avatar
 								size={80}

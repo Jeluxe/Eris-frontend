@@ -5,7 +5,7 @@ import { useStateProvider } from "./";
 const MediasoupContext = createContext();
 
 export const MediasoupProvider = ({ children }) => {
-  const { user, inCall, videoContainer, muteToggle, videoToggle } = useStateProvider()
+  const { user, videoContainer, muteToggle, videoToggle } = useStateProvider()
 
   const {
     call, localStreamRef, remoteStreams, closeConnection
@@ -14,7 +14,6 @@ export const MediasoupProvider = ({ children }) => {
     videoContainer,
     videoToggle,
     muteToggle,
-    inCall
   })
 
   return <MediasoupContext.Provider value={{ call, localStreamRef, remoteStreams, closeConnection }}>
