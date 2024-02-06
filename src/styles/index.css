@@ -50,6 +50,13 @@ svg {
   height: 2em;
 }
 
+video {
+  height: 140px;
+  width: 250px;
+  object-fit: fill;
+  border-radius: 5px;
+}
+
 .v-divider {
   border: 1px solid rgba(0, 0, 0, 0.35);
   margin: 0 10px;

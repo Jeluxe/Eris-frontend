@@ -9,9 +9,15 @@ const Video = ({ type, id = null, stream, videoToggle }) => {
 		}
 	}, [stream])
 
-	return (<>{stream ? <div id={id ? `td-${id}` : `${type}Video`} className={`${type} ${type === 'local' ? videoToggle ? "" : "hide" : ""}`}>
-		<video id={id} ref={videoRef} muted={type === "local" ? true : false} autoPlay width={230} className="video"></video>
-	</div> : ""}</>)
+	return (<>{stream ?
+		<video
+			ref={videoRef}
+			id={id ? `td-${id}` : `${type}Video`}
+			autoPlay
+			muted={type === "local" ? true : false}
+			className={`video ${type} ${type === 'local' ? videoToggle ? "" : "hide" : ""}`}
+		></video>
+		: ""}</>)
 };
 
 export default Video;
