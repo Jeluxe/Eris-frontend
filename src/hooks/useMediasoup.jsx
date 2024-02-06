@@ -1,6 +1,6 @@
 import * as mediasoupClient from "mediasoup-client";
 import { useEffect, useRef, useState } from 'react';
-import { useSocketIOProvider } from "../context";
+import { useSocketIOProvider, useStateProvider } from "../context";
 
 const produceParams = {
   encoding: [
@@ -13,7 +13,8 @@ const produceParams = {
   },
 };
 
-export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteToggle }) => {
+export const useMediasoup = () => {
+  const { user: { id: userID }, videoContainer, muteToggle, videoToggle } = useStateProvider()
   const { emitData, addSocketEvent, removeSocketEvent } = useSocketIOProvider()
   const roomID = useRef(null)
   const device = useRef(null);
@@ -25,7 +26,8 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
   const shareScreenProducer = useRef(null);
   const consumerTransports = useRef([]);
   const tracks = useRef(null);
-  const localStreamRef = useRef();
+  const localStreamRef = useRef(null);
+  const [localStream, setLocalStream] = useState(null);
   const remoteStreamsRef = useRef([])
   const [remoteStreams, setRemoteStreams] = useState([])
 
@@ -96,7 +98,7 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
 
   useEffect(() => {
     playPause(videoProducer, !videoToggle);
-  }, [videoToggle]);
+  }, [videoToggle, localStream]);
 
   useEffect(() => {
     playPause(audioProducer, muteToggle);
@@ -240,6 +242,7 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
               console.log("publishing...");
               break;
             case "connected":
+              setLocalStream(localStreamRef.current);
               console.log("connected");
               break;
             case "failed":
@@ -469,8 +472,9 @@ export const useMediasoup = ({ userID, videoContainer = null, videoToggle, muteT
     rtpCapabilities.current = null;
     tracks.current = null;
     consumersIds.current = {};
+    roomID.current = null;
     emitData("leaveRoom");
   };
 
-  return { call, localStreamRef, remoteStreams, closeConnection }
+  return { call, localStream, remoteStreams, closeConnection }
 }

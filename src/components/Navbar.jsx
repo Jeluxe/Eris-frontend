@@ -1,4 +1,4 @@
-import { Link, useMatch, useParams } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
 import { BurgerMenu, CallIcon, FriendsIcon, IoMdPersonAdd, VideoIcon } from "../assets/icons";
 import { useMediasoupProvider, useStateProvider } from "../context";
 import { Avatar, CallNavbar, Checkbox, UserStatus, VDivider } from "./";

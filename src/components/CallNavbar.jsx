@@ -23,7 +23,7 @@ const CallNavbar = ({ avatar }) => {
 	} = useStateProvider()
 
 	const {
-		localStreamRef,
+		localStream,
 		remoteStreams,
 		closeConnection
 	} = useMediasoupProvider();
@@ -41,8 +41,7 @@ const CallNavbar = ({ avatar }) => {
 						<>
 							<Video
 								type="local"
-								muted={true}
-								stream={localStreamRef.current}
+								stream={localStream}
 								videoToggle={videoToggle}
 							/>
 							{videoToggle ? "" : <Avatar
