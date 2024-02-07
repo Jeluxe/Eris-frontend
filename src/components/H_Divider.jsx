@@ -1,5 +1,5 @@
 const HDivider = () => {
-  return <div className='h_divider'></div>;
+  return <div className='h-divider'></div>;
 };
 
 export default HDivider;

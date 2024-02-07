@@ -3,10 +3,11 @@
   display: flex;
   flex-direction: column;
   padding: 5px 5px;
+  position: relative;
 }
 
 .messages-container {
-  height: 100%;
+  height: calc(100% - 54px);
   width: 100%;
   overflow-y: auto;
 }

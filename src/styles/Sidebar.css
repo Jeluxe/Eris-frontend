@@ -7,13 +7,6 @@
 	box-shadow: 0 0 10px 1px black;
 }
 
-.sidebar-top {
-	display: flex;
-	align-items: center;
-	margin-bottom: 10px;
-	column-gap: 15px;
-}
-
 .sidebar-list {
 	overflow-y: auto;
 	display: flex;

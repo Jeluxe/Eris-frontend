@@ -106,48 +106,44 @@ const Room = () => {
 			return <Options type={message.type} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} editMessage={() => editMessage(message)} deleteMessage={() => deleteMessage(message)} />
 	}
 
-	if (loading) {
-		return <div>Loading...</div>;
-	} else {
-		return (
-			<div className="chat-container">
-				<div className="messages-container">
-					<div className="messages-wrapper">
-						{messages?.filter(filterMessages).map((message, idx) => {
-							return (
-								<div key={idx} className="message v-center">
-									{messagePositioning(messages[idx - 1], message) ? (
-										<>
-											<Avatar size={35} bgColor={message.sender.avatar} />
-											<div className="message-wrapper">
-												<div>
-													<span className="message-sender">{message.sender.username}</span>
-													<span className="message-date">
-														{formatDate(message.timestamp)}
-													</span>
-												</div>
-												{selectedMessage?.id === message.id ? inputRenderer() : messageRenderer(message)}
+	return (
+		<div className="chat-container">
+			{!loading ? <div className="messages-container">
+				<div className="messages-wrapper">
+					{messages?.filter(filterMessages).map((message, idx) => {
+						return (
+							<div key={idx} className="message v-center">
+								{messagePositioning(messages[idx - 1], message) ? (
+									<>
+										<Avatar size={35} bgColor={message.sender.avatar} />
+										<div className="message-wrapper">
+											<div>
+												<span className="message-sender">{message.sender.username}</span>
+												<span className="message-date">
+													{formatDate(message.timestamp)}
+												</span>
 											</div>
-											{optionsRenderer(message)}
-										</>
-									) : (
-										<>
-											<span className="message-time">
-												{getTime(message.timestamp)}
-											</span>
 											{selectedMessage?.id === message.id ? inputRenderer() : messageRenderer(message)}
-											{optionsRenderer(message)}
-										</>
-									)}
-								</div>
-							);
-						})}
-					</div>
+										</div>
+										{optionsRenderer(message)}
+									</>
+								) : (
+									<>
+										<span className="message-time">
+											{getTime(message.timestamp)}
+										</span>
+										{selectedMessage?.id === message.id ? inputRenderer() : messageRenderer(message)}
+										{optionsRenderer(message)}
+									</>
+								)}
+							</div>
+						);
+					})}
 				</div>
-				<Footer />
-			</div>
-		);
-	}
+			</div> : "loading..."}
+			<Footer />
+		</div>
+	);
 };
 
 export default Room;

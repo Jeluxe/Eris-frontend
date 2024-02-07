@@ -63,9 +63,9 @@ video {
   height: 100%;
 }
 
-.h_divider {
+.h-divider {
   border: 1px solid rgba(0, 0, 0, 0.35);
-  margin: 10px 0;
+  margin: 6px 0;
   width: 100%;
 }
 
@@ -83,6 +83,11 @@ video {
 .h-center {
   display: flex;
   justify-content: center;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
 }
 
 .circle {

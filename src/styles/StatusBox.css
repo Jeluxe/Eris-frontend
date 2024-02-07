@@ -53,17 +53,27 @@
 .sb-call {
 	font-size: 15px;
 	font-weight: 700;
+	flex-direction: column;
 
-	&>div>span {
-		display: flex;
+	&>div>div>span {
 		font-weight: 500;
-		max-width: 210px;
+		max-width: 220px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		margin: 0;
+	}
+}
 
-		&>div {
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			margin-left: 5px;
-		}
+#video-button {
+	height: 30px;
+	width: 50px;
+	border-radius: 5px;
+	outline: none;
+	border: none;
+	background-color: rgba(132, 105, 230, 0.604);
+
+	&:hover {
+		background-color: rgba(132, 105, 230, 0.204);
 	}
 }

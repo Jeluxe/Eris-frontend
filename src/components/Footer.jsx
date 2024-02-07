@@ -8,8 +8,7 @@ import { CustomAudioBar, Textarea } from './'
 
 const style = (condition) => {
   return {
-    alignItems: condition ? "normal" : "end",
-    flexDirection: condition ? "column" : "row"
+    flexDirection: condition ? "column" : ""
   }
 }
 
