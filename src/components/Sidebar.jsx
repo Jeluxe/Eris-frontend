@@ -18,10 +18,8 @@ const Sidebar = ({ smallDevice, setBurgerMenu }) => {
 			const filteredList = rooms?.filter(room => room?.id !== foundRoom?.id);
 			const reorderedList = [foundRoom, ...filteredList].map((room, idx) => {
 				return {
-					id: room.id,
+					...room,
 					index: idx,
-					type: room.type,
-					recipients: room.recipients
 				}
 			});
 			setRooms(reorderedList);
