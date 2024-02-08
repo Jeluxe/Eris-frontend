@@ -89,8 +89,15 @@ const Footer = () => {
     }
 
     emitData("message", newMessage, (returnedNewMessage) => {
-      setMessages(messages => messages.concat(returnedNewMessage))
+      setMessages(messages => messages.concat(returnedNewMessage));
+      setTimeout(scrollDown, 0);
     });
+  }
+
+  const scrollDown = () => {
+    const messagesContainer = document.querySelector(".messages-container")
+    const messagesWrapper = document.querySelector(".messages-wrapper")
+    messagesContainer.scrollTo({ top: (messagesWrapper.scrollHeight), behavior: 'smooth' })
   }
 
   return (
