@@ -61,7 +61,7 @@ const Friend = ({ data: { id, status: friendRequestStatus, user, isSender } }) =
           {userInfoElement(false, user)}
           {requestStatus === 'PENDING' ?
             <div className='friend-actions'>
-              {isSender && <div className='friend-action' onClick={() => makeDecision('accept')}><AcceptIcon /></div>}
+              {!isSender && <div className='friend-action' onClick={() => makeDecision('accept')}><AcceptIcon /></div>}
               <div className='friend-action trash' onClick={() => makeDecision('decline')}><TrashIcon /></div>
             </div>
             :
