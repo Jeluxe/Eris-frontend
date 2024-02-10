@@ -124,7 +124,8 @@ const Layout = () => {
   }, [])
 
   const updateMessageList = (newMessage) => {
-    setMessages((prevMessages) => prevMessages[newMessage.rid].push(newMessage))
+    setMessages((prevMessages) => prevMessages[newMessage.rid].push(newMessage));
+    reorderRooms(newMessage.rid)
   }
 
   const updateUserStatus = (id, status) => {
@@ -135,6 +136,20 @@ const Layout = () => {
   const toggleSmallScreen = (width) => {
     setSmallDevice(width < 1024 ? true : false);
   };
+
+  const reorderRooms = (lastMessageRoomID) => {
+    const foundRoom = rooms?.find(room => room?.user?.id === lastMessageRoomID);
+    if (foundRoom) {
+      const filteredList = rooms?.filter(room => room?.id !== foundRoom?.id);
+      const reorderedList = [foundRoom, ...filteredList].map((room, idx) => {
+        return {
+          ...room,
+          index: idx,
+        }
+      });
+      setRooms(reorderedList);
+    }
+  }
 
   const isUserInCall = useMemo(() => {
     return inCall.activeCall && matches[1]?.params?.id === inCall.roomID

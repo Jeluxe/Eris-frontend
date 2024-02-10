@@ -1,30 +1,14 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CloseIcon, FriendsIcon } from "../assets/icons";
 import { useStateProvider } from "../context";
 import { Avatar, HDivider, UserStatus } from "./";
 
 const Sidebar = ({ smallDevice, setBurgerMenu }) => {
-	const { rooms, setRooms, selectedRoom, messages } = useStateProvider();
+	const { rooms, selectedRoom } = useStateProvider();
 
 	const openSidebar = () => {
 		smallDevice ? setBurgerMenu(false) : "";
 	};
-
-	useEffect(() => {
-		const lastMessage = messages?.at(-1);
-		const foundRoom = rooms?.find(room => room?.user?.id === lastMessage?.roomID);
-		if (foundRoom) {
-			const filteredList = rooms?.filter(room => room?.id !== foundRoom?.id);
-			const reorderedList = [foundRoom, ...filteredList].map((room, idx) => {
-				return {
-					...room,
-					index: idx,
-				}
-			});
-			setRooms(reorderedList);
-		}
-	}, [messages]);
 
 	return (
 		<div className="sidebar">
