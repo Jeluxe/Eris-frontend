@@ -8,25 +8,25 @@ import { formatDate, getTime, messagePositioning, messageRenderer } from "../fun
 const Room = () => {
 	const params = useParams();
 	const { emitData } = useSocketIOProvider();
-	const { messages, setMessages, selectedRoom } = useStateProvider();
+	const { messages, setMessages } = useStateProvider();
 	const [loading, setLoading] = useState(true);
 	const [selectedMessage, setSelectedMessage] = useState(null);
 	const [editedContent, setEditedContent] = useState(null);
 
 	useEffect(() => {
 		if (params?.id) {
-			getMessages(params?.id)
-				.then((messages) => {
-					setMessages(messages);
-					setLoading(false);
-				})
-				.catch(err => console.error(err));
+			if (!messages[params.id]?.length) {
+				getMessages(params.id)
+					.then((messages) => {
+						setMessages((prevMessages) => ({ ...prevMessages, [params.id]: messages }));
+						setLoading(false);
+					})
+					.catch(err => console.error(err));
+			} else if (messages[params.id].length) {
+				setLoading(false);
+			}
 		}
-	}, [params])
-
-	const filterMessages = (msg) => {
-		return (selectedRoom) ? selectedRoom.id === msg.rid : "";
-	}
+	}, [messages])
 
 	const editMessage = (message) => {
 		setSelectedMessage(message);
@@ -37,7 +37,11 @@ const Room = () => {
 		if (confirm('Are you sure you want to delete this message?')) {
 			emitData('delete-message', { id: message.id, rid: message.rid }, ({ deletedMessageID, error }) => {
 				if (!error) {
-					setMessages(prevMessages => [...prevMessages.filter((message) => message.id !== deletedMessageID)])
+					setMessages(prevMessages => Object.entries(prevMessages).map(([roomID, roomMessages]) => {
+						return (roomID === message.rid) ?
+							roomMessages.filter((message) => message.id !== deletedMessageID) :
+							roomMessages;
+					}))
 				} else {
 					console.log(error)
 				}
@@ -63,10 +67,11 @@ const Room = () => {
 			emitData('edit-message',
 				{ message: selectedMessage, newContent: editedContent }, ({ editedMessage, error }) => {
 					if (!error) {
-						const updatedMessages = [...messages.map(message =>
-							message.id === editedMessage.id ? editedMessage : message
-						)]
-						setMessages(updatedMessages)
+						setMessages(prevMessages => Object.entries(prevMessages).map(([roomID, roomMessages]) => {
+							return (roomID === editedMessage.rid) ?
+								[...roomMessages.map(message => message.id === editedMessage.id ? editedMessage : message)] :
+								roomMessages;
+						}))
 					} else {
 						console.log(error)
 					}
@@ -110,7 +115,7 @@ const Room = () => {
 		<div className="chat-container">
 			{!loading ? <div className="messages-container">
 				<div className="messages-wrapper">
-					{messages?.filter(filterMessages).map((message, idx) => {
+					{messages[params?.id]?.map((message, idx) => {
 						return (
 							<div key={idx} className="message v-center">
 								{messagePositioning(messages[idx - 1], message) ? (

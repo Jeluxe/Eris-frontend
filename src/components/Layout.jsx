@@ -77,7 +77,7 @@ const Layout = () => {
   }, [user]);
 
   useEffect(() => {
-    if (rooms.length && matches[1]?.params?.id) {
+    if (rooms?.length && matches[1]?.params?.id) {
       const foundRoom = rooms.find(room => room.id === matches[1].params.id);
       const foundFriend = friendList.find(friend => friend.user.id === matches[1].params.id);
       if (foundFriend && !foundRoom) {
@@ -124,7 +124,7 @@ const Layout = () => {
   }, [])
 
   const updateMessageList = (newMessage) => {
-    setMessages((prevMessages) => [...prevMessages, newMessage])
+    setMessages((prevMessages) => prevMessages[newMessage.rid].push(newMessage))
   }
 
   const updateUserStatus = (id, status) => {

@@ -16,7 +16,7 @@ export const ContextProvider = ({ children }) => {
   const callRef = useRef(inCall);
   const videoContainer = useRef();
   const [incomingCall, setIncomingCall] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState({});
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [showChat, setShowChat] = useState(true);
   const [smallDevice, setSmallDevice] = useState(false);

@@ -89,7 +89,7 @@ const Footer = () => {
     }
 
     emitData("message", newMessage, (returnedNewMessage) => {
-      setMessages(messages => messages.concat(returnedNewMessage));
+      setMessages(messages => ({ ...messages, [returnedNewMessage.rid]: [...messages[returnedNewMessage.rid], returnedNewMessage] }));
       setTimeout(scrollDown, 0);
     });
   }
