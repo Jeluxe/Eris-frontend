@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AcceptIcon,
@@ -6,18 +6,17 @@ import {
   TrashIcon
 } from '../assets/icons'
 import { useSocketIOProvider, useStateProvider } from '../context'
+import { handleUpdateFriendRequest } from '../functions'
 import { Avatar, UserStatus } from './'
 
 
-const Friend = ({ data: { id, status: friendRequestStatus, user, isSender } }) => {
-  const { rooms } = useStateProvider()
+const Friend = ({ data: { id, status, user, isSender } }) => {
+  const { rooms, setFriendList } = useStateProvider()
   const { emitData } = useSocketIOProvider()
-  const [requestStatus, setRequestStatus] = useState(friendRequestStatus)
 
   const makeDecision = (decision) => {
     emitData('update-friend-request', id, decision, (result) => {
-      console.log(result)
-      setRequestStatus(result)
+      setFriendList(prevRequests => handleUpdateFriendRequest(prevRequests, result))
     })
   }
 
@@ -51,25 +50,25 @@ const Friend = ({ data: { id, status: friendRequestStatus, user, isSender } }) =
 
 
   return (
-    <>{
-      requestStatus !== 'PENDING' && requestStatus !== 'BLOCKED' ?
-        <Link to={`/@me/${getRoomID(user.id)}`} className='friend-wrapper'>
-          {userInfoElement(true, user)}
-        </Link>
-        :
-        <div className='friend-wrapper'>
-          {userInfoElement(false, user)}
-          {requestStatus === 'PENDING' ?
-            <div className='friend-actions'>
-              {!isSender && <div className='friend-action' onClick={() => makeDecision('accept')}><AcceptIcon /></div>}
-              <div className='friend-action trash' onClick={() => makeDecision('decline')}><TrashIcon /></div>
-            </div>
-            :
-            <div className='friend-actions'>
-              <div className='friend-action' onClick={() => makeDecision('restore')}><RestoreIcon /></div>
-            </div>
-          }
-        </div>
+    <>{status &&
+      status !== 'PENDING' && status !== 'BLOCKED' ?
+      <Link to={`/@me/${getRoomID(user.id)}`} className='friend-wrapper'>
+        {userInfoElement(true, user)}
+      </Link>
+      :
+      <div className='friend-wrapper'>
+        {userInfoElement(false, user)}
+        {status === 'PENDING' ?
+          <div className='friend-actions'>
+            {!isSender && <div className='friend-action' onClick={() => makeDecision('accept')}><AcceptIcon /></div>}
+            <div className='friend-action trash' onClick={() => makeDecision('decline')}><TrashIcon /></div>
+          </div>
+          :
+          <div className='friend-actions'>
+            <div className='friend-action' onClick={() => makeDecision('restore')}><RestoreIcon /></div>
+          </div>
+        }
+      </div>
     }</>
   )
 }
