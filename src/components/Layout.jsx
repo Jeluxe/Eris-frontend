@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Outlet, useMatch, useMatches, useNavigate } from "react-router";
 import { fetchData, refresh } from "../api";
 import { MediasoupProvider, useSocketIOProvider, useStateProvider } from "../context";
-import { getRandomColor, updateListStatus } from "../functions";
+import { addIndexToRoom, getRandomColor, handleUpdateFriendRequest, processFriendList, updateListStatus } from "../functions";
 import { FriendList } from "../pages";
 import { Navbar, Sidebar, StatusBox } from "./";
 
@@ -56,13 +56,21 @@ const Layout = () => {
       socketConnect(user);
       setStatus("online");
       fetchData(user.id).then(({ rooms, friends }) => {
-        setRooms(rooms);
-        setFriendList(friends);
+        setRooms(rooms.map(addIndexToRoom));
+        setFriendList(friends.map((friend) => processFriendList(user, friend)));
         setLoading(false);
         addSocketEvent('connect', () => console.log('connected'))
         addSocketEvent('user-connected', updateUserStatus)
         addSocketEvent('disconnect', () => console.log('disconnected'))
         addSocketEvent('message', updateMessageList)
+        addSocketEvent("recieved-new-friend-request", (newFriendRequest) => {
+          console.log(newFriendRequest)
+          setFriendList(prevRequests => [...prevRequests, newFriendRequest])
+        })
+        addSocketEvent('updated-friend-request', (updatedFriendRequet) => {
+          console.log(updatedFriendRequet)
+          setFriendList(prevRequests => handleUpdateFriendRequest(prevRequests, updatedFriendRequet))
+        })
       });
 
       return () => {
@@ -70,6 +78,8 @@ const Layout = () => {
         removeSocketEvent('user-connected')
         removeSocketEvent('disconnect')
         removeSocketEvent('message')
+        removeSocketEvent("recieved-new-friend-request")
+        removeSocketEvent('updated-friend-request')
         socketDisconnect()
         window.removeEventListener('resize', () => { })
       }
@@ -84,8 +94,8 @@ const Layout = () => {
         const newTempRoom = {
           id: foundFriend.id,
           type: 0,
-          index: 0,
-          user: {
+          index: rooms?.length,
+          recipients: {
             ...foundFriend.user,
             avatar: getRandomColor(),
             status: 'offline'
@@ -103,7 +113,7 @@ const Layout = () => {
     } else if (!matches[1]?.params) {
       setSelectedRoom(null);
     }
-  }, [matches, rooms]);
+  }, [matches]);
 
   useEffect(() => {
     refresh().then(res => {

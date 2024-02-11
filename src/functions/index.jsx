@@ -32,6 +32,29 @@ export const updateListStatus = (list, id, status) => {
 	})
 }
 
+export const addIndexToRoom = (room, idx) => {
+	return {
+		...room,
+		index: room.index || idx
+	}
+}
+
+export const processFriendList = (user, friend) => {
+	const isSender = typeof friend.sender === "string" ? friend.sender === user.id : friend.sender?.id === user.id;
+	const selected = isSender ? friend.receiver : friend.sender;
+
+	const object = {
+		id: friend.id,
+		status: friend.status,
+		user: { ...selected, status: friend.user.status }
+	}
+
+	delete friend.sender;
+	delete friend.receiver;
+
+	return object
+}
+
 export const debounce = (fn, ms) => {
 	let timeout;
 
@@ -42,6 +65,21 @@ export const debounce = (fn, ms) => {
 		timeout = setTimeout(() => {
 			fn()
 		}, ms);
+	}
+}
+
+export const handleUpdateFriendRequest = (list, entry) => {
+	switch (entry.status) {
+		case "DECLINED":
+			return list.filter(item => item.id !== entry.id);
+		case "ACCEPTED":
+		case "BLOCKED":
+			return list.map(item => {
+				if (item.id === entry.id) {
+					return entry;
+				}
+				return item;
+			})
 	}
 }
 
