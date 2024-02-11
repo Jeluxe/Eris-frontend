@@ -3,7 +3,7 @@ import { Friend, NewFriendForm } from "../components";
 import { useStateProvider } from "../context";
 
 const userStatus = ['online', 'offline', 'idle'];
-const requestStatus = ["PENDING", "APPROVED", "BLOCKED"]
+const requestStatus = ["PENDING", "ACCEPTED", "BLOCKED"]
 
 const FriendList = () => {
 	const { friendList, selectedFilter, smallDevice } = useStateProvider();
