@@ -16,20 +16,18 @@ export const useSocketIO = (url) => {
   }, [url]);
 
   useEffect(() => {
-    if (socket) {
+    if (socket?.connected) {
       for (const [eventName, callback] of Object.entries(socketEvents)) {
         socket.on(eventName, callback);
       }
-    }
 
-    return () => {
-      if (socket) {
+      return () => {
         for (const [eventName, callback] of Object.entries(socketEvents)) {
           socket.off(eventName, callback);
         }
-      }
-    };
-  }, [socket, socketEvents])
+      };
+    }
+  }, [socketEvents])
 
   const socketConnect = async (user) => {
     if (user && socket) {
@@ -38,9 +36,9 @@ export const useSocketIO = (url) => {
     }
   }
 
-  const socketDisconnect = () => {
+  const socketDisconnect = async () => {
     if (socket) {
-      socket.disconnect()
+      await socket.disconnect()
     }
   }
 
