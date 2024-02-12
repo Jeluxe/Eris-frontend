@@ -26,7 +26,7 @@ const Room = () => {
 				setLoading(false);
 			}
 		}
-	}, [messages])
+	}, [])
 
 	const editMessage = (message) => {
 		setSelectedMessage(message);
@@ -118,7 +118,7 @@ const Room = () => {
 					{messages[params?.id]?.map((message, idx) => {
 						return (
 							<div key={idx} className="message v-center">
-								{messagePositioning(messages[idx - 1], message) ? (
+								{messagePositioning(messages[params?.id][idx - 1], message) ? (
 									<>
 										<Avatar size={35} bgColor={message.sender.avatar} />
 										<div className="message-wrapper">
