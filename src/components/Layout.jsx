@@ -94,6 +94,7 @@ const Layout = () => {
         const newTempRoom = {
           id: foundFriend.id,
           type: 0,
+          temp: true,
           index: rooms?.length,
           recipients: {
             ...foundFriend.user,
