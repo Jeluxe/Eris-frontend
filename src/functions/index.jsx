@@ -39,22 +39,6 @@ export const addIndexToRoom = (room, idx) => {
 	}
 }
 
-export const processFriendList = (user, friend) => {
-	const isSender = typeof friend.sender === "string" ? friend.sender === user.id : friend.sender?.id === user.id;
-	const selected = isSender ? friend.receiver : friend.sender;
-
-	const object = {
-		id: friend.id,
-		status: friend.status,
-		user: { ...selected, status: friend.user.status }
-	}
-
-	delete friend.sender;
-	delete friend.receiver;
-
-	return object
-}
-
 export const debounce = (fn, ms) => {
 	let timeout;
 

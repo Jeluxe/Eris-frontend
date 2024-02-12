@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Outlet, useMatch, useMatches, useNavigate } from "react-router";
 import { fetchData, refresh } from "../api";
 import { MediasoupProvider, useSocketIOProvider, useStateProvider } from "../context";
-import { addIndexToRoom, getRandomColor, handleUpdateFriendRequest, processFriendList, updateListStatus } from "../functions";
+import { addIndexToRoom, getRandomColor, handleUpdateFriendRequest, updateListStatus } from "../functions";
 import { FriendList } from "../pages";
 import { Navbar, Sidebar, StatusBox } from "./";
 
@@ -57,11 +57,9 @@ const Layout = () => {
       setStatus("online");
       fetchData(user.id).then(({ rooms, friends }) => {
         setRooms(rooms.map(addIndexToRoom));
-        setFriendList(friends.map((friend) => processFriendList(user, friend)));
+        setFriendList(friends);
         setLoading(false);
-        addSocketEvent('connect', () => console.log('connected'))
         addSocketEvent('user-connected', updateUserStatus)
-        addSocketEvent('disconnect', () => console.log('disconnected'))
         addSocketEvent('message', updateMessageList)
         addSocketEvent("recieved-new-friend-request", (newFriendRequest) => {
           console.log(newFriendRequest)
