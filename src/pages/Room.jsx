@@ -37,11 +37,11 @@ const Room = () => {
 		if (confirm('Are you sure you want to delete this message?')) {
 			emitData('delete-message', { id: message.id, rid: message.rid }, ({ deletedMessageID, error }) => {
 				if (!error) {
-					setMessages(prevMessages => Object.entries(prevMessages).map(([roomID, roomMessages]) => {
-						return (roomID === message.rid) ?
-							roomMessages.filter((message) => message.id !== deletedMessageID) :
-							roomMessages;
-					}))
+					setMessages(messages => ({
+						...messages,
+						[message.rid]: messages[message.rid].filter(message =>
+							message.id !== deletedMessageID)
+					}));
 				} else {
 					console.log(error)
 				}
