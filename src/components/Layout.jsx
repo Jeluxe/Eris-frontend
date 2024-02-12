@@ -105,16 +105,20 @@ const Layout = () => {
         setRooms((prevRooms) => [...prevRooms, newTempRoom])
         setSelectedRoom(newTempRoom)
       }
-      else if (foundRoom) {
+    }
+  }, [matches]);
+
+  useEffect(() => {
+    if (rooms?.length && matches[1]?.params?.id) {
+      const foundRoom = rooms.find(room => room.id === matches[1].params.id);
+      if (foundRoom) {
         setSelectedRoom(foundRoom)
       }
       else if (!selectedRoom) {
         navigate('/')
       }
-    } else if (!matches[1]?.params) {
-      setSelectedRoom(null);
     }
-  }, [matches]);
+  }, [rooms])
 
   useEffect(() => {
     refresh().then(res => {
