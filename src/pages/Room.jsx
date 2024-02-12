@@ -67,11 +67,11 @@ const Room = () => {
 			emitData('edit-message',
 				{ message: selectedMessage, newContent: editedContent }, ({ editedMessage, error }) => {
 					if (!error) {
-						setMessages(prevMessages => Object.entries(prevMessages).map(([roomID, roomMessages]) => {
-							return (roomID === editedMessage.rid) ?
-								[...roomMessages.map(message => message.id === editedMessage.id ? editedMessage : message)] :
-								roomMessages;
-						}))
+						setMessages(messages => ({
+							...messages,
+							[editedMessage.rid]: messages[editedMessage.rid].map(message =>
+								message.id === editedMessage.id ? editedMessage : message)
+						}));
 					} else {
 						console.log(error)
 					}
