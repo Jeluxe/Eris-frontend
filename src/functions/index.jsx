@@ -64,6 +64,8 @@ export const handleUpdateFriendRequest = (list, entry) => {
 				}
 				return item;
 			})
+		default:
+			return list;
 	}
 }
 
