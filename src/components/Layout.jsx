@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Outlet, useMatch, useMatches, useNavigate } from "react-router";
 import { fetchData, refresh } from "../api";
 import { MediasoupProvider, useSocketIOProvider, useStateProvider } from "../context";
-import { addIndexToRoom, getRandomColor, handleUpdateFriendRequest, updateListStatus } from "../functions";
+import { addIndexToRoom, handleUpdateFriendRequest, updateListStatus } from "../functions";
 import { FriendList } from "../pages";
 import { Navbar, Sidebar, StatusBox } from "./";
 
@@ -86,37 +86,14 @@ const Layout = () => {
 
   useEffect(() => {
     if (rooms?.length && matches[1]?.params?.id) {
-      const foundRoom = rooms.find(room => room.id === matches[1].params.id);
-      const foundFriend = friendList.find(friend => friend.user.id === matches[1].params.id);
-      if (foundFriend && !foundRoom) {
-        const newTempRoom = {
-          id: foundFriend.id,
-          type: 0,
-          temp: true,
-          index: rooms?.length,
-          recipients: {
-            ...foundFriend.user,
-            avatar: getRandomColor(),
-            status: 'offline'
-          }
-        }
-        setRooms((prevRooms) => [...prevRooms, newTempRoom])
-        setSelectedRoom(newTempRoom)
-      }
-    }
-  }, [matches]);
-
-  useEffect(() => {
-    if (rooms?.length && matches[1]?.params?.id) {
-      const foundRoom = rooms.find(room => room.id === matches[1].params.id);
+      const foundRoom = rooms.find(room => room.id === matches[1].params.id || room.recipients.id === matches[1].params.id);
       if (foundRoom) {
         setSelectedRoom(foundRoom)
-      }
-      else if (!selectedRoom) {
+      } else {
         navigate('/')
       }
     }
-  }, [rooms])
+  }, [rooms, matches]);
 
   useEffect(() => {
     refresh().then(res => {

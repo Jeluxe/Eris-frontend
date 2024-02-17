@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CloseIcon, FriendsIcon } from "../assets/icons";
 import { useStateProvider } from "../context";
 import { Avatar, HDivider, UserStatus } from "./";
 
 const Sidebar = ({ smallDevice, setBurgerMenu }) => {
-	const { rooms, selectedRoom } = useStateProvider();
+	const navigate = useNavigate()
+	const { rooms, selectedRoom, setSelectedRoom } = useStateProvider();
 
 	const openSidebar = () => {
 		smallDevice ? setBurgerMenu(false) : "";
@@ -16,7 +17,12 @@ const Sidebar = ({ smallDevice, setBurgerMenu }) => {
 				<Link
 					to="/"
 					className="link friends-link"
-					onClick={() => openSidebar()}
+					onClick={(e) => {
+						e.preventDefault()
+						setSelectedRoom(null)
+						openSidebar()
+						navigate('/')
+					}}
 				>
 					<FriendsIcon />
 					Friends

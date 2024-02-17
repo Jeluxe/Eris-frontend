@@ -1,17 +1,18 @@
 import { useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   AcceptIcon,
   RestoreIcon,
   TrashIcon
 } from '../assets/icons'
 import { useSocketIOProvider, useStateProvider } from '../context'
-import { handleUpdateFriendRequest } from '../functions'
+import { getRandomColor, handleUpdateFriendRequest } from '../functions'
 import { Avatar, UserStatus } from './'
 
 
 const Friend = ({ data: { id, status, user, isSender } }) => {
-  const { rooms, setFriendList } = useStateProvider()
+  const navigate = useNavigate()
+  const { rooms, setRooms, friendList, setFriendList, setSelectedRoom } = useStateProvider()
   const { emitData } = useSocketIOProvider()
 
   const makeDecision = (decision) => {
@@ -48,11 +49,43 @@ const Friend = ({ data: { id, status, user, isSender } }) => {
     return userID
   }, [rooms])
 
+  const selectRoom = useCallback((e, id) => {
+    e.preventDefault();
+    if (rooms?.length) {
+      if (id) {
+        const foundRoom = rooms.find(room => room.id === id || room.recipients.id === id);
+        const foundFriend = friendList.find(friend => friend.user.id === id);
+        if (foundFriend && !foundRoom) {
+          const newTempRoom = {
+            id: foundFriend.id,
+            type: 0,
+            temp: true,
+            index: rooms?.length,
+            recipients: {
+              ...foundFriend.user,
+              avatar: getRandomColor(),
+              status: 'offline'
+            }
+          }
+          setRooms((prevRooms) => [...prevRooms, newTempRoom])
+          navigate(`/@me/${newTempRoom.id}`)
+        } else if (foundRoom) {
+          setSelectedRoom(foundRoom)
+          navigate(`/@me/${foundRoom.id}`)
+        } else {
+          setSelectedRoom(null)
+        }
+      } else {
+        setSelectedRoom(null);
+      }
+    }
+  }, [rooms])
+
 
   return (
     <>{status &&
       status !== 'PENDING' && status !== 'BLOCKED' ?
-      <Link to={`/@me/${getRoomID(user.id)}`} className='friend-wrapper'>
+      <Link to={`/@me/${getRoomID(user.id)}`} className='friend-wrapper' onClick={(e) => selectRoom(e, getRoomID(user.id))}>
         {userInfoElement(true, user)}
       </Link>
       :
