@@ -16,7 +16,7 @@ const style = (condition) => {
 const Footer = () => {
   const params = useParams()
   const navigate = useNavigate();
-  const { setRooms, setMessages, selectedRoom } = useStateProvider();
+  const { setRooms, setMessages, selectedRoom, processRooms } = useStateProvider();
   const { emitData } = useSocketIOProvider();
   const { startRecording, stopRecording, url, blob, setBlob } = useRecorder();
   const { timer, isRunning, handleStartStop, handleReset } = useTimer();
@@ -91,20 +91,22 @@ const Footer = () => {
     }
 
     emitData("message", newMessage, (returnedNewMessage) => {
+      const newMessageRoomID = returnedNewMessage.rid;
       if (newMessage.temp) {
         setRooms(prevRooms => prevRooms.map(room => {
           if (room.id === selectedRoom.id) {
-            room.id = returnedNewMessage.rid;
+            room.id = newMessageRoomID;
             delete room.temp;
           }
           return room;
         }))
-        setMessages(messages => ({ ...messages, [returnedNewMessage.rid]: [returnedNewMessage] }));
-        navigate(`/@me/${returnedNewMessage.rid}`)
+        setMessages(messages => ({ ...messages, [newMessageRoomID]: [returnedNewMessage] }));
+        navigate(`/@me/${newMessageRoomID}`)
       } else {
-        setMessages(messages => ({ ...messages, [returnedNewMessage.rid]: [...messages[returnedNewMessage.rid], returnedNewMessage] }));
+        setMessages(messages => ({ ...messages, [newMessageRoomID]: [...messages[newMessageRoomID], returnedNewMessage] }));
         setTimeout(scrollDown, 0);
       }
+      processRooms(newMessageRoomID)
     });
   }
 

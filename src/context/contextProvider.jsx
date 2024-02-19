@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useRef, useState } from "react";
 import { useMediaActions } from "../hooks";
 
 export const Context = createContext()
@@ -22,6 +22,27 @@ export const ContextProvider = ({ children }) => {
   const [smallDevice, setSmallDevice] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const mediaActions = useMediaActions();
+
+  const processRooms = useCallback((lastMessageRoomID, cb = null) => {
+    if (rooms.length) {
+      const foundRoom = rooms?.find(room => room?.id === lastMessageRoomID);
+      if (foundRoom) {
+        reorderRooms([foundRoom, ...rooms?.filter(room => room?.id !== foundRoom?.id)])
+      } else {
+        cb(reorderRooms, rooms)
+      }
+    }
+  }, [rooms])
+
+  const reorderRooms = (list) => {
+    const reorderedList = list.map((room, idx) => {
+      return {
+        ...room,
+        index: idx,
+      }
+    });
+    setRooms(reorderedList);
+  }
 
   return (
     <Context.Provider value={{
@@ -52,6 +73,7 @@ export const ContextProvider = ({ children }) => {
       isOpen,
       setIsOpen,
       videoContainer,
+      processRooms
     }}>
       {children}
     </Context.Provider>
