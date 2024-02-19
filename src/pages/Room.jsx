@@ -8,7 +8,7 @@ import { formatDate, getTime, messagePositioning, messageRenderer } from "../fun
 const Room = () => {
 	const params = useParams();
 	const { emitData } = useSocketIOProvider();
-	const { messages, setMessages } = useStateProvider();
+	const { user, messages, setMessages } = useStateProvider();
 	const [loading, setLoading] = useState(true);
 	const [selectedMessage, setSelectedMessage] = useState(null);
 	const [editedContent, setEditedContent] = useState(null);
@@ -107,7 +107,7 @@ const Room = () => {
 	}
 
 	const optionsRenderer = (message) => {
-		if (selectedMessage?.id !== message.id)
+		if (selectedMessage?.id !== message.id && message.sender.id === user.id)
 			return <Options type={message.type} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} editMessage={() => editMessage(message)} deleteMessage={() => deleteMessage(message)} />
 	}
 
