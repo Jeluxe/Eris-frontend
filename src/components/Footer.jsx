@@ -83,12 +83,10 @@ const Footer = () => {
     const newMessage = {
       id: uuidv4(),
       content,
-      rid: selectedRoom.type === 0 ?
-        params?.id !== selectedRoom.recipients.id ?
-          params?.id : selectedRoom.recipients.id
-        : selectedRoom.id,
+      rid: selectedRoom.type === 0 && selectedRoom.temp ?
+        selectedRoom.recipients.id : selectedRoom?.id,
       type,
-      temp: selectedRoom.temp,
+      temp: selectedRoom.temp || false,
       timestamp: new Date().toString(),
     }
 
@@ -98,7 +96,6 @@ const Footer = () => {
           if (room.id === selectedRoom.id) {
             room.id = returnedNewMessage.rid;
             delete room.temp;
-            console.log(room)
           }
           return room;
         }))
