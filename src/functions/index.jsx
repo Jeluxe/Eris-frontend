@@ -16,13 +16,13 @@ export const getRandomColor = () => {
 	return color;
 };
 
-export const updateListStatus = (list, id, status) => {
+export const updateList = (list, type, id, status) => {
 	return list.map(entity => {
-		if (entity?.user?.id === id) {
+		if (entity[type]?.id === id) {
 			return {
 				...entity,
-				user: {
-					...entity.user,
+				[type]: {
+					...entity[type],
 					status
 				}
 			}

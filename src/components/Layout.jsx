@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Outlet, useMatch, useMatches, useNavigate } from "react-router";
 import { fetchData, refresh } from "../api";
 import { MediasoupProvider, useSocketIOProvider, useStateProvider } from "../context";
-import { addIndexToRoom, handleUpdateFriendRequest, updateListStatus } from "../functions";
+import { addIndexToRoom, handleUpdateFriendRequest, updateList } from "../functions";
 import { FriendList } from "../pages";
 import { Navbar, Sidebar, StatusBox } from "./";
 
@@ -61,14 +61,12 @@ const Layout = () => {
         setLoading(false);
         addSocketEvent('user-connected', updateUserStatus)
         addSocketEvent('message', updateMessageList)
-        addSocketEvent("recieved-new-friend-request", (newFriendRequest) => {
-          console.log(newFriendRequest)
+        addSocketEvent("recieved-new-friend-request", (newFriendRequest) =>
           setFriendList(prevRequests => [...prevRequests, newFriendRequest])
-        })
-        addSocketEvent('updated-friend-request', (updatedFriendRequet) => {
-          console.log(updatedFriendRequet)
+        )
+        addSocketEvent('updated-friend-request', (updatedFriendRequet) =>
           setFriendList(prevRequests => handleUpdateFriendRequest(prevRequests, updatedFriendRequet))
-        })
+        )
       });
 
       return () => {
@@ -119,8 +117,8 @@ const Layout = () => {
   }
 
   const updateUserStatus = (id, status) => {
-    setRooms((rooms) => [...updateListStatus(rooms, id, status)])
-    setFriendList((friendList) => [...updateListStatus(friendList, id, status)])
+    setRooms((rooms) => [...updateList(rooms, "recipients", id, status)])
+    setFriendList((friendList) => [...updateList(friendList, "user", id, status)])
   }
 
   const toggleSmallScreen = (width) => {
