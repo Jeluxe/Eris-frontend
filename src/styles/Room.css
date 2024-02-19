@@ -13,7 +13,7 @@
 }
 
 .messages-container:has(+ .footer .preview) {
-  height: 100%
+  height: calc(100% - 108px);
 }
 
 * {
