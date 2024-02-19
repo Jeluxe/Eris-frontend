@@ -26,7 +26,7 @@ const Room = () => {
 				setLoading(false);
 			}
 		}
-	}, [])
+	}, [params])
 
 	const editMessage = (message) => {
 		setSelectedMessage(message);
