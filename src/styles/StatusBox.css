@@ -44,6 +44,7 @@
 .sb-user-action {
 	padding: 0.1em 0.3em;
 	border-radius: 5px;
+	align-items: center;
 
 	&:hover {
 		background-color: rgba(158, 138, 177, 0.514);
@@ -54,6 +55,11 @@
 	font-size: 15px;
 	font-weight: 700;
 	flex-direction: column;
+
+	&>div {
+		display: flex;
+		justify-content: space-between;
+	}
 
 	&>div>div>span {
 		font-weight: 500;
