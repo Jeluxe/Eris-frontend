@@ -131,7 +131,7 @@ const Layout = () => {
 
   const isUserInCall = useMemo(() => {
     return inCall.activeCall && matches[1]?.params?.id === inCall.roomID
-  }, [inCall]);
+  }, [inCall, matches]);
 
   if (loading) {
     return <div>loading</div>
