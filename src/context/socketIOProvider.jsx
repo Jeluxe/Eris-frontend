@@ -5,23 +5,11 @@ import { useSocketIO } from "../hooks";
 const SocketIOContext = createContext();
 
 export const SocketIOProvider = ({ children }) => {
-  const {
-    socketConnect,
-    socketDisconnect,
-    emitData,
-    addSocketEvent,
-    removeSocketEvent,
-  } = useSocketIO("http://localhost:4000");
+  const socketOperations = useSocketIO("http://localhost:4000");
 
-  return <SocketIOContext.Provider value={{
-    socketConnect,
-    socketDisconnect,
-    emitData,
-    addSocketEvent,
-    removeSocketEvent,
-  }}>
+  return <SocketIOContext.Provider value={socketOperations}>
     {children}
-  </SocketIOContext.Provider>;
+  </SocketIOContext.Provider >;
 }
 
 export const useSocketIOProvider = () => useContext(SocketIOContext);

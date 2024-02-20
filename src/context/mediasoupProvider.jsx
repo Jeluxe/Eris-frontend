@@ -4,9 +4,9 @@ import { useMediasoup } from "../hooks";
 const MediasoupContext = createContext();
 
 export const MediasoupProvider = ({ children }) => {
-  const { call, localStream, remoteStreams, closeConnection } = useMediasoup()
+  const mediasoupOperations = useMediasoup()
 
-  return <MediasoupContext.Provider value={{ call, localStream, remoteStreams, closeConnection }}>
+  return <MediasoupContext.Provider value={mediasoupOperations}>
     {children}
   </MediasoupContext.Provider>;
 }
