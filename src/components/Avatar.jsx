@@ -1,6 +1,7 @@
-import userAvatar from "../assets/pngegg.png";
+import defaultAvatar from "../assets/pngegg.png";
 
 const Avatar = ({
+	userAvatar,
 	size,
 	bgColor: background,
 	absolute = false
@@ -13,7 +14,7 @@ const Avatar = ({
 			}}
 			className="image"
 			alt="User Avatar"
-			src={userAvatar}
+			src={userAvatar || defaultAvatar}
 			width={size}
 			height={size}
 		/>
