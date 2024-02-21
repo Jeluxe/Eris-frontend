@@ -15,7 +15,8 @@ export const ContextProvider = ({ children }) => {
   });
   const callRef = useRef(inCall);
   const videoContainer = useRef();
-  const [incomingCall, setIncomingCall] = useState(false);
+  const [incomingCall, setIncomingCall] = useState({ active: false, roomID: null, username: null });
+  const [showIncomingCallModal, setShowIncomingCallModal] = useState(false)
   const [messages, setMessages] = useState({});
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [showChat, setShowChat] = useState(true);
@@ -73,7 +74,9 @@ export const ContextProvider = ({ children }) => {
       isOpen,
       setIsOpen,
       videoContainer,
-      processRooms
+      processRooms,
+      showIncomingCallModal,
+      setShowIncomingCallModal
     }}>
       {children}
     </Context.Provider>

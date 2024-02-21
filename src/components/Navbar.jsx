@@ -1,6 +1,6 @@
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useParams } from "react-router-dom";
 import { BurgerMenu, CallIcon, FriendsIcon, IoMdPersonAdd, VideoIcon } from "../assets/icons";
-import { useMediasoupProvider, useStateProvider } from "../context";
+import { useMediasoupProvider, useSocketIOProvider, useStateProvider } from "../context";
 import { Avatar, CallNavbar, Checkbox, UserStatus, VDivider } from "./";
 
 const style = (incomingCall) => {
@@ -18,7 +18,9 @@ const Navbar = ({
 	setBurgerMenu,
 }) => {
 	const match = useMatch("/");
+	const params = useParams();
 	const { selectedRoom, setInCall, incomingCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen, setVideoToggle } = useStateProvider()
+	const { emitData } = useSocketIOProvider()
 	const { call } = useMediasoupProvider()
 	const createBurgerMenuBtn = () => {
 		return smallDevice ? (
@@ -30,9 +32,10 @@ const Navbar = ({
 	const selectedUser = selectedRoom?.recipients
 
 	const setCall = (video) => {
-		setVideoToggle(video)
+		setVideoToggle(video);
 		call(selectedRoom.id);
 		setInCall({ activeCall: true, roomID: selectedRoom.id });
+		emitData("make-call", selectedRoom.recipients.id);
 	}
 
 	return (
@@ -58,13 +61,13 @@ const Navbar = ({
 								className="call-button center circle"
 								onClick={() => setCall(false)}
 							>
-								<CallIcon style={style(incomingCall)} />
+								<CallIcon style={style(incomingCall.active && incomingCall.roomID === params?.id)} />
 							</div>
 							<div
 								className="video-call-button center circle"
 								onClick={() => setCall(true)}
 							>
-								<VideoIcon style={style(incomingCall)} />
+								<VideoIcon style={style(incomingCall.active && incomingCall.roomID === params?.id)} />
 							</div>
 						</div>
 					)}

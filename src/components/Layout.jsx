@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
-import { Outlet, useMatch, useMatches, useNavigate } from "react-router";
+import { Outlet, useMatch, useMatches, useNavigate, useParams } from "react-router";
 import { fetchData, refresh } from "../api";
 import { MediasoupProvider, useSocketIOProvider, useStateProvider } from "../context";
 import { addIndexToRoom, handleUpdateFriendRequest, updateList } from "../functions";
 import { FriendList } from "../pages";
-import { Navbar, Sidebar, StatusBox } from "./";
+import { IncomingCallModal, Navbar, Sidebar, StatusBox } from "./";
 
 const Layout = () => {
   const navigate = useNavigate();
   const match = useMatch("/");
   const matches = useMatches();
+  const params = useParams();
 
   const {
     user,
@@ -22,10 +23,14 @@ const Layout = () => {
     setMessages,
     callRef,
     inCall,
+    incomingCall,
+    setIncomingCall,
     showChat,
     smallDevice,
     setSmallDevice,
-    processRooms
+    processRooms,
+    showIncomingCallModal,
+    setShowIncomingCallModal
   } = useStateProvider();
 
   const {
@@ -55,13 +60,13 @@ const Layout = () => {
     if (user) {
       socketConnect(user);
       setStatus("online");
-      fetchData(user.id).then(({ rooms, friends }) => {
-        setRooms(rooms.map(addIndexToRoom));
+      fetchData(user.id).then(({ rooms: fetchedRooms, friends }) => {
+        setRooms(fetchedRooms.map(addIndexToRoom));
         setFriendList(friends);
         setLoading(false);
         addSocketEvent('user-connected', updateUserStatus)
         addSocketEvent('message', updateMessageList)
-        addSocketEvent("recieved-new-friend-request", (newFriendRequest) =>
+        addSocketEvent('recieved-new-friend-request', (newFriendRequest) =>
           setFriendList(prevRequests => [...prevRequests, newFriendRequest])
         )
         addSocketEvent('updated-friend-request', (updatedFriendRequet) =>
@@ -74,7 +79,7 @@ const Layout = () => {
         removeSocketEvent('user-connected')
         removeSocketEvent('disconnect')
         removeSocketEvent('message')
-        removeSocketEvent("recieved-new-friend-request")
+        removeSocketEvent('recieved-new-friend-request')
         removeSocketEvent('updated-friend-request')
         socketDisconnect()
         window.removeEventListener('resize', () => { })
@@ -92,6 +97,22 @@ const Layout = () => {
       }
     }
   }, [rooms, matches]);
+
+  useEffect(() => {
+    if (rooms.length) {
+      addSocketEvent('incoming-call', (id) => {
+        const foundRoom = rooms.find(({ recipients }) => recipients.id === id);
+        if (foundRoom?.recipients) {
+          const user = foundRoom.recipients
+          setIncomingCall({ active: true, roomID: foundRoom.id, user })
+          setShowIncomingCallModal(true);
+        }
+      })
+      return () => {
+        removeSocketEvent('incoming-call')
+      }
+    }
+  }, [rooms])
 
   useEffect(() => {
     refresh().then(res => {
@@ -139,6 +160,7 @@ const Layout = () => {
 
   return (
     <MediasoupProvider>
+      {showIncomingCallModal && incomingCall?.roomID !== params?.id && incomingCall.active ? <IncomingCallModal /> : ""}
       <div className="app">
         {
           (smallDevice && burgerMenu) || (!smallDevice) ?
