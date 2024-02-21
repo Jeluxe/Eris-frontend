@@ -44,6 +44,7 @@
 .sb-user-action {
 	padding: 0.1em 0.3em;
 	border-radius: 5px;
+	align-items: center;
 
 	&:hover {
 		background-color: rgba(158, 138, 177, 0.514);
@@ -53,17 +54,32 @@
 .sb-call {
 	font-size: 15px;
 	font-weight: 700;
+	flex-direction: column;
 
-	&>div>span {
+	&>div {
 		display: flex;
-		font-weight: 500;
-		max-width: 210px;
+		justify-content: space-between;
+	}
 
-		&>div {
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			margin-left: 5px;
-		}
+	&>div>div>span {
+		font-weight: 500;
+		max-width: 220px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		margin: 0;
+	}
+}
+
+#video-button {
+	height: 30px;
+	width: 50px;
+	border-radius: 5px;
+	outline: none;
+	border: none;
+	background-color: rgba(132, 105, 230, 0.604);
+
+	&:hover {
+		background-color: rgba(132, 105, 230, 0.204);
 	}
 }

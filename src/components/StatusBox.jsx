@@ -5,7 +5,9 @@ import {
 	LeaveCallIcon,
 	MicIcon,
 	MicOffIcon,
-	SettingsIcon
+	SettingsIcon,
+	VideoIcon,
+	VideoOffIcon
 } from "../assets/icons";
 import { useMediasoupProvider, useStateProvider } from "../context";
 import { Avatar, HDivider, UserStatus } from "./";
@@ -13,7 +15,7 @@ import { Avatar, HDivider, UserStatus } from "./";
 const StatusBox = () => {
 	const navigate = useNavigate();
 	const {
-		user, status, inCall, setInCall, muteToggle, setMuteToggle, deafToggle, setDeafToggle
+		user, status, inCall, setInCall, muteToggle, setMuteToggle, deafToggle, setDeafToggle, videoToggle, setVideoToggle
 	} = useStateProvider()
 	const { closeConnection } = useMediasoupProvider();
 
@@ -21,17 +23,21 @@ const StatusBox = () => {
 		<div className="status-box">
 			{inCall.activeCall ? (
 				<div className="sb-wrapper sb-call">
-					<div>
-						<p>call in progress</p>
-						<span>Room: <div onClick={() => navigate(`/@me/${inCall.roomID}`)}>{inCall.roomID}</div></span>
+					<div style={{ display: "flex" }}>
+						<div className="col">
+							<p>call in progress</p>
+							<span onClick={() => navigate(`/@me/${inCall.roomID}`)}>{inCall.roomID}</span>
+						</div>
+						<div className="sb-user-action"
+							onClick={() => {
+								closeConnection();
+								setInCall({ activeCall: false, roomID: null });
+							}}>
+							<LeaveCallIcon />
+						</div>
 					</div>
-					<div className="sb-user-action"
-						style={{ marginTop: 5 }}
-						onClick={() => {
-							closeConnection();
-							setInCall({ activeCall: false, roomID: null });
-						}}>
-						<LeaveCallIcon />
+					<div>
+						<button id="video-button" className="button center" onClick={() => setVideoToggle(!videoToggle)}>{!videoToggle ? <VideoIcon /> : <VideoOffIcon />}</button>
 					</div>
 				</div>
 			) : null}

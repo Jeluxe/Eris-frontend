@@ -50,15 +50,22 @@ svg {
   height: 2em;
 }
 
+video {
+  height: 140px;
+  width: 250px;
+  object-fit: fill;
+  border-radius: 5px;
+}
+
 .v-divider {
   border: 1px solid rgba(0, 0, 0, 0.35);
   margin: 0 10px;
   height: 100%;
 }
 
-.h_divider {
+.h-divider {
   border: 1px solid rgba(0, 0, 0, 0.35);
-  margin: 10px 0;
+  margin: 6px 0;
   width: 100%;
 }
 
@@ -76,6 +83,11 @@ svg {
 .h-center {
   display: flex;
   justify-content: center;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
 }
 
 .circle {

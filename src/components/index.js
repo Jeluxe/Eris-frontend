@@ -6,6 +6,7 @@ import CustomAudioBar from './CustomAudioBar';
 import Footer from "./Footer";
 import Friend from "./Friend";
 import HDivider from "./H_Divider";
+import IncomingCallModal from "./IncomingCallModal";
 import Input from "./Input";
 import Layout from "./Layout";
 import Navbar from "./Navbar";
@@ -20,9 +21,7 @@ import Video from "./Video";
 
 export {
   AuthLayout, Avatar, CallNavbar,
-  Checkbox, CustomAudioBar, Footer, Friend, HDivider,
-  Input,
-  Layout, Navbar, NewFriendForm,
+  Checkbox, CustomAudioBar, Footer, Friend, HDivider, IncomingCallModal, Input, Layout, Navbar, NewFriendForm,
   Options, Sidebar, StatusBox, Textarea, UserStatus,
   VDivider, Video
 };

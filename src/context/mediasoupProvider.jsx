@@ -1,22 +1,12 @@
 import { createContext, useContext } from "react";
 import { useMediasoup } from "../hooks";
-import { useStateProvider } from "./";
 
 const MediasoupContext = createContext();
 
 export const MediasoupProvider = ({ children }) => {
-  const { user, videoContainer, muteToggle, videoToggle } = useStateProvider()
+  const mediasoupOperations = useMediasoup()
 
-  const {
-    call, localStreamRef, remoteStreams, closeConnection
-  } = useMediasoup({
-    userID: user?.id,
-    videoContainer,
-    videoToggle,
-    muteToggle,
-  })
-
-  return <MediasoupContext.Provider value={{ call, localStreamRef, remoteStreams, closeConnection }}>
+  return <MediasoupContext.Provider value={mediasoupOperations}>
     {children}
   </MediasoupContext.Provider>;
 }

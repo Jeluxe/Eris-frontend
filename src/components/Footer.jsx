@@ -1,21 +1,22 @@
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
-import { SendIcon, TrashIcon } from '../assets/icons'
-import { useSocketIOProvider, useStateProvider } from '../context'
-import { blobToBuffer, calculateTime } from '../functions'
-import { useRecorder, useTimer } from '../hooks'
-import { CustomAudioBar, Textarea } from './'
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { v4 as uuidv4 } from 'uuid';
+import { SendIcon, TrashIcon } from '../assets/icons';
+import { useSocketIOProvider, useStateProvider } from '../context';
+import { blobToBuffer, calculateTime } from '../functions';
+import { useRecorder, useTimer } from '../hooks';
+import { CustomAudioBar, Textarea } from './';
 
 const style = (condition) => {
   return {
-    alignItems: condition ? "normal" : "end",
-    flexDirection: condition ? "column" : "row"
+    flexDirection: condition ? "column" : ""
   }
 }
 
 const Footer = () => {
   const params = useParams()
-  const { setMessages, selectedRoom } = useStateProvider();
+  const navigate = useNavigate();
+  const { setRooms, setMessages, selectedRoom, processRooms } = useStateProvider();
   const { emitData } = useSocketIOProvider();
   const { startRecording, stopRecording, url, blob, setBlob } = useRecorder();
   const { timer, isRunning, handleStartStop, handleReset } = useTimer();
@@ -59,13 +60,13 @@ const Footer = () => {
   const record = async () => {
     const audioData = await blobToBuffer(blob);
 
-    sendMessage(2, audioData)
+    sendMessage(1, audioData)
     recordReset()
   };
 
   const send = () => {
     if (message.trim() !== "") {
-      sendMessage(1, message)
+      sendMessage(0, message)
       reset()
     }
   }
@@ -80,18 +81,39 @@ const Footer = () => {
 
   const sendMessage = (type, content) => {
     const newMessage = {
+      id: uuidv4(),
       content,
-      rid: selectedRoom.type === 0 ?
-        params?.id !== selectedRoom.recipients.id ?
-          params?.id : selectedRoom.recipients.id
-        : selectedRoom.id,
+      rid: selectedRoom.type === 0 && selectedRoom.temp ?
+        selectedRoom.recipients.id : selectedRoom?.id,
       type,
+      temp: selectedRoom.temp || false,
       timestamp: new Date().toString(),
     }
 
     emitData("message", newMessage, (returnedNewMessage) => {
-      setMessages(messages => messages.concat(returnedNewMessage))
+      const newMessageRoomID = returnedNewMessage.rid;
+      if (newMessage.temp) {
+        setRooms(prevRooms => prevRooms.map(room => {
+          if (room.id === selectedRoom.id) {
+            room.id = newMessageRoomID;
+            delete room.temp;
+          }
+          return room;
+        }))
+        setMessages(messages => ({ ...messages, [newMessageRoomID]: [returnedNewMessage] }));
+        navigate(`/@me/${newMessageRoomID}`)
+      } else {
+        setMessages(messages => ({ ...messages, [newMessageRoomID]: [...messages[newMessageRoomID], returnedNewMessage] }));
+        setTimeout(scrollDown, 0);
+      }
+      processRooms(newMessageRoomID)
     });
+  }
+
+  const scrollDown = () => {
+    const messagesContainer = document.querySelector(".messages-container")
+    const messagesWrapper = document.querySelector(".messages-wrapper")
+    messagesContainer.scrollTo({ top: (messagesWrapper.scrollHeight), behavior: 'smooth' })
   }
 
   return (

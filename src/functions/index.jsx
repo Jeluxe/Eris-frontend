@@ -16,13 +16,13 @@ export const getRandomColor = () => {
 	return color;
 };
 
-export const updateListStatus = (list, id, status) => {
+export const updateList = (list, type, id, status) => {
 	return list.map(entity => {
-		if (entity?.user?.id === id) {
+		if (entity[type]?.id === id) {
 			return {
 				...entity,
-				user: {
-					...entity.user,
+				[type]: {
+					...entity[type],
 					status
 				}
 			}
@@ -30,6 +30,13 @@ export const updateListStatus = (list, id, status) => {
 			return entity;
 		}
 	})
+}
+
+export const addIndexToRoom = (room, idx) => {
+	return {
+		...room,
+		index: room.index || idx
+	}
 }
 
 export const debounce = (fn, ms) => {
@@ -42,6 +49,23 @@ export const debounce = (fn, ms) => {
 		timeout = setTimeout(() => {
 			fn()
 		}, ms);
+	}
+}
+
+export const handleUpdateFriendRequest = (list, entry) => {
+	switch (entry.status) {
+		case "DECLINED":
+			return list.filter(item => item.id !== entry.id);
+		case "ACCEPTED":
+		case "BLOCKED":
+			return list.map(item => {
+				if (item.id === entry.id) {
+					return entry;
+				}
+				return item;
+			})
+		default:
+			return list;
 	}
 }
 
@@ -132,9 +156,9 @@ export const calculateTime = (secs) => {
 };
 
 export const messageRenderer = (message, clicked) => {
-	if (message.type === 1) {
+	if (message.type === 0) {
 		return <div id={`message-${message.id}`} className="message-content">{message.content} {message.edited ? <span className="edited"> (edited)</span> : ""}</div>;
-	} else if (message.type === 2) {
+	} else if (message.type === 1) {
 		return <CustomAudioBar src={`data:audio/wav;base64,${message.content}`} clicked={clicked} />;
 	}
 };

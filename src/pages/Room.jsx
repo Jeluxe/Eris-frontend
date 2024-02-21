@@ -8,25 +8,25 @@ import { formatDate, getTime, messagePositioning, messageRenderer } from "../fun
 const Room = () => {
 	const params = useParams();
 	const { emitData } = useSocketIOProvider();
-	const { messages, setMessages, selectedRoom } = useStateProvider();
+	const { user, messages, setMessages } = useStateProvider();
 	const [loading, setLoading] = useState(true);
 	const [selectedMessage, setSelectedMessage] = useState(null);
 	const [editedContent, setEditedContent] = useState(null);
 
 	useEffect(() => {
 		if (params?.id) {
-			getMessages(params?.id)
-				.then((messages) => {
-					setMessages(messages);
-					setLoading(false);
-				})
-				.catch(err => console.error(err));
+			if (!messages[params.id]?.length) {
+				getMessages(params.id)
+					.then((messages) => {
+						setMessages((prevMessages) => ({ ...prevMessages, [params.id]: messages }));
+						setLoading(false);
+					})
+					.catch(err => console.error(err));
+			} else if (messages[params.id].length) {
+				setLoading(false);
+			}
 		}
 	}, [params])
-
-	const filterMessages = (msg) => {
-		return (selectedRoom) ? selectedRoom.id === msg.rid : "";
-	}
 
 	const editMessage = (message) => {
 		setSelectedMessage(message);
@@ -37,7 +37,11 @@ const Room = () => {
 		if (confirm('Are you sure you want to delete this message?')) {
 			emitData('delete-message', { id: message.id, rid: message.rid }, ({ deletedMessageID, error }) => {
 				if (!error) {
-					setMessages(prevMessages => [...prevMessages.filter((message) => message.id !== deletedMessageID)])
+					setMessages(messages => ({
+						...messages,
+						[message.rid]: messages[message.rid].filter(message =>
+							message.id !== deletedMessageID)
+					}));
 				} else {
 					console.log(error)
 				}
@@ -63,10 +67,11 @@ const Room = () => {
 			emitData('edit-message',
 				{ message: selectedMessage, newContent: editedContent }, ({ editedMessage, error }) => {
 					if (!error) {
-						const updatedMessages = [...messages.map(message =>
-							message.id === editedMessage.id ? editedMessage : message
-						)]
-						setMessages(updatedMessages)
+						setMessages(messages => ({
+							...messages,
+							[editedMessage.rid]: messages[editedMessage.rid].map(message =>
+								message.id === editedMessage.id ? editedMessage : message)
+						}));
 					} else {
 						console.log(error)
 					}
@@ -102,52 +107,48 @@ const Room = () => {
 	}
 
 	const optionsRenderer = (message) => {
-		if (selectedMessage?.id !== message.id)
+		if (selectedMessage?.id !== message.id && message.sender.id === user.id)
 			return <Options type={message.type} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} editMessage={() => editMessage(message)} deleteMessage={() => deleteMessage(message)} />
 	}
 
-	if (loading) {
-		return <div>Loading...</div>;
-	} else {
-		return (
-			<div className="chat-container">
-				<div className="messages-container">
-					<div className="messages-wrapper">
-						{messages?.filter(filterMessages).map((message, idx) => {
-							return (
-								<div key={idx} className="message v-center">
-									{messagePositioning(messages[idx - 1], message) ? (
-										<>
-											<Avatar size={35} bgColor={message.sender.avatar} />
-											<div className="message-wrapper">
-												<div>
-													<span className="message-sender">{message.sender.username}</span>
-													<span className="message-date">
-														{formatDate(message.timestamp)}
-													</span>
-												</div>
-												{selectedMessage?.id === message.id ? inputRenderer() : messageRenderer(message)}
+	return (
+		<div className="chat-container">
+			{!loading ? <div className="messages-container">
+				<div className="messages-wrapper">
+					{messages[params?.id]?.map((message, idx) => {
+						return (
+							<div key={idx} className="message v-center">
+								{messagePositioning(messages[params?.id][idx - 1], message) ? (
+									<>
+										<Avatar size={35} bgColor={message.sender.avatar} />
+										<div className="message-wrapper">
+											<div>
+												<span className="message-sender">{message.sender.username}</span>
+												<span className="message-date">
+													{formatDate(message.timestamp)}
+												</span>
 											</div>
-											{optionsRenderer(message)}
-										</>
-									) : (
-										<>
-											<span className="message-time">
-												{getTime(message.timestamp)}
-											</span>
 											{selectedMessage?.id === message.id ? inputRenderer() : messageRenderer(message)}
-											{optionsRenderer(message)}
-										</>
-									)}
-								</div>
-							);
-						})}
-					</div>
+										</div>
+										{optionsRenderer(message)}
+									</>
+								) : (
+									<>
+										<span className="message-time">
+											{getTime(message.timestamp)}
+										</span>
+										{selectedMessage?.id === message.id ? inputRenderer() : messageRenderer(message)}
+										{optionsRenderer(message)}
+									</>
+								)}
+							</div>
+						);
+					})}
 				</div>
-				<Footer />
-			</div>
-		);
-	}
+			</div> : "loading..."}
+			<Footer />
+		</div>
+	);
 };
 
 export default Room;

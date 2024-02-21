@@ -39,9 +39,6 @@ const Options = ({ type, selectedMessage, setSelectedMessage, editMessage, delet
     };
   }, [ref]);
 
-
-
-
   return (
     <div className='options' ref={ref}>
       {

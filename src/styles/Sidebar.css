@@ -5,17 +5,10 @@
 	color: black;
 	border-radius: 15px;
 	box-shadow: 0 0 10px 1px black;
-}
-
-.sidebar-top {
-	display: flex;
-	align-items: center;
-	margin-bottom: 10px;
-	column-gap: 15px;
+	overflow-y: auto;
 }
 
 .sidebar-list {
-	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
 
