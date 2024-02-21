@@ -96,6 +96,10 @@
 	.call-navbar-participants:has(video) {
 		flex-direction: column;
 	}
+
+	textarea {
+		max-height: 300px;
+	}
 }
 
 @media only screen and (max-width: 490px) {
