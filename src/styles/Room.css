@@ -38,7 +38,6 @@
 .message {
   font-size: 16px;
   position: relative;
-  padding: 2px 0;
 
   &:hover {
     background-color: rgba(130, 96, 159, 0.122);
