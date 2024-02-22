@@ -71,7 +71,7 @@ const StatusBox = () => {
 					</div>
 					<div
 						className="sb-user-action"
-						onClick={() => navigate("/settings")}
+						onClick={() => { }}
 					>
 						<SettingsIcon />
 					</div>
