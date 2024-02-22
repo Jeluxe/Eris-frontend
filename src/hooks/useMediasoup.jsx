@@ -104,7 +104,7 @@ export const useMediasoup = () => {
         videoTrack.stop();
         localStream.removeTrack(videoTrack);
       } else if (videoTrack && videoTrack.readyState === 'ended' || !videoTrack) {
-        getMedia().then(stream => {
+        getMedia(true).then(stream => {
           stream.getVideoTracks()[0] ? localStream.addTrack(stream.getVideoTracks()[0]) : ""
         })
       }
@@ -125,20 +125,20 @@ export const useMediasoup = () => {
     }
   };
 
-  const call = async (selectedRoomID) => {
+  const call = async (selectedRoomID, video) => {
     if (inCall.activeCall && inCall.roomID !== selectedRoomID) {
       await closeConnection()
     }
     roomID.current = selectedRoomID;
-    getMedia()
+    getMedia(video)
       .then(streamSuccess)
       .catch((error) => console.log(error.message));
   };
 
-  const getMedia = async () => {
+  const getMedia = (video) => {
     return navigator.mediaDevices.getUserMedia({
       audio: true,
-      video: videoToggle,
+      video,
     });
   };
 
@@ -268,7 +268,7 @@ export const useMediasoup = () => {
           }
         });
 
-        connectSendTransport((videoToggle) ? "video" : "", "audio");
+        connectSendTransport("video", "audio");
       }
     );
   };

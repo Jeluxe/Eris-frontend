@@ -33,7 +33,7 @@ const Navbar = ({
 
 	const setCall = (video) => {
 		setVideoToggle(video);
-		call(selectedRoom.id);
+		call(selectedRoom.id, video);
 		setInCall({ activeCall: true, roomID: selectedRoom.id });
 		emitData("make-call", selectedRoom.recipients.id);
 	}

@@ -1,13 +1,14 @@
 import { useMediasoupProvider, useStateProvider } from '../context';
 import { Avatar } from './';
-import { CallIcon, LeaveCallIcon } from '../assets/icons';
+import { CallIcon, LeaveCallIcon, VideoIcon } from '../assets/icons';
 
 const IncomingCallModal = () => {
-  const { incomingCall, setInCall, setShowIncomingCallModal } = useStateProvider();
+  const { incomingCall, setInCall, setVideoToggle, setShowIncomingCallModal } = useStateProvider();
   const { call } = useMediasoupProvider();
 
-  const answerAction = () => {
-    call(incomingCall.roomID);
+  const answerAction = (video) => {
+    setVideoToggle(video);
+    call(incomingCall.roomID, video);
     setInCall({ activeCall: true, roomID: incomingCall.roomID });
     setShowIncomingCallModal(false)
   }
@@ -24,7 +25,8 @@ const IncomingCallModal = () => {
         <span> is calling</span>
       </div>
       <div className='modal-actions'>
-        <button className='modal-action' onClick={answerAction}><CallIcon /></button>
+        <button className='modal-action' onClick={() => answerAction(false)}><CallIcon /></button>
+        <button className='modal-action' onClick={() => answerAction(true)}><VideoIcon /></button>
         <button className='modal-action' onClick={declineAction}><LeaveCallIcon /></button>
       </div>
     </div>
