@@ -8,10 +8,6 @@
 	display: flex;
 }
 
-.hide {
-	display: none !important;
-}
-
 .left-side {
 	display: flex;
 	width: 350px;
