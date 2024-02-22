@@ -14,7 +14,7 @@ const produceParams = {
 };
 
 export const useMediasoup = () => {
-  const { user: { id: userID }, videoContainer, muteToggle, videoToggle } = useStateProvider()
+  const { user: { id: userID }, inCall, videoContainer, muteToggle, videoToggle } = useStateProvider()
   const { emitData, addSocketEvent, removeSocketEvent } = useSocketIOProvider()
   const roomID = useRef(null)
   const device = useRef(null);
@@ -105,7 +105,7 @@ export const useMediasoup = () => {
         localStream.removeTrack(videoTrack);
       } else if (videoTrack && videoTrack.readyState === 'ended' || !videoTrack) {
         getMedia().then(stream => {
-          localStream.addTrack(stream.getVideoTracks()[0])
+          stream.getVideoTracks()[0] ? localStream.addTrack(stream.getVideoTracks()[0]) : ""
         })
       }
     }
@@ -125,7 +125,10 @@ export const useMediasoup = () => {
     }
   };
 
-  const call = (selectedRoomID) => {
+  const call = async (selectedRoomID) => {
+    if (inCall.activeCall && inCall.roomID !== selectedRoomID) {
+      await closeConnection()
+    }
     roomID.current = selectedRoomID;
     getMedia()
       .then(streamSuccess)
@@ -135,7 +138,7 @@ export const useMediasoup = () => {
   const getMedia = async () => {
     return navigator.mediaDevices.getUserMedia({
       audio: true,
-      video: true,
+      video: videoToggle,
     });
   };
 
@@ -265,7 +268,7 @@ export const useMediasoup = () => {
           }
         });
 
-        connectSendTransport("video", "audio");
+        connectSendTransport((videoToggle) ? "video" : "", "audio");
       }
     );
   };
