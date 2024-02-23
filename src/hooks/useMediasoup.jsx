@@ -98,17 +98,6 @@ export const useMediasoup = () => {
 
   useEffect(() => {
     playPause(videoProducer, !videoToggle);
-    if (localStream) {
-      const videoTrack = localStream.getVideoTracks()[0];
-      if (!videoToggle && videoTrack) {
-        videoTrack.stop();
-        localStream.removeTrack(videoTrack);
-      } else if (videoTrack && videoTrack.readyState === 'ended' || !videoTrack) {
-        getMedia(true).then(stream => {
-          stream.getVideoTracks()[0] ? localStream.addTrack(stream.getVideoTracks()[0]) : ""
-        })
-      }
-    }
   }, [videoToggle, localStream]);
 
   useEffect(() => {
