@@ -98,7 +98,7 @@ export const useMediasoup = () => {
 
   useEffect(() => {
     playPause(videoProducer, !videoToggle);
-  }, [videoToggle, localStream]);
+  }, [videoToggle]);
 
   useEffect(() => {
     playPause(audioProducer, muteToggle);
@@ -106,6 +106,9 @@ export const useMediasoup = () => {
 
   const playPause = (producer, value) => {
     if (producer.current) {
+      if (producer.current.kind === "video") {
+        emitData("video-toggle", roomID.current)
+      }
       if (value) {
         producer.current.pause();
       } else {
