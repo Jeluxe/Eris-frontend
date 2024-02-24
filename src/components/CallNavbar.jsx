@@ -44,10 +44,6 @@ const CallNavbar = ({ avatar }) => {
 								stream={localStream}
 								videoToggle={videoToggle}
 							/>
-							{videoToggle ? "" : <Avatar
-								size={80}
-								bgColor={"green"}
-							/>}
 							{
 								remoteStreams?.map((remoteStream, idx) => {
 									const [key, value] = Object.entries(remoteStream)[0];
