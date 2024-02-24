@@ -3,6 +3,7 @@ import defaultAvatar from "../assets/pngegg.png";
 const Avatar = ({
 	userAvatar,
 	size,
+	hide,
 	bgColor: background,
 	absolute = false
 }) => {
@@ -12,7 +13,7 @@ const Avatar = ({
 				background,
 				position: absolute ? "absolute" : "none"
 			}}
-			className="image"
+			className={`image ${hide}`}
 			alt="User Avatar"
 			src={userAvatar || defaultAvatar}
 			width={size}
