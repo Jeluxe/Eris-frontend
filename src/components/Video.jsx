@@ -8,9 +8,14 @@ const Video = ({ type, id = null, stream, videoToggle }) => {
 	const containerRef = useRef(null);
 
 	useEffect(() => {
-		addSocketEvent("video-toggle", () => {
-			videoRef.current.classList.toggle("hide");
-			containerRef.current.querySelector("img").classList.toggle("hide")
+		addSocketEvent("video-toggle", (value) => {
+			if (!value) {
+				videoRef.current.classList.remove("hide");
+				containerRef.current.querySelector("img").classList.add("hide")
+			} else {
+				videoRef.current.classList.add("hide");
+				containerRef.current.querySelector("img").classList.remove("hide")
+			}
 		})
 
 		return () => {
