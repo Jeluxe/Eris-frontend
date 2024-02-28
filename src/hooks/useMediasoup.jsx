@@ -107,7 +107,7 @@ export const useMediasoup = () => {
   const playPause = (producer, value) => {
     if (producer.current) {
       if (producer.current.kind === "video") {
-        emitData("video-toggle", roomID.current)
+        emitData("video-toggle", roomID.current, value)
       }
       if (value) {
         producer.current.pause();
@@ -141,7 +141,7 @@ export const useMediasoup = () => {
     const audioTrack = stream.getAudioTracks()[0];
 
     tracks.current = {
-      video: videoTrack,
+      video: videoTrack ?? null,
       audio: audioTrack,
     };
 
@@ -260,7 +260,7 @@ export const useMediasoup = () => {
           }
         });
 
-        connectSendTransport("video", "audio");
+        connectSendTransport(tracks.current.video ? "video" : "", "audio");
       }
     );
   };
@@ -273,8 +273,6 @@ export const useMediasoup = () => {
         track: tracks.current.video,
         ...produceParams,
       });
-
-      videoToggle ? producer.pause() : "";
       videoProducer.current = producer;
     }
 
@@ -471,6 +469,7 @@ export const useMediasoup = () => {
     remoteStreamsRef.current = [];
     setRemoteStreams(remoteStreamsRef.current);
     localStreamRef.current = null;
+    setLocalStream(null)
     consumerTransports.current = [];
     producerTransport.current = null;
     videoProducer.current = null;
