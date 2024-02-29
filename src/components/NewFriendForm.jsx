@@ -1,37 +1,36 @@
-import { useEffect, useState } from 'react'
-import { useSocketIOProvider, useStateProvider } from '../context'
-import { debounce } from '../functions'
-import { useField } from '../hooks'
-import Input from './Input'
+import { useEffect, useState } from 'react';
+import { useSocketIOProvider, useStateProvider } from '../context';
+import { debounce } from '../functions';
+import { useField } from '../hooks';
+import Input from './Input';
 
 const NewFriendForm = () => {
   const { setFriendList } = useStateProvider();
-  const { emitData } = useSocketIOProvider()
-  const [notification, setNotfication] = useState({})
-  const { reset, ...newFriend } = useField('text')
+  const { emitData } = useSocketIOProvider();
+  const [notification, setNotfication] = useState({});
+  const { reset, ...newFriend } = useField('text');
 
-  const searchForUsers = async () => {
+  const searchForUsers = () => {
     if (newFriend.value.trim()) {
-
       emitData('new-friend-request', newFriend.value, (data) => {
         if (data) {
           if (data.type === 'error') {
-            setNotfication(data)
+            setNotfication(data);
           } else {
-            setFriendList((prevFriendList) => [...prevFriendList, data])
-            setNotfication({ type: 'success', message: `sent friend request to ${data.user.username} successfully` })
+            setFriendList((prevFriendList) => [...prevFriendList, data]);
+            setNotfication({ type: 'success', message: `sent friend request to ${data.user.username} successfully` });
           }
         }
-      })
+      });
     }
-    reset()
+    reset();
   }
 
   const debouncedSearch = debounce(searchForUsers, 500);
 
   useEffect(() => {
-    setNotfication({})
-  }, [newFriend.value])
+    setNotfication({});
+  }, [newFriend.value]);
 
   return (
     <div className='new-friend-form'>
@@ -41,9 +40,9 @@ const NewFriendForm = () => {
       </div>
       {notification && <span className={`notification ${notification.type === 'success' ? "success" : "error"}`}>{notification.message}</span>}
     </div>
-  )
-}
+  );
+};
 
 
 
-export default NewFriendForm
+export default NewFriendForm;

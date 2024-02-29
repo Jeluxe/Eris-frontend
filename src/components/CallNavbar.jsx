@@ -11,16 +11,16 @@ import {
 	VideoOffIcon
 } from "../assets/icons";
 import { useMediasoupProvider, useStateProvider } from "../context";
-import { Avatar, Video } from "./";
+import { Video } from "./";
 
-const CallNavbar = ({ avatar }) => {
-	const { id } = useParams()
+const CallNavbar = () => {
+	const { id } = useParams();
 	const {
 		inCall, setInCall, muteToggle,
 		setMuteToggle, deafToggle, setDeafToggle,
 		videoToggle, setVideoToggle, showChat,
 		setShowChat, videoContainer,
-	} = useStateProvider()
+	} = useStateProvider();
 
 	const {
 		localStream,
