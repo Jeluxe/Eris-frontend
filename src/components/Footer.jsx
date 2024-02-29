@@ -29,6 +29,8 @@ const Footer = () => {
     return () => {
       reset();
       recordReset();
+      reset();
+      recordReset();
     }
   }, [params]);
 
@@ -142,10 +144,9 @@ const Footer = () => {
         ""
       )}
       <div style={{ display: "flex", width: "100%", alignItems: "end" }} >
-        {url && disabled ? (
+        {!url || !disabled ? (
           ""
         ) : (
-
           <button
             id="recordIcon"
             onClick={() => toggleRecord()}
