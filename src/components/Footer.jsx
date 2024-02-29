@@ -23,18 +23,18 @@ const Footer = () => {
   const [preview, setPreview] = useState(false);
   const [recording, setRecording] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [message, setMessage] = useState("")
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     return () => {
-      reset()
-      recordReset()
+      reset();
+      recordReset();
     }
-  }, [params])
+  }, [params]);
 
   const toggleRecord = () => {
     setDisabled(true);
-    handleStartStop()
+    handleStartStop();
     if (!recording) {
       startRecording();
       setRecording(true);
@@ -46,7 +46,7 @@ const Footer = () => {
   };
 
   const reset = () => {
-    setMessage("")
+    setMessage("");
   }
 
   const recordReset = () => {
@@ -60,14 +60,14 @@ const Footer = () => {
   const record = async () => {
     const audioData = await blobToBuffer(blob);
 
-    sendMessage(1, audioData)
-    recordReset()
+    sendMessage(1, audioData);
+    recordReset();
   };
 
   const send = () => {
     if (message.trim() !== "") {
-      sendMessage(0, message)
-      reset()
+      sendMessage(0, message);
+      reset();
     }
   }
 
@@ -106,7 +106,7 @@ const Footer = () => {
         setMessages(messages => ({ ...messages, [newMessageRoomID]: [...messages[newMessageRoomID], returnedNewMessage] }));
         setTimeout(scrollDown, 0);
       }
-      processRooms(newMessageRoomID)
+      processRooms(newMessageRoomID);
     });
   }
 
@@ -118,33 +118,29 @@ const Footer = () => {
 
   return (
     <div className='footer' style={style(url && preview)}>
-      {
-        url && preview ? (
-          <div className='preview'>
-            <CustomAudioBar src={url} />
-            {disabled ? (
-              <div className='buttons'>
-                <button
-                  className="send"
-                  onClick={() => record()}
-                >
-                  <SendIcon />
-                </button>
-                <button
-                  className="delete"
-                  onClick={() => recordReset()}
-                >
-                  <TrashIcon />
-                </button>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-        ) : (
-          ""
-        )
-      }
+      {url && preview ? (
+        <div className='preview'>
+          <CustomAudioBar src={url} />
+          {disabled && (
+            <div className='buttons'>
+              <button
+                className="send"
+                onClick={() => record()}
+              >
+                <SendIcon />
+              </button>
+              <button
+                className="delete"
+                onClick={() => recordReset()}
+              >
+                <TrashIcon />
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        ""
+      )}
       <div style={{ display: "flex", width: "100%", alignItems: "end" }} >
         {url && disabled ? (
           ""
@@ -173,14 +169,14 @@ const Footer = () => {
                 fill="red"
               />
             </svg>
-            {isRunning ? <div className='recording-time'>{calculateTime(timer)}</div> : ""}
+            {isRunning && <div className='recording-time'>{calculateTime(timer)}</div>}
           </button>
         )}
         <Textarea message={message} onKeyDown={onKeyDown} onInput={(e) => setMessage(e.target.value)} placeholder={'type here...'} disabled={disabled} />
         <button id='send-button' className='send center circle' onClick={send}><SendIcon /></button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

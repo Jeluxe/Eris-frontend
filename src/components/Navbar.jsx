@@ -13,37 +13,29 @@ const style = (incomingCall) => {
 
 const categories = ["All", "Online", "Blocked", "Pending"];
 
-const Navbar = ({
-	isUserInCall,
-	setBurgerMenu,
-}) => {
+const Navbar = ({ isUserInCall, setBurgerMenu }) => {
 	const match = useMatch("/");
 	const params = useParams();
-	const { selectedRoom, setInCall, incomingCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen, setVideoToggle } = useStateProvider()
-	const { emitData } = useSocketIOProvider()
-	const { call } = useMediasoupProvider()
-	const createBurgerMenuBtn = () => {
-		return smallDevice ? (
-			<BurgerMenu onClick={() => setBurgerMenu(true)} />
-		) : (
-			""
-		);
-	};
-	const selectedUser = selectedRoom?.recipients
+	const { selectedRoom, setInCall, incomingCall, showChat, smallDevice, setSelectedFilter, isOpen, setIsOpen, setVideoToggle } = useStateProvider();
+	const { emitData } = useSocketIOProvider();
+	const { call } = useMediasoupProvider();
 
-	const setCall = (video) => {
+	const handleCall = (video) => {
 		setVideoToggle(video);
 		call(selectedRoom.id, video);
 		setInCall({ activeCall: true, roomID: selectedRoom.id });
 		emitData("make-call", selectedRoom.recipients.id);
 	}
 
-	return (
-		<div className={`navbar ${isUserInCall && !match ? "in-call-nav" : ""}${isUserInCall ? showChat ? "" : !match ? " nav-hide-outlet" : "" : ""}`}>
-			{selectedRoom ? (
+	const renderBurgerMenuButton = () => (smallDevice ? <BurgerMenu onClick={() => setBurgerMenu(true)} /> : null);
+
+	const renderNavbarContent = () => {
+		if (selectedRoom) {
+			const selectedUser = selectedRoom?.recipients;
+			return (
 				<div className={`navbar-user ${isUserInCall && !match ? "in-call" : ""}${isUserInCall ? showChat ? "" : !match ? " hide-outlet" : "" : ""}`}>
 					<div className="navbar-user-info">
-						{smallDevice ? createBurgerMenuBtn() : ""}
+						{renderBurgerMenuButton()}
 						<Avatar
 							size={40}
 							bgColor={`${selectedUser?.avatar}`}
@@ -57,24 +49,20 @@ const Navbar = ({
 						/>
 					) : (
 						<div className="navbar-actions">
-							<div
-								className="call-button center circle"
-								onClick={() => setCall(false)}
-							>
+							<div className="call-button center circle" onClick={() => handleCall(false)}>
 								<CallIcon style={style(incomingCall.active && incomingCall.roomID === params?.id)} />
 							</div>
-							<div
-								className="video-call-button center circle"
-								onClick={() => setCall(true)}
-							>
+							<div className="video-call-button center circle" onClick={() => handleCall(true)}>
 								<VideoIcon style={style(incomingCall.active && incomingCall.roomID === params?.id)} />
 							</div>
 						</div>
 					)}
 				</div>
-			) : (
+			)
+		} else {
+			return (
 				<div className="navbar-friends">
-					{createBurgerMenuBtn()}
+					{renderBurgerMenuButton()}
 					<FriendsIcon />
 					<span
 						style={{ cursor: smallDevice ? "pointer" : "default" }}
@@ -106,9 +94,11 @@ const Navbar = ({
 								}}><IoMdPersonAdd /></div>
 					}
 				</div>
-			)}
-		</div>
-	);
+			);
+		}
+	}
+
+	return <div className={`navbar ${isUserInCall && !match ? "in-call-nav" : ""}${isUserInCall ? showChat ? "" : !match ? " nav-hide-outlet" : "" : ""}`}>{renderNavbarContent()}</div>;
 };
 
 export default Navbar;

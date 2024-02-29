@@ -14,19 +14,21 @@ const Room = () => {
 	const [editedContent, setEditedContent] = useState(null);
 
 	useEffect(() => {
-		if (params?.id) {
-			if (!messages[params.id]?.length) {
-				getMessages(params.id)
-					.then((messages) => {
-						setMessages((prevMessages) => ({ ...prevMessages, [params.id]: messages }));
-						setLoading(false);
-					})
-					.catch(err => console.error(err));
-			} else if (messages[params.id].length) {
-				setLoading(false);
+		const fetchMessages = async () => {
+			if (params?.id) {
+				try {
+					if (!messages[params.id]?.length) {
+						const messagesData = await getMessages(params.id);
+						setMessages((prevMessages) => ({ ...prevMessages, [params.id]: messagesData }));
+					}
+					setLoading(false);
+				} catch (error) {
+					console.error('Error fetching messages:', error);
+				}
 			}
 		}
-	}, [params])
+		fetchMessages();
+	}, [params]);
 
 	const editMessage = (message) => {
 		setSelectedMessage(message);
@@ -43,20 +45,10 @@ const Room = () => {
 							message.id !== deletedMessageID)
 					}));
 				} else {
-					console.log(error)
+					console.log(error);
 				}
 			});
 			console.log('message has been deleted!');
-		}
-	}
-
-	const onKeyDown = e => {
-		if (e.key === 'Escape') {
-			closeEditMode()
-		}
-
-		if (e.key === 'Enter' && !e.shiftKey) {
-			handleEditing()
 		}
 	}
 
@@ -73,38 +65,47 @@ const Room = () => {
 								message.id === editedMessage.id ? editedMessage : message)
 						}));
 					} else {
-						console.log(error)
+						console.log(error);
 					}
 				});
 		}
-		closeEditMode()
-	}
-
-	const closeEditMode = () => {
-		setSelectedMessage(null)
-		setEditedContent(null)
-	}
-
-	const onInput = e => {
-		setEditedContent(e.target.value)
-	}
-
-	const clickToChange = (e) => {
-		e.preventDefault();
-		handleEditing();
-	}
-
-	const clickToDelete = (e) => {
-		e.preventDefault();
 		closeEditMode();
 	}
 
-	const inputRenderer = () => {
-		return <div className="edit-mode">
-			<Textarea autoFocus message={editedContent} onInput={onInput} onKeyDown={onKeyDown} />
-			<span style={{ fontSize: "12px" }}>Esc to <a className="edit-label" onClick={clickToDelete}>cancel</a>•Enter to <a className="edit-label" onClick={clickToChange}>save</a></span>
-		</div>
+	const closeEditMode = () => {
+		setSelectedMessage(null);
+		setEditedContent(null);
 	}
+
+	const onInput = e => {
+		setEditedContent(e.target.value);
+	}
+
+	const onKeyDown = e => {
+		if (e.key === 'Escape') {
+			closeEditMode();
+		}
+
+		if (e.key === 'Enter' && !e.shiftKey) {
+			handleEditing();
+		}
+	}
+
+	const handleChanges = (e, isCancelled) => {
+		e.preventDefault();
+		if (isCancelled) {
+			closeEditMode();
+		} else {
+			handleEditing();
+		}
+	}
+
+	const inputRenderer = () => (
+		<div className="edit-mode">
+			<Textarea autoFocus message={editedContent} onInput={onInput} onKeyDown={onKeyDown} />
+			<span style={{ fontSize: "12px" }}>Esc to <a className="edit-label" onClick={e => handleChanges(e, true)}>cancel</a>•Enter to <a className="edit-label" onClick={e => handleChanges(e, false)}>save</a></span>
+		</div>
+	);
 
 	const optionsRenderer = (message) => {
 		if (selectedMessage?.id !== message.id && message.sender.id === user.id)
@@ -113,10 +114,10 @@ const Room = () => {
 
 	return (
 		<div className="chat-container">
-			{!loading ? <div className="messages-container">
-				<div className="messages-wrapper">
-					{messages[params?.id]?.map((message, idx) => {
-						return (
+			{!loading ? (
+				<div className="messages-container">
+					<div className="messages-wrapper">
+						{messages[params?.id]?.map((message, idx) => (
 							<div key={idx} className="message v-center">
 								{messagePositioning(messages[params?.id][idx - 1], message) ? (
 									<>
@@ -142,10 +143,12 @@ const Room = () => {
 									</>
 								)}
 							</div>
-						);
-					})}
+						))}
+					</div>
 				</div>
-			</div> : "loading..."}
+			) : (
+				"loading..."
+			)}
 			<Footer />
 		</div>
 	);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const UserStatus = ({ status = "", absolute = false }) => {
 	const [color, setColor] = useState("");
@@ -31,4 +31,4 @@ const UserStatus = ({ status = "", absolute = false }) => {
 	);
 };
 
-export default UserStatus;
+export default React.memo(UserStatus);

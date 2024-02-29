@@ -8,25 +8,27 @@ export const useRecorder = () => {
 
   useEffect(() => {
     return () => {
-      timeoutId.current ? clearTimeout(timeoutId.current) : "";
-      mediaRecorderRef?.current?.state !== "inactive"
-        ? mediaRecorderRef?.current?.stop()
-        : "";
+      clearTimeout(timeoutId.current);
+      mediaRecorderRef.current?.state !== "inactive" && mediaRecorderRef?.current?.stop();
     };
   }, []);
 
   const createRecorder = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const options = {
-      audioBitsPerSecond: 128000,
-    };
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const options = {
+        audioBitsPerSecond: 128000,
+      };
 
-    streamRef.current = stream;
-    mediaRecorderRef.current = new MediaRecorder(stream, options);
+      streamRef.current = stream;
+      mediaRecorderRef.current = new MediaRecorder(stream, options);
 
-    mediaRecorderRef.current.ondataavailable = (event) => {
-      setBlob(event.data);
-    };
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        setBlob(event.data);
+      };
+    } catch (error) {
+      console.error("Error accessing microphone:", error);
+    }
   };
 
   const startRecording = async () => {
@@ -38,21 +40,14 @@ export const useRecorder = () => {
   };
 
   const stopRecording = () => {
-    if (timeoutId.current) {
-      clearTimeout(timeoutId.current);
-    }
+    clearTimeout(timeoutId.current);
     mediaRecorderRef.current.stop();
     streamRef.current.getTracks().forEach((track) => track.stop());
   };
 
   const url = useMemo(() => {
-    if (blob) {
-      return URL.createObjectURL(blob);
-    }
-    return null;
+    return blob ? URL.createObjectURL(blob) : null;
   }, [blob]);
 
   return { startRecording, stopRecording, url, blob, setBlob };
 };
-
-

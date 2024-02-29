@@ -39,10 +39,9 @@ const Layout = () => {
     addSocketEvent,
     removeSocketEvent,
     emitData
-  } = useSocketIOProvider()
+  } = useSocketIOProvider();
 
   const [burgerMenu, setBurgerMenu] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     callRef.current = inCall;
@@ -52,7 +51,7 @@ const Layout = () => {
     if (!smallDevice) {
       setBurgerMenu(false);
     } else {
-      setBurgerMenu(true)
+      setBurgerMenu(true);
     }
   }, [smallDevice]);
 
@@ -63,26 +62,12 @@ const Layout = () => {
       fetchData(user.id).then(({ rooms: fetchedRooms, friends }) => {
         setRooms(fetchedRooms.map(addIndexToRoom));
         setFriendList(friends);
-        setLoading(false);
-        addSocketEvent('user-connected', updateUserStatus)
-        addSocketEvent('message', updateMessageList)
-        addSocketEvent('recieved-new-friend-request', (newFriendRequest) =>
-          setFriendList(prevRequests => [...prevRequests, newFriendRequest])
-        )
-        addSocketEvent('updated-friend-request', (updatedFriendRequet) =>
-          setFriendList(prevRequests => handleUpdateFriendRequest(prevRequests, updatedFriendRequet))
-        )
+        addSocketListeners();
       });
 
       return () => {
-        removeSocketEvent('connect')
-        removeSocketEvent('user-connected')
-        removeSocketEvent('disconnect')
-        removeSocketEvent('message')
-        removeSocketEvent('recieved-new-friend-request')
-        removeSocketEvent('updated-friend-request')
-        socketDisconnect()
-        window.removeEventListener('resize', () => { })
+        cleanupSocketListeners();
+        socketDisconnect();
       }
     }
   }, [user]);
@@ -91,87 +76,107 @@ const Layout = () => {
     if (rooms?.length && matches[1]?.params?.id) {
       const foundRoom = rooms.find(room => room.id === matches[1].params.id || room.recipients.id === matches[1].params.id);
       if (foundRoom) {
-        setSelectedRoom(foundRoom)
+        setSelectedRoom(foundRoom);
       } else {
-        navigate('/')
+        navigate('/');
       }
     }
   }, [rooms, matches]);
 
   useEffect(() => {
     if (rooms.length) {
-      addSocketEvent('incoming-call', (id) => {
-        const foundRoom = rooms.find(({ recipients }) => recipients.id === id);
-        if (foundRoom?.recipients) {
-          const user = foundRoom.recipients
-          setIncomingCall({ active: true, roomID: foundRoom.id, user })
-          setShowIncomingCallModal(true);
-        }
-      })
+      addSocketEvent('incoming-call', handleIncomingCall);
       return () => {
-        removeSocketEvent('incoming-call')
+        removeSocketEvent('incoming-call');
       }
     }
-  }, [rooms])
+  }, [rooms]);
 
   useEffect(() => {
     refresh().then(res => {
-      setUser(res.data)
+      setUser(res.data);
     }).catch(err => {
-      navigate('/login')
-      console.log(err.response.data.message)
-    })
-
-    window.addEventListener("resize", e => {
-      const width = e.currentTarget.innerWidth;
-      toggleSmallScreen(width);
+      navigate('/login');
+      console.error(err.response.data.message);
     });
 
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setSmallDevice(width < 1024);
+    };
+
+    window.addEventListener("resize", handleResize);
+
     return () => {
-      window.removeEventListener('resize', () => { })
+      window.removeEventListener('resize', handleResize)
     }
-  }, [])
+  }, []);
+
+  const handleIncomingCall = (id) => {
+    const foundRoom = rooms.find(({ recipients }) => recipients.id === id);
+    if (foundRoom?.recipients) {
+      const user = foundRoom.recipients;
+      setIncomingCall({ active: true, roomID: foundRoom.id, user });
+      setShowIncomingCallModal(true);
+    }
+  };
+
+  const addSocketListeners = () => {
+    addSocketEvent('user-connected', updateUserStatus);
+    addSocketEvent('message', updateMessageList);
+    addSocketEvent('recieved-new-friend-request', handleNewFriendRequest);
+    addSocketEvent('updated-friend-request', handleUpdatedFriendRequest);
+  };
+
+  const cleanupSocketListeners = () => {
+    removeSocketEvent('user-connected');
+    removeSocketEvent('message');
+    removeSocketEvent('recieved-new-friend-request');
+    removeSocketEvent('updated-friend-request');
+  };
 
   const updateMessageList = (newMessage) => {
     setMessages((prevMessages) => ({ ...prevMessages, [newMessage.rid]: [...prevMessages[newMessage.rid], newMessage] }));
     processRooms(newMessage.rid, (fn, rooms) => {
       emitData("get-room", lastMessageID, (returnedRoom) => {
-        fn([returnedRoom, ...rooms])
-      })
-    })
+        fn([returnedRoom, ...rooms]);
+      });
+    });
   }
 
   const updateUserStatus = (id, status) => {
-    setRooms((rooms) => [...updateList(rooms, "recipients", id, status)])
-    setFriendList((friendList) => [...updateList(friendList, "user", id, status)])
+    setRooms((rooms) => [...updateList(rooms, "recipients", id, status)]);
+    setFriendList((friendList) => [...updateList(friendList, "user", id, status)]);
   }
 
-  const toggleSmallScreen = (width) => {
-    setSmallDevice(width < 1024 ? true : false);
+  const handleNewFriendRequest = (newFriendRequest) => {
+    setFriendList(prevRequests => [...prevRequests, newFriendRequest]);
+  };
+
+  const handleUpdatedFriendRequest = (updatedFriendRequest) => {
+    setFriendList(prevRequests => handleUpdateFriendRequest(prevRequests, updatedFriendRequest));
   };
 
   const isUserInCall = useMemo(() => {
-    return inCall.activeCall && matches[1]?.params?.id === inCall.roomID
+    return inCall.activeCall && matches[1]?.params?.id === inCall.roomID;
   }, [inCall, matches]);
 
-  if (loading) {
-    return <div>loading</div>
+  if (!user) {
+    return <div>loading</div>;
   }
 
   return (
     <MediasoupProvider>
       {showIncomingCallModal && incomingCall?.roomID !== params?.id && incomingCall.active ? <IncomingCallModal /> : ""}
       <div className="app">
-        {
-          (smallDevice && burgerMenu) || (!smallDevice) ?
-            <div className={!smallDevice ? "left-side" : "left-side-sm"}>
-              <Sidebar
-                smallDevice={smallDevice}
-                setBurgerMenu={smallDevice ? setBurgerMenu : ""} />
-              <StatusBox />
-            </div>
-            : ""
-        }
+        {(smallDevice && burgerMenu) || (!smallDevice) ?
+          <div className={!smallDevice ? "left-side" : "left-side-sm"}>
+            <Sidebar
+              smallDevice={smallDevice}
+              setBurgerMenu={smallDevice ? setBurgerMenu : ""} />
+            <StatusBox />
+          </div>
+          : null}
         <div className={`right-side ${smallDevice && burgerMenu ? "hide" : ""}`}>
           <Navbar
             isUserInCall={isUserInCall}
@@ -180,9 +185,8 @@ const Layout = () => {
           <main
             className="outlet"
             style={{
-              display: isUserInCall ? showChat || match ? "" : "none" : "",
+              display: isUserInCall ? (showChat || match ? "" : "none") : "",
             }}
-
           >
             {match ? <FriendList /> : <Outlet />}
           </main>
