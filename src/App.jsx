@@ -35,10 +35,6 @@ const router = createBrowserRouter(
 				element={<Signup />}
 			/>
 			<Route
-				path="/settings"
-				element={<Settings to="/404" />}
-			/>
-			<Route
 				path="*"
 				element={<div>page not found 404</div>}
 			/>

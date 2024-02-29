@@ -4,17 +4,17 @@ import { AuthLayout } from "../components";
 import { useField } from "../hooks";
 
 const Signup = () => {
-	const navigate = useNavigate()
-	const { reset: emailReset, ...email } = useField('text')
-	const { reset: usernameReset, ...username } = useField('text')
-	const { reset: passwordReset, ...password } = useField('password')
-	const { reset: confirmPasswordReset, ...confirmPassword } = useField('password')
+	const navigate = useNavigate();
+	const { reset: emailReset, ...email } = useField('text');
+	const { reset: usernameReset, ...username } = useField('text');
+	const { reset: passwordReset, ...password } = useField('password');
+	const { reset: confirmPasswordReset, ...confirmPassword } = useField('password');
 
-	const reset = () => {
-		emailReset()
-		usernameReset()
-		passwordReset()
-		confirmPasswordReset()
+	const resetFields = () => {
+		emailReset();
+		usernameReset();
+		passwordReset();
+		confirmPasswordReset();
 	}
 
 	const signup = async () => {
@@ -25,72 +25,40 @@ const Signup = () => {
 			confirmPassword: confirmPassword.value
 		}
 
-		if (!email.value.includes("@")) {
-			alert('not an email');
+		// Email validation
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email.value)) {
+			alert('Please enter a valid email address.');
 			return;
 		}
 
-		if (!email.value.trim().length) {
-			alert('not an email');
+		// Username validation
+		const usernameRegex = /^[a-zA-Z0-9_]+$/;
+		if (!usernameRegex.test(username.value)) {
+			alert('Username can only contain alphanumeric characters and underscores.');
 			return;
 		}
 
-		if (email.value.length < 8 || email.value.length > 65) {
-			alert('email not match the allowed length');
-			return;
-		}
-
-		if (!username.value.trim().length) {
-			alert("username must contain characters")
-			return;
-		}
-
-		if (username.value.length < 6 || username.value.length > 24) {
-			alert("username not match the allowed length")
-			return;
-		}
-
-		if (!password.value.trim().length) {
-			alert("password must contain characters")
-			return;
-		}
-
-		if (password.value.length < 6 || password.value.length > 24) {
-			alert("password not match the allowed length")
-			return;
-		}
-		const spacesRegex = /\s/g
-		const upperCaseRegex = /[A-Z]/g
-		const lowerCaseRegex = /[a-z]/g
-		const digitRegex = /[0-9]/g
-		const specialCharRegex = /[^a-zA-Z0-9]/g
-
-		if (spacesRegex.test(email.value)) {
-			alert('no spaces allowed')
-			return;
-		}
-		if (spacesRegex.test(username.value)) {
-			alert('no spaces allowed')
-			return;
-		}
-		if (spacesRegex.test(password.value)) {
-			alert('no spaces allowed')
-			return;
-		}
-		if (!upperCaseRegex.test(password.value)) {
-			alert('no upper case')
-			return;
-		}
-		if (!lowerCaseRegex.test(password.value)) {
-			alert('no lower case')
-			return;
-		}
-		if (!digitRegex.test(password.value)) {
-			alert('no digit')
-			return;
-		}
-		if (!specialCharRegex.test(password.value)) {
-			alert('no special character')
+		// Password strength validation
+		const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,24}$/;
+		if (!passwordRegex.test(password.value)) {
+			let errorMessage = 'Password must meet the following criteria:';
+			if (password.value.length < 8 && password.value.length > 24) {
+				errorMessage += '\n- Be between 8 to 24 characters long';
+			}
+			if (!/(?=.*[a-z])/.test(password.value)) {
+				errorMessage += '\n- Contain at least one lowercase letter';
+			}
+			if (!/(?=.*[A-Z])/.test(password.value)) {
+				errorMessage += '\n- Contain at least one uppercase letter';
+			}
+			if (!/(?=.*\d)/.test(password.value)) {
+				errorMessage += '\n- Contain at least one digit';
+			}
+			if (!/(?=.*[^\da-zA-Z])/.test(password.value)) {
+				errorMessage += '\n- Contain at least one special character';
+			}
+			alert(errorMessage);
 			return;
 		}
 
@@ -98,16 +66,26 @@ const Signup = () => {
 			alert('passwords not match');
 			return;
 		}
-		try {
 
-			const response = await axios.post('/api/sign-up', signupInfo)
+		if (/\s+/.test(email.value) || spacesRegex.test(username.value) || spacesRegex.test(password.value)) {
+			alert('No spaces allowed in email, username, or password.');
+			return;
+		}
+
+		try {
+			const response = await axios.post('/api/sign-up', signupInfo);
 
 			if (response.status === 201) {
-				reset()
-				navigate('/login')
+				resetFields();
+				navigate('/login');
 			}
 		} catch (error) {
-			console.log(error.response.data.error)
+			if (error?.response?.data?.error) {
+				alert(error.response.data.error);
+			} else {
+				console.error('Error signing up:', error);
+				alert('An error occurred while signing up. Please try again later.');
+			}
 		}
 	}
 

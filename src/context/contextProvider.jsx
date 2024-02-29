@@ -1,22 +1,22 @@
 import { createContext, useCallback, useContext, useRef, useState } from "react";
 import { useMediaActions } from "../hooks";
 
-export const Context = createContext()
+export const Context = createContext();
 
 export const ContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [status, setStatus] = useState('offline')
+  const [status, setStatus] = useState('offline');
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const [friendList, setFriendList] = useState([])
+  const [friendList, setFriendList] = useState([]);
   const [inCall, setInCall] = useState({
     activeCall: false,
     roomID: null
   });
   const callRef = useRef(inCall);
-  const videoContainer = useRef();
+  const videoContainerRef = useRef();
   const [incomingCall, setIncomingCall] = useState({ active: false, roomID: null, username: null });
-  const [showIncomingCallModal, setShowIncomingCallModal] = useState(false)
+  const [showIncomingCallModal, setShowIncomingCallModal] = useState(false);
   const [messages, setMessages] = useState({});
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [showChat, setShowChat] = useState(true);
@@ -24,26 +24,24 @@ export const ContextProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const mediaActions = useMediaActions();
 
-  const processRooms = useCallback((lastMessageRoomID, cb = null) => {
+  const processRooms = useCallback((lastMessageRoomID, callback = null) => {
     if (rooms.length) {
-      const foundRoom = rooms?.find(room => room?.id === lastMessageRoomID);
+      const foundRoom = rooms.find(room => room.id === lastMessageRoomID);
       if (foundRoom) {
-        reorderRooms([foundRoom, ...rooms?.filter(room => room?.id !== foundRoom?.id)])
+        reorderRooms([foundRoom, ...rooms.filter(room => room.id !== foundRoom.id)]);
       } else {
-        cb(reorderRooms, rooms)
+        callback(reorderRooms, rooms);
       }
     }
-  }, [rooms])
+  }, [rooms]);
 
-  const reorderRooms = (list) => {
-    const reorderedList = list.map((room, idx) => {
-      return {
-        ...room,
-        index: idx,
-      }
-    });
+  const reorderRooms = useCallback((list) => {
+    const reorderedList = list.map((room, idx) => ({
+      ...room,
+      index: idx,
+    }));
     setRooms(reorderedList);
-  }
+  }, []);
 
   return (
     <Context.Provider value={{
@@ -73,14 +71,14 @@ export const ContextProvider = ({ children }) => {
       setMessages,
       isOpen,
       setIsOpen,
-      videoContainer,
+      videoContainerRef,
       processRooms,
       showIncomingCallModal,
       setShowIncomingCallModal
     }}>
       {children}
     </Context.Provider>
-  )
-}
+  );
+};
 
 export const useStateProvider = () => useContext(Context);

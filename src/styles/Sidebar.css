@@ -8,6 +8,12 @@
 	overflow-y: auto;
 }
 
+.sidebar-top {
+	display: flex;
+	align-items: center;
+	gap: 0 10px;
+}
+
 .sidebar-list {
 	display: flex;
 	flex-direction: column;

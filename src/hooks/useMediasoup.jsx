@@ -14,7 +14,7 @@ const produceParams = {
 };
 
 export const useMediasoup = () => {
-  const { user: { id: userID }, videoContainer, muteToggle, videoToggle } = useStateProvider()
+  const { user: { id: userID }, inCall, videoContainer, muteToggle, videoToggle } = useStateProvider()
   const { emitData, addSocketEvent, removeSocketEvent } = useSocketIOProvider()
   const roomID = useRef(null)
   const device = useRef(null);
@@ -98,18 +98,7 @@ export const useMediasoup = () => {
 
   useEffect(() => {
     playPause(videoProducer, !videoToggle);
-    if (localStream) {
-      const videoTrack = localStream.getVideoTracks()[0];
-      if (!videoToggle && videoTrack) {
-        videoTrack.stop();
-        localStream.removeTrack(videoTrack);
-      } else if (videoTrack && videoTrack.readyState === 'ended' || !videoTrack) {
-        getMedia().then(stream => {
-          localStream.addTrack(stream.getVideoTracks()[0])
-        })
-      }
-    }
-  }, [videoToggle, localStream]);
+  }, [videoToggle]);
 
   useEffect(() => {
     playPause(audioProducer, muteToggle);
@@ -117,6 +106,9 @@ export const useMediasoup = () => {
 
   const playPause = (producer, value) => {
     if (producer.current) {
+      if (producer.current.kind === "video") {
+        emitData("video-toggle", roomID.current, value)
+      }
       if (value) {
         producer.current.pause();
       } else {
@@ -125,17 +117,20 @@ export const useMediasoup = () => {
     }
   };
 
-  const call = (selectedRoomID) => {
+  const call = async (selectedRoomID, video) => {
+    if (inCall.activeCall && inCall.roomID !== selectedRoomID) {
+      await closeConnection()
+    }
     roomID.current = selectedRoomID;
-    getMedia()
+    getMedia(video)
       .then(streamSuccess)
       .catch((error) => console.log(error.message));
   };
 
-  const getMedia = async () => {
+  const getMedia = (video) => {
     return navigator.mediaDevices.getUserMedia({
       audio: true,
-      video: true,
+      video,
     });
   };
 
@@ -146,7 +141,7 @@ export const useMediasoup = () => {
     const audioTrack = stream.getAudioTracks()[0];
 
     tracks.current = {
-      video: videoTrack,
+      video: videoTrack ?? null,
       audio: audioTrack,
     };
 
@@ -265,7 +260,7 @@ export const useMediasoup = () => {
           }
         });
 
-        connectSendTransport("video", "audio");
+        connectSendTransport(tracks.current.video ? "video" : "", "audio");
       }
     );
   };
@@ -278,8 +273,6 @@ export const useMediasoup = () => {
         track: tracks.current.video,
         ...produceParams,
       });
-
-      videoToggle ? producer.pause() : "";
       videoProducer.current = producer;
     }
 
@@ -476,6 +469,7 @@ export const useMediasoup = () => {
     remoteStreamsRef.current = [];
     setRemoteStreams(remoteStreamsRef.current);
     localStreamRef.current = null;
+    setLocalStream(null)
     consumerTransports.current = [];
     producerTransport.current = null;
     videoProducer.current = null;

@@ -16,32 +16,38 @@ const StatusBox = () => {
 	const navigate = useNavigate();
 	const {
 		user, status, inCall, setInCall, muteToggle, setMuteToggle, deafToggle, setDeafToggle, videoToggle, setVideoToggle
-	} = useStateProvider()
+	} = useStateProvider();
 	const { closeConnection } = useMediasoupProvider();
+
+	const handleLeaveCall = () => {
+		closeConnection();
+		setInCall({ activeCall: false, roomID: null });
+	}
 
 	return (
 		<div className="status-box">
-			{inCall.activeCall ? (
-				<div className="sb-wrapper sb-call">
-					<div style={{ display: "flex" }}>
-						<div className="col">
-							<p>call in progress</p>
-							<span onClick={() => navigate(`/@me/${inCall.roomID}`)}>{inCall.roomID}</span>
+			{inCall.activeCall && (
+				<>
+					<div className="sb-wrapper sb-call">
+						<div style={{ display: "flex" }}>
+							<div className="col">
+								<p>call in progress</p>
+								<span onClick={() => navigate(`/@me/${inCall.roomID}`)}>{inCall.roomID}</span>
+							</div>
+							<div className="sb-user-action"
+								onClick={handleLeaveCall}>
+								<LeaveCallIcon />
+							</div>
 						</div>
-						<div className="sb-user-action"
-							onClick={() => {
-								closeConnection();
-								setInCall({ activeCall: false, roomID: null });
-							}}>
-							<LeaveCallIcon />
+						<div>
+							<button id="video-button" className="button center" onClick={() => setVideoToggle(!videoToggle)}>
+								{!videoToggle ? <VideoIcon /> : <VideoOffIcon />}
+							</button>
 						</div>
 					</div>
-					<div>
-						<button id="video-button" className="button center" onClick={() => setVideoToggle(!videoToggle)}>{!videoToggle ? <VideoIcon /> : <VideoOffIcon />}</button>
-					</div>
-				</div>
-			) : null}
-			{inCall.activeCall ? <HDivider /> : ""}
+					<HDivider />
+				</>
+			)}
 			<div className="sb-wrapper">
 				<div className="sb-user">
 					<div>
@@ -71,7 +77,7 @@ const StatusBox = () => {
 					</div>
 					<div
 						className="sb-user-action"
-						onClick={() => navigate("/settings")}
+						onClick={() => { }}
 					>
 						<SettingsIcon />
 					</div>

@@ -57,6 +57,10 @@ video {
   border-radius: 5px;
 }
 
+.hide {
+  display: none;
+}
+
 .v-divider {
   border: 1px solid rgba(0, 0, 0, 0.35);
   margin: 0 10px;

@@ -1,14 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CloseIcon, FriendsIcon } from "../assets/icons";
 import { useStateProvider } from "../context";
 import { Avatar, HDivider, UserStatus } from "./";
 
 const Sidebar = ({ smallDevice, setBurgerMenu }) => {
-	const navigate = useNavigate()
 	const { rooms, selectedRoom, setSelectedRoom } = useStateProvider();
 
 	const openSidebar = () => {
-		smallDevice ? setBurgerMenu(false) : "";
+		smallDevice && setBurgerMenu(false);
 	};
 
 	return (
@@ -17,23 +16,15 @@ const Sidebar = ({ smallDevice, setBurgerMenu }) => {
 				<Link
 					to="/"
 					className="link friends-link"
-					onClick={(e) => {
-						e.preventDefault()
-						setSelectedRoom(null)
-						openSidebar()
-						navigate('/')
+					onClick={() => {
+						setSelectedRoom(null);
+						openSidebar();
 					}}
 				>
 					<FriendsIcon />
 					Friends
 				</Link>
-				{smallDevice ? (
-					<div onClick={() => setBurgerMenu(false)}>
-						<CloseIcon />
-					</div>
-				) : (
-					""
-				)}
+				{smallDevice && <CloseIcon onClick={() => setBurgerMenu(false)} />}
 			</div>
 			<HDivider />
 			<div className="sidebar-list">
@@ -42,12 +33,12 @@ const Sidebar = ({ smallDevice, setBurgerMenu }) => {
 						return;
 					}
 
-					const { username, avatar, status } = room.recipients;
+					const { id, recipients: { username, avatar, status } } = room;
 					return (
 						<Link
 							key={idx}
-							className={`link user-links ${selectedRoom?.id === room.id ? "active" : ""}`}
-							to={`/@me/${room.id}`}
+							className={`link user-links ${selectedRoom?.id === id ? "active" : ""}`}
+							to={`/@me/${id}`}
 							onClick={() => openSidebar()}
 						>
 							<div style={{ position: "relative", display: "flex" }}>

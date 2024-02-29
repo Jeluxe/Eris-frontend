@@ -10,9 +10,6 @@ export const SocketIOProvider = ({ children }) => {
   return <SocketIOContext.Provider value={socketOperations}>
     {children}
   </SocketIOContext.Provider >;
-}
+};
 
 export const useSocketIOProvider = () => useContext(SocketIOContext);
-// notice - also in ***mediasoup provider***
-// extract the provider to file of his own,
-// and validate use and the then return the correct parameters.

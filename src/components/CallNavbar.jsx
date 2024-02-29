@@ -11,16 +11,16 @@ import {
 	VideoOffIcon
 } from "../assets/icons";
 import { useMediasoupProvider, useStateProvider } from "../context";
-import { Avatar, Video } from "./";
+import { Video } from "./";
 
-const CallNavbar = ({ avatar }) => {
-	const { id } = useParams()
+const CallNavbar = () => {
+	const { id } = useParams();
 	const {
 		inCall, setInCall, muteToggle,
 		setMuteToggle, deafToggle, setDeafToggle,
 		videoToggle, setVideoToggle, showChat,
 		setShowChat, videoContainer,
-	} = useStateProvider()
+	} = useStateProvider();
 
 	const {
 		localStream,
@@ -44,10 +44,6 @@ const CallNavbar = ({ avatar }) => {
 								stream={localStream}
 								videoToggle={videoToggle}
 							/>
-							{videoToggle ? "" : <Avatar
-								size={80}
-								bgColor={"green"}
-							/>}
 							{
 								remoteStreams?.map((remoteStream, idx) => {
 									const [key, value] = Object.entries(remoteStream)[0];

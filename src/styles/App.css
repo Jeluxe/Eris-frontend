@@ -8,10 +8,6 @@
 	display: flex;
 }
 
-.hide {
-	display: none;
-}
-
 .left-side {
 	display: flex;
 	width: 350px;
@@ -35,6 +31,7 @@
 	color: black;
 	border-radius: 15px;
 	box-shadow: 0 0 10px 1px black;
+	overflow-x: hidden;
 }
 
 .outlet {
@@ -94,6 +91,10 @@
 
 	.call-navbar-participants:has(video) {
 		flex-direction: column;
+	}
+
+	textarea {
+		max-height: 300px;
 	}
 }
 

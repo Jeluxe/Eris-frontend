@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 export const useSocketIO = (url) => {
@@ -6,7 +6,11 @@ export const useSocketIO = (url) => {
   const [socketEvents, setSocketEvents] = useState({});
 
   useEffect(() => {
-    const newSocket = io(url, { autoConnect: false });
+    const newSocket = io(url, { autoConnect: false, reconnectionAttempts: 3 });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('Socket connection error:', error);
+    });
 
     setSocket(newSocket);
 
@@ -14,6 +18,43 @@ export const useSocketIO = (url) => {
       newSocket.disconnect();
     };
   }, [url]);
+
+  const socketConnect = useCallback(async (user) => {
+    if (user && socket) {
+      socket.auth = user;
+      await socket.connect();
+    }
+  }, [socket]);
+
+  const socketDisconnect = useCallback(async () => {
+    if (socket) {
+      await socket.disconnect();
+    }
+  }, [socket]);
+
+  const emitData = useCallback((event, ...args) => {
+    if (socket) {
+      socket.emit(event, ...args);
+    }
+  }, [socket]);
+
+  const addSocketEvent = useCallback((eventName, callback) => {
+    setSocketEvents((prevSocketEvents) => ({
+      ...prevSocketEvents,
+      [eventName]: callback,
+    }));
+  }, []);
+
+  const removeSocketEvent = useCallback((eventName) => {
+    if (socket && socketEvents[eventName]) {
+      socket.off(eventName, socketEvents[eventName]);
+
+      setSocketEvents((prevSocketEvents) => {
+        const { [eventName]: removedEvent, ...rest } = prevSocketEvents;
+        return rest;
+      });
+    }
+  }, [socket, socketEvents]);
 
   useEffect(() => {
     if (socket?.connected) {
@@ -27,43 +68,7 @@ export const useSocketIO = (url) => {
         }
       };
     }
-  }, [socketEvents])
-
-  const socketConnect = async (user) => {
-    if (user && socket) {
-      socket.auth = user
-      await socket.connect()
-    }
-  }
-
-  const socketDisconnect = async () => {
-    if (socket) {
-      await socket.disconnect()
-    }
-  }
-
-  const emitData = (event, ...args) => {
-    if (socket)
-      socket.emit(event, ...args)
-  }
-
-  const addSocketEvent = (eventName, callback) => {
-    setSocketEvents((prevSocketEvents) => ({
-      ...prevSocketEvents,
-      [eventName]: callback,
-    }));
-  };
-
-  const removeSocketEvent = (eventName) => {
-    if (socket && socketEvents[eventName]) {
-      socket.off(eventName, socketEvents[eventName]);
-
-      setSocketEvents((prevSocketEvents) => {
-        const { [eventName]: removedEvent, ...rest } = prevSocketEvents;
-        return rest;
-      });
-    }
-  };
+  }, [socketEvents]);
 
   return {
     socketConnect,
@@ -72,4 +77,4 @@ export const useSocketIO = (url) => {
     addSocketEvent,
     removeSocketEvent,
   };
-}
+};

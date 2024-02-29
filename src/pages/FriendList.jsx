@@ -3,13 +3,13 @@ import { Friend, NewFriendForm } from "../components";
 import { useStateProvider } from "../context";
 
 const userStatus = ['online', 'offline', 'idle'];
-const requestStatus = ["PENDING", "ACCEPTED", "BLOCKED"]
+const requestStatus = ["PENDING", "ACCEPTED", "BLOCKED"];
 
 const FriendList = () => {
 	const { friendList, selectedFilter, smallDevice } = useStateProvider();
-	const [friendListObject, setFriendListObject] = useState({})
+	const [friendListObject, setFriendListObject] = useState({});
 
-	useEffect(() => setFriendListObject(filterArray(friendList)), [friendList])
+	useEffect(() => setFriendListObject(filterArray(friendList)), [friendList]);
 
 	const filterClientsByStatus = (request) => {
 		const validation = request.status !== "PENDING" && request.status !== "BLOCKED"
@@ -29,49 +29,43 @@ const FriendList = () => {
 	}
 
 	const filterArray = (friends) => {
-		const filteredObject = {
-			"online": [],
-			"offline": [],
-			"idle": []
-		}
-
-		friends.forEach(friend => {
-			const status = friend?.user?.status || 'offline'
-			if (friend.status !== 'PENDING' || friend.status !== 'BLOCKED') {
-				filteredObject[status] = [...filteredObject[status], friend]
+		return friends.reduce((filteredObject, friend) => {
+			const status = friend.user?.status || "offline";
+			if (!filteredObject[status]) {
+				filteredObject[status] = [];
 			}
-		});
-
-		return filteredObject
-	}
-
+			if (friend.status !== "PENDING" && friend.status !== "BLOCKED") {
+				filteredObject[status].push(friend);
+			}
+			return filteredObject;
+		}, {});
+	};
 	return (
 		<div className="friends-container">
 			{
-				!selectedFilter ? <NewFriendForm /> :
-					smallDevice ?
-						<div className="friend-list">
-							{Object.entries(friendListObject).map(([key, list], idx) => {
-								return <div key={idx}>
-									<b>{key}</b>
-									<div>{list.map((candidate, idx) => {
-										// candidate.user = candidate.sender.id !== user.id ? candidate.sender : candidate.receiver;
-										return <Friend key={idx} data={candidate} />
-									})}</div>
+				!selectedFilter ? (
+					<NewFriendForm />
+				) : smallDevice ? (
+					<div className="friend-list">
+						{Object.entries(friendListObject).map(([key, list], idx) => {
+							return <div key={idx}>
+								<b>{key}</b>
+								<div>
+									{list.map((candidate, idx) => (
+										<Friend key={idx} data={candidate} />
+									))}
 								</div>
-							})}
-						</div>
-						:
-						<div className="friend-list">
-							{
-								friendList.filter(filterClientsByStatus)
-									.map((friend, idx) => {
-										// friend.user = friend.sender.id !== user.id ? friend.sender : friend.receiver;
-										return <Friend key={idx} data={friend} />
-									})
-							}
-						</div>
-			}
+							</div>
+						})}
+					</div>
+				) : (
+					<div className="friend-list">
+						{
+							friendList.filter(filterClientsByStatus).map((friend, idx) => (
+								<Friend key={idx} data={friend} />
+							))}
+					</div>
+				)}
 		</div>
 
 	);

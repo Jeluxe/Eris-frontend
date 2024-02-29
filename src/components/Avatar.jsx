@@ -1,20 +1,21 @@
 import defaultAvatar from "../assets/pngegg.png";
 
 const Avatar = ({
-	userAvatar,
+	avatar = defaultAvatar,
 	size,
-	bgColor: background,
+	hide = "",
+	bgColor = "",
 	absolute = false
 }) => {
 	return (
 		<img
 			style={{
-				background,
+				background: bgColor,
 				position: absolute ? "absolute" : "none"
 			}}
-			className="image"
+			className={`image ${hide}`}
 			alt="User Avatar"
-			src={userAvatar || defaultAvatar}
+			src={avatar}
 			width={size}
 			height={size}
 		/>
