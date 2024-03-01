@@ -30,7 +30,7 @@ const Login = () => {
 
 	return (
 		<AuthLayout
-			fields={{ email, password }}
+			inputFields={{ email, password }}
 			button={{ action: login, content: "Login" }}
 			link={{ href: "/signup", content: "Not signed up yet? Click Here!" }}
 		/>
