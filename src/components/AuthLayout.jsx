@@ -7,7 +7,7 @@ const AuthLayout = ({ inputFields, button, link }) => {
       <div className='auth-wrapper center' >
         <h2>{button.content} Page</h2>
         <div className='auth-inputs-container v-center'>
-          {inputFields.map(([fieldName, fieldProps], idx) => {
+          {Object.entries(inputFields).map(([fieldName, fieldProps], idx) => {
             const placeholder = fieldProps.type === 'password' ? sperateWordsByUpperCase(fieldName) : fieldName;
             return (
               <div key={idx} className="inputs v-center">
