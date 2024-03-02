@@ -20,8 +20,8 @@ const CustomAudioBar = ({ src, controlsList }) => {
   const setupEventListeners = () => {
     audioPlayer.current.onloadedmetadata = handleLoadedMetadata;
     audioPlayer.current.onerror = handleError;
-    audioPlayer.current.onpause = handlePausedEnded;
-    audioPlayer.current.onended = handlePausedEnded;
+    audioPlayer.current.onpause = handlePause;
+    audioPlayer.current.onended = handleEnded;
   };
 
   const removeEventListeners = () => {
@@ -54,7 +54,11 @@ const CustomAudioBar = ({ src, controlsList }) => {
     // Handle error gracefully
   };
 
-  const handlePausedEnded = () => {
+  const handlePause = () => {
+    setIsPlaying(false);
+  };
+
+  const handleEnded = () => {
     audioPlayer.current.pause();
     cancelAnimationFrame(animationRef.current);
     setIsPlaying(false);
@@ -69,6 +73,9 @@ const CustomAudioBar = ({ src, controlsList }) => {
       audioPlayers.forEach(player => (player !== audioPlayer.current) ? player.pause() : "");
       audioPlayer.current.play();
       animationRef.current = requestAnimationFrame(whilePlaying);
+    } else {
+      audioPlayer.current.pause();
+      cancelAnimationFrame(animationRef.current);
     }
   }, [isPlaying]);
 
