@@ -20,8 +20,8 @@ const CustomAudioBar = ({ src, controlsList }) => {
   const setupEventListeners = () => {
     audioPlayer.current.onloadedmetadata = handleLoadedMetadata;
     audioPlayer.current.onerror = handleError;
-    audioPlayer.current.onpause = handlePause;
-    audioPlayer.current.onended = handleEnded;
+    audioPlayer.current.onpause = handlePausedEnded;
+    audioPlayer.current.onended = handlePausedEnded;
   };
 
   const removeEventListeners = () => {
@@ -54,11 +54,9 @@ const CustomAudioBar = ({ src, controlsList }) => {
     // Handle error gracefully
   };
 
-  const handlePause = () => {
-    setIsPlaying(false);
-  };
-
-  const handleEnded = () => {
+  const handlePausedEnded = () => {
+    audioPlayer.current.pause();
+    cancelAnimationFrame(animationRef.current);
     setIsPlaying(false);
   };
 
@@ -71,9 +69,6 @@ const CustomAudioBar = ({ src, controlsList }) => {
       audioPlayers.forEach(player => (player !== audioPlayer.current) ? player.pause() : "");
       audioPlayer.current.play();
       animationRef.current = requestAnimationFrame(whilePlaying);
-    } else {
-      audioPlayer.current.pause();
-      cancelAnimationFrame(animationRef.current);
     }
   }, [isPlaying]);
 
@@ -93,10 +88,10 @@ const CustomAudioBar = ({ src, controlsList }) => {
   const changePlayerCurrentTime = useCallback(() => {
     progressBar.current.style.setProperty(
       "--seek-before-width",
-      `${(progressBar.current.value / duration) * 100}%`
+      `${(progressBar.current.value / progressBar.current.max) * 100}%`
     );
     setCurrentTime(progressBar.current.value);
-  }, [duration]);
+  }, []);
 
   return (
     <div className="audio-player">
