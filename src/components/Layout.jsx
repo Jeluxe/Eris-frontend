@@ -123,7 +123,8 @@ const Layout = () => {
 
   const addSocketListeners = () => {
     addSocketEvent('user-connected', updateUserStatus);
-    addSocketEvent('message', updateMessageList);
+    addSocketEvent('message', addMessageToList);
+    addSocketEvent('updated-message', updateMessageList);
     addSocketEvent('recieved-new-friend-request', handleNewFriendRequest);
     addSocketEvent('updated-friend-request', handleUpdatedFriendRequest);
   };
@@ -131,17 +132,27 @@ const Layout = () => {
   const cleanupSocketListeners = () => {
     removeSocketEvent('user-connected');
     removeSocketEvent('message');
+    addSocketEvent('updated-message');
     removeSocketEvent('recieved-new-friend-request');
     removeSocketEvent('updated-friend-request');
   };
 
-  const updateMessageList = (newMessage) => {
+  const addMessageToList = (newMessage) => {
     setMessages((prevMessages) => ({ ...prevMessages, [newMessage.rid]: [...prevMessages[newMessage.rid], newMessage] }));
     processRooms(newMessage.rid, (fn, rooms) => {
       emitData("get-room", lastMessageID, (returnedRoom) => {
         fn([returnedRoom, ...rooms]);
       });
     });
+  }
+
+  const updateMessageList = (updatedMessage) => {
+    console.log(updatedMessage)
+    if (updatedMessage.updateType === "edited") {
+      setMessages((prevMessages) => ({ ...prevMessages, [updatedMessage.rid]: [...prevMessages[updatedMessage.rid].map(message => (message.id === updatedMessage.id) ? updatedMessage : message)] }));
+    } else if (updatedMessage.updateType === "deleted") {
+      setMessages((prevMessages) => ({ ...prevMessages, [updatedMessage.rid]: [...prevMessages[updatedMessage.rid].filter(message => message.id !== updatedMessage.id)] }));
+    }
   }
 
   const updateUserStatus = (id, status) => {
