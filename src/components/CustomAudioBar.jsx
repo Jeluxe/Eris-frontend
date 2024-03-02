@@ -29,9 +29,24 @@ const CustomAudioBar = ({ src, controlsList }) => {
   };
 
   const handleLoadedMetadata = () => {
-    const seconds = Math.floor(audioPlayer.current.duration);
-    setDuration(Number.isFinite(seconds) ? seconds : 0);
-    progressBar.current.max = seconds;
+    if (audioPlayer?.current?.duration) {
+      if (audioPlayer.current.duration === Infinity) {
+        audioPlayer.current.currentTime = Number.MAX_SAFE_INTEGER;
+        audioPlayer.current.ontimeupdate = () => {
+          audioPlayer.current.ontimeupdate = null;
+          const seconds = Math.floor(audioPlayer.current.duration);
+          setDuration(seconds);
+          progressBar.current.max = seconds;
+          audioPlayer.current.currentTime = 0;
+        };
+      }
+      // Normal behavior
+      else {
+        const seconds = Math.floor(audioPlayer.current.duration);
+        setDuration(seconds);
+        progressBar.current.max = seconds;
+      }
+    }
   };
 
   const handleError = (event) => {
