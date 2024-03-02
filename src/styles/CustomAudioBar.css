@@ -47,7 +47,15 @@
 }
 
 .progress-bar-wrapper {
-  padding: 0 5px
+  padding: 0 5px;
+  padding-top: 2px;
+}
+
+/* Add specific styles for Firefox here */
+@-moz-document url-prefix() {
+  .progress-bar-wrapper {
+    display: flex;
+  }
 }
 
 .progress-bar {
