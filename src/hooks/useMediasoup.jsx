@@ -97,7 +97,17 @@ export const useMediasoup = () => {
   }, [])
 
   useEffect(() => {
-    playPause(videoProducer, !videoToggle);
+    if (videoProducer.current) {
+      playPause(videoProducer, !videoToggle);
+    } else if (!videoProducer.current && localStream && videoToggle) {
+      getMedia(true).then(stream => {
+        const videoTrack = stream.getVideoTracks()[0];
+        tracks.current.video = videoTrack;
+        localStream.addTrack(videoTrack)
+        connectSendTransport("video")
+        emitData("video-toggle", roomID.current)
+      });
+    }
   }, [videoToggle]);
 
   useEffect(() => {
