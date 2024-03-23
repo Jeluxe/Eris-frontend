@@ -178,7 +178,7 @@ const Layout = () => {
 
   return (
     <MediasoupProvider>
-      {showIncomingCallModal && incomingCall?.roomID !== params?.id && incomingCall.active ? <IncomingCallModal /> : ""}
+      {(showIncomingCallModal && incomingCall?.roomID !== params?.id && incomingCall.active) || !inCall.active && showIncomingCallModal ? <IncomingCallModal /> : ""}
       <div className="app">
         {(smallDevice && burgerMenu) || (!smallDevice) ?
           <div className={!smallDevice ? "left-side" : "left-side-sm"}>
