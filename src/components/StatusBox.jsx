@@ -15,7 +15,7 @@ import { Avatar, HDivider, UserStatus } from "./";
 const StatusBox = () => {
 	const navigate = useNavigate();
 	const {
-		user, status, inCall, setInCall, muteToggle, setMuteToggle, deafToggle, setDeafToggle, videoToggle, setVideoToggle
+		user, status, inCall, setInCall, muteToggle, setMuteToggle, deafToggle, setDeafToggle, videoToggle, setVideoToggle, getRoomName
 	} = useStateProvider();
 	const { closeConnection } = useMediasoupProvider();
 
@@ -29,10 +29,10 @@ const StatusBox = () => {
 			{inCall.activeCall && (
 				<>
 					<div className="sb-wrapper sb-call">
-						<div style={{ display: "flex" }}>
+						<div style={{ marginBottom: "5px" }}>
 							<div className="col">
 								<p>call in progress</p>
-								<span onClick={() => navigate(`/@me/${inCall.roomID}`)}>{inCall.roomID}</span>
+								<span onClick={() => navigate(`/@me/${inCall.roomID}`)}>{getRoomName(inCall.roomID)}</span>
 							</div>
 							<div className="sb-user-action"
 								onClick={handleLeaveCall}>

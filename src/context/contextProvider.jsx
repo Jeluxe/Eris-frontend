@@ -24,6 +24,15 @@ export const ContextProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const mediaActions = useMediaActions();
 
+  const getRoomName = useCallback((roomID) => {
+    if (rooms.length) {
+      const foundRoom = rooms.find(room => room.id === roomID);
+      if (foundRoom) {
+        return foundRoom.recipients.username
+      }
+    }
+  }, [rooms])
+
   const processRooms = useCallback((lastMessageRoomID, callback = null) => {
     if (rooms.length) {
       const foundRoom = rooms.find(room => room.id === lastMessageRoomID);
@@ -73,6 +82,7 @@ export const ContextProvider = ({ children }) => {
       setIsOpen,
       videoContainerRef,
       processRooms,
+      getRoomName,
       showIncomingCallModal,
       setShowIncomingCallModal
     }}>
