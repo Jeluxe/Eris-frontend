@@ -36,7 +36,7 @@ const Options = ({ type, selectedMessage, setSelectedMessage, editMessage, delet
     <div className='options' ref={ref}>
       {dropdownOpen ? (
         <div className='dropdown'>
-          {type !== 2 && (
+          {type !== 1 && (
             <button className='option' onClick={() => onClick(editMessage)} >
               <EditIcon />
               edit

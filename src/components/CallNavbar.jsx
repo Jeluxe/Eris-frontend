@@ -64,8 +64,8 @@ const CallNavbar = () => {
 					<div className="circle center" onClick={() => setVideoToggle(!videoToggle)}>
 						{!videoToggle ? <VideoIcon /> : <VideoOffIcon />}
 					</div>
-					<div className="circle center" onClick={() => {
-						closeConnection()
+					<div className="circle center" onClick={async () => {
+						await closeConnection()
 						setInCall({ activeCall: false, roomID: null })
 					}}>
 						<LeaveCallIcon />

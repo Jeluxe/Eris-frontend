@@ -90,7 +90,7 @@ const Signup = () => {
 	}
 
 	return <AuthLayout
-		fields={{ email, username, password, confirmPassword }}
+		inputFields={{ email, username, password, confirmPassword }}
 		button={{ action: signup, content: "Signup" }}
 		link={{ href: "/login", content: "Already signed up? Click Here!" }}
 	/>

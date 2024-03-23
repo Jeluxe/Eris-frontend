@@ -8,15 +8,7 @@ const Video = ({ type, id = null, stream, videoToggle }) => {
 	const containerRef = useRef(null);
 
 	useEffect(() => {
-		addSocketEvent("video-toggle", (value) => {
-			if (!value) {
-				videoRef.current.classList.remove("hide");
-				containerRef.current.querySelector("img").classList.add("hide");
-			} else {
-				videoRef.current.classList.add("hide");
-				containerRef.current.querySelector("img").classList.remove("hide");
-			}
-		});
+		addSocketEvent("video-toggle", toggleVideo)
 
 		return () => {
 			removeSocketEvent("video-toggle");
@@ -25,9 +17,26 @@ const Video = ({ type, id = null, stream, videoToggle }) => {
 
 	useEffect(() => {
 		if (stream) {
+			const videoTrack = stream.getVideoTracks();
+			hideShowVideoInit(!videoTrack.length)
 			videoRef.current.srcObject = stream;
 		}
 	}, [stream]);
+
+	const toggleVideo = () => {
+		videoRef.current.classList.toggle("hide");
+		containerRef.current.querySelector("img").classList.toggle("hide");
+	}
+
+	const hideShowVideoInit = (value) => {
+		if (value) {
+			videoRef.current.classList.add("hide");
+			containerRef.current.querySelector("img").classList.remove("hide");
+		} else {
+			videoRef.current.classList.remove("hide");
+			containerRef.current.querySelector("img").classList.add("hide");
+		}
+	}
 
 	if (!stream) {
 		return null; // No stream, return null

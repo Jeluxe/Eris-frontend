@@ -47,7 +47,15 @@
 }
 
 .progress-bar-wrapper {
-  padding: 0 5px
+  padding: 0 5px;
+  padding-top: 2px;
+}
+
+/* Add specific styles for Firefox here */
+@-moz-document url-prefix() {
+  .progress-bar-wrapper {
+    display: flex;
+  }
 }
 
 .progress-bar {
@@ -81,8 +89,7 @@
 
 .progress-bar::-moz-range-progress {
   background-color: var(--seek-before-color);
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-radius: 10px;
   height: 11px;
 }
 
@@ -106,8 +113,8 @@
 }
 
 .progress-bar::-moz-range-thumb {
-  height: 15px;
-  width: 15px;
+  height: 13px;
+  width: 13px;
   border-radius: 50%;
   border: transparent;
   background-color: var(--knobby);

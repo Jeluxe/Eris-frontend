@@ -68,6 +68,11 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		margin: 0;
+		cursor: pointer;
+
+		&:hover {
+			text-decoration: underline;
+		}
 	}
 }
 

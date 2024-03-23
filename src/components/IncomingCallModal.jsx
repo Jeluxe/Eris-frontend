@@ -3,11 +3,11 @@ import { useMediasoupProvider, useStateProvider } from '../context';
 import { Avatar } from './';
 
 const IncomingCallModal = () => {
-  const { incomingCall, setInCall, setVideoToggle, setShowIncomingCallModal } = useStateProvider();
+  const { incomingCall, inCall, setInCall, setVideoToggle, setShowIncomingCallModal } = useStateProvider();
   const { call } = useMediasoupProvider();
 
   const answerCall = (video) => {
-    if (incomingCall) {
+    if (incomingCall && inCall.roomID !== incomingCall.roomID) {
       setVideoToggle(video);
       call(incomingCall.roomID, video);
       setInCall({ activeCall: true, roomID: incomingCall.roomID });
@@ -20,18 +20,24 @@ const IncomingCallModal = () => {
   }
 
   return (
-    <div className='incoming-call-modal'>
-      <Avatar avatar={incomingCall.user?.avatar} size={85} />
-      <div className='modal-text'>
-        <span className='modal-info-username'>{incomingCall.user?.username || "Unknown User"} </span>
-        <span> is calling</span>
-      </div>
-      <div className='modal-actions'>
-        <button className='modal-action' onClick={() => answerCall(false)}><CallIcon /></button>
-        <button className='modal-action' onClick={() => answerCall(true)}><VideoIcon /></button>
-        <button className='modal-action' onClick={declineCall}><LeaveCallIcon /></button>
-      </div>
-    </div>
+    <>
+      {
+        inCall.roomID !== incomingCall.roomID ?
+          <div className='incoming-call-modal'>
+            <Avatar avatar={incomingCall.user?.avatar} size={85} />
+            <div className='modal-text'>
+              <span className='modal-info-username'>{incomingCall.user?.username || "Unknown User"} </span>
+              <span> is calling</span>
+            </div>
+            <div className='modal-actions'>
+              <button className='modal-action' onClick={() => answerCall(false)}><CallIcon /></button>
+              <button className='modal-action' onClick={() => answerCall(true)}><VideoIcon /></button>
+              <button className='modal-action' onClick={declineCall}><LeaveCallIcon /></button>
+            </div>
+          </div> :
+          ""
+      }
+    </>
   );
 };
 
