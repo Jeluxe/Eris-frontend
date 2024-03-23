@@ -17,7 +17,7 @@ const AuthLayout = ({ inputFields, button, link }) => {
           })}
         </div>
         <div className='auth-button'><button onClick={button.action}>{button.content}</button></div>
-        <Link to={link.href}>{link.content.toLowerCase()}</Link>
+        <Link to={link.href}>{link.content}</Link>
       </div>
     </div>
   );
